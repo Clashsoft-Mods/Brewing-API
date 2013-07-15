@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.BrewingLoader;
 import clashsoft.brewingapi.IIngredientHandler;
 import clashsoft.brewingapi.item.ItemPotion2;
@@ -38,9 +39,6 @@ public class Brewing
 	public static List<BrewingBase> baseBrewings = new LinkedList<BrewingBase>();
 	/** List that stores all brewings with effects **/
 	public static List<Brewing> effectBrewings = new LinkedList<Brewing>();
-	
-	/** List that stores ingredient handlers. **/
-	public static List<IIngredientHandler> ingredientHandlers = new LinkedList<IIngredientHandler>();
 	
 	/** Version identifier for NBTs. **/
 	public static String NBTVersion = "1.0.1";
@@ -324,7 +322,7 @@ public class Brewing
 	 */
 	public static IIngredientHandler getHandlerForIngredient(ItemStack ingredient)
 	{
-		for (IIngredientHandler handler : ingredientHandlers)
+		for (IIngredientHandler handler : BrewingAPI.ingredientHandlers)
 		{
 			if (handler.canHandleIngredient(ingredient))
 			{

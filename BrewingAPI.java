@@ -118,6 +118,16 @@ public class BrewingAPI
 		if (multiPotions)
 			potions.setIconItemStack(BrewingLoader.damageBoost.addBrewingToItemStack(new ItemStack(BrewingAPI.potion2, 0, 1)));
 	}
+	
+	public static void load()
+	{
+		if (!hasLoaded)
+		{
+			BrewingLoader.initializeBrewings();
+			BrewingLoader.registerBrewings();
+			hasLoaded = true;
+		}
+	}
 
 	//API Stuff
 
@@ -133,10 +143,11 @@ public class BrewingAPI
 			return false;
 		}
 	}
-	
+
 	public static boolean hasLoaded = false;
 
 	public static List<IPotionEffectHandler> effectHandlers = new LinkedList<IPotionEffectHandler>();
+	public static List<IIngredientHandler> ingredientHandlers = new LinkedList<IIngredientHandler>();
 
 	public static Brewing addBrewing(Brewing brewing)
 	{
@@ -145,14 +156,18 @@ public class BrewingAPI
 
 	public static void registerIngredientHandler(IIngredientHandler par1iIngredientHandler)
 	{
-		System.out.println("Ingredient handler \"" + par1iIngredientHandler + "\" registered");
-		Brewing.ingredientHandlers.add(par1iIngredientHandler);
+		if (ingredientHandlers.contains(par1iIngredientHandler))
+		{
+			System.out.println("Ingredient handler \"" + par1iIngredientHandler + "\" registered");
+			ingredientHandlers.add(par1iIngredientHandler);
+		}
 	}
 
 	public static void registerEffectHandler(IPotionEffectHandler par1iPotionEffectHandler)
 	{
 		if (!effectHandlers.contains(par1iPotionEffectHandler))
 		{
+			System.out.println("Effect handler \"" + par1iPotionEffectHandler + "\" registered");
 			effectHandlers.add(par1iPotionEffectHandler);
 		}
 	}
@@ -180,16 +195,6 @@ public class BrewingAPI
 				event.entityLiving.removePotionEffect(i);
 			}
 			handler.removeEffectQueue.clear();
-		}
-	}
-
-	public static void load()
-	{
-		if (!hasLoaded)
-		{
-			BrewingLoader.initializeBrewings();
-			BrewingLoader.registerBrewings();
-			hasLoaded = true;
 		}
 	}
 }

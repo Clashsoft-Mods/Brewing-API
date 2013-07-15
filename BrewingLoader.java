@@ -2,7 +2,6 @@ package clashsoft.brewingapi;
 
 import clashsoft.brewingapi.brewing.Brewing;
 import clashsoft.brewingapi.brewing.BrewingBase;
-import clashsoft.mods.morepotions.MorePotionsMod;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -126,7 +125,7 @@ public class BrewingLoader
 		mundane = new BrewingBase("mundane", new ItemStack(Block.mushroomBrown));
 		uninteresting = new BrewingBase("uninteresting", new ItemStack(Item.paper));
 		bland = new BrewingBase("bland", new ItemStack(Item.melon));
-		clear = new BrewingBase("clear", MorePotionsMod.dustClay);
+		clear = new BrewingBase("clear", clashsoft.mods.morepotions.MorePotionsMod.dustClay);
 		milky = new BrewingBase("milky", new ItemStack(Block.sapling));
 		diffuse = new BrewingBase("diffuse", new ItemStack(Item.wheat));
 		artless = new BrewingBase("artless", new ItemStack(Item.reed));
@@ -162,36 +161,36 @@ public class BrewingLoader
 		moveSlowdown			= new Brewing(new PotionEffect(Potion.moveSlowdown.id, 20 * 90, 0), 4, 20 * 240, Brewing.getBaseBrewing(dashing));                                       
 		moveSpeed				= new Brewing(new PotionEffect(Potion.moveSpeed.id, 20 * 180, 0), 7, 20 * 360, moveSlowdown, new ItemStack(Item.sugar), Brewing.getBaseBrewing(dashing));
 		digSlowdown				= new Brewing(new PotionEffect(Potion.digSlowdown.id, 20 * 90, 0), 4, 20 * 240, Brewing.getBaseBrewing(dashing));                                        
-		digSpeed				= new Brewing(new PotionEffect(Potion.digSpeed.id, 20 * 180, 0), 7, 20 * 360, digSlowdown, MorePotionsMod.dustGold, Brewing.getBaseBrewing(dashing));    
+		digSpeed				= new Brewing(new PotionEffect(Potion.digSpeed.id, 20 * 180, 0), 7, 20 * 360, digSlowdown, clashsoft.mods.morepotions.MorePotionsMod.dustGold, Brewing.getBaseBrewing(dashing));    
 		weakness				= new Brewing(new PotionEffect(Potion.weakness.id, 20 * 90, 0), 2, 20 * 240, new ItemStack(Item.fermentedSpiderEye), awkward);                           
 		damageBoost				= new Brewing(new PotionEffect(Potion.damageBoost.id, 20 * 180, 0), 4, 20 * 300, weakness, new ItemStack(Item.blazePowder), awkward);                    
 		harm					= new Brewing(new PotionEffect(Potion.harm.id, 1, 0), 1, 0, Brewing.getBaseBrewing(thick));                                                              
 		heal					= new Brewing(new PotionEffect(Potion.heal.id, 1, 0), 1, 0, harm, new ItemStack(Item.speckledMelon), Brewing.getBaseBrewing(thick));                     
-		doubleLife				= new Brewing(new PotionEffect(MorePotionsMod.doubleLife.id, 1625000, 0), 0, 0, harm, MorePotionsMod.dustNetherstar, Brewing.getBaseBrewing(thick));     
+		doubleLife				= new Brewing(new PotionEffect(clashsoft.mods.morepotions.MorePotionsMod.doubleLife.id, 1625000, 0), 0, 0, harm, clashsoft.mods.morepotions.MorePotionsMod.dustNetherstar, Brewing.getBaseBrewing(thick));     
 		healthBoost				= new Brewing(new PotionEffect(Potion.field_76434_w.id, 45 * 20, 0), 4, 120 * 20, Brewing.getBaseBrewing(thick));                                                    
 		absorption				= new Brewing(new PotionEffect(Potion.field_76444_x.id, 45 * 20, 0), 4, 120 * 20, healthBoost, new ItemStack(Item.appleGold), Brewing.getBaseBrewing(thick));        
 		jump					= new Brewing(new PotionEffect(Potion.jump.id, 20 * 180, 0), 4, 20 * 300, Brewing.getBaseBrewing(dashing));                                                          
-		doubleJump				= new Brewing(new PotionEffect(MorePotionsMod.doubleJump.id, 20 * 180, 0), 4, 20 * 3000, jump, new ItemStack(Item.feather), Brewing.getBaseBrewing(dashing));        
+		doubleJump				= new Brewing(new PotionEffect(clashsoft.mods.morepotions.MorePotionsMod.doubleJump.id, 20 * 180, 0), 4, 20 * 3000, jump, new ItemStack(Item.feather), Brewing.getBaseBrewing(dashing));        
 		confusion				= new Brewing(new PotionEffect(Potion.confusion.id, 20 * 90, 0), 2, 20 * 180, new ItemStack(Item.poisonousPotato), awkward);                                         
 		regeneration			= new Brewing(new PotionEffect(Potion.regeneration.id, 20 * 45, 0), 2, 20 * 180, moveSlowdown, new ItemStack(Item.ghastTear), awkward);                              
-		resistance				= new Brewing(new PotionEffect(Potion.resistance.id, 20 * 180, 0), 3, 20 * 240, MorePotionsMod.dustDiamond, Brewing.getBaseBrewing(thick));                          
-		ironSkin				= new Brewing(new PotionEffect(MorePotionsMod.ironSkin.id, 20 * 120, 0), 1, 20 * 240, MorePotionsMod.dustIron, Brewing.getBaseBrewing(thick));                       
-		obsidianSkin			= new Brewing(new PotionEffect(MorePotionsMod.obsidianSkin.id, 20 * 120, 0), 1, 20 * 240, MorePotionsMod.dustObsidian, Brewing.getBaseBrewing(thick));               
+		resistance				= new Brewing(new PotionEffect(Potion.resistance.id, 20 * 180, 0), 3, 20 * 240, clashsoft.mods.morepotions.MorePotionsMod.dustDiamond, Brewing.getBaseBrewing(thick));                          
+		ironSkin				= new Brewing(new PotionEffect(clashsoft.mods.morepotions.MorePotionsMod.ironSkin.id, 20 * 120, 0), 1, 20 * 240, clashsoft.mods.morepotions.MorePotionsMod.dustIron, Brewing.getBaseBrewing(thick));                       
+		obsidianSkin			= new Brewing(new PotionEffect(clashsoft.mods.morepotions.MorePotionsMod.obsidianSkin.id, 20 * 120, 0), 1, 20 * 240, clashsoft.mods.morepotions.MorePotionsMod.dustObsidian, Brewing.getBaseBrewing(thick));               
 		fireResistance			= new Brewing(new PotionEffect(Potion.fireResistance.id, 20 * 180, 0), 0, 20 * 360, moveSlowdown, new ItemStack(Item.magmaCream), awkward);                          
-		waterWalking			= new Brewing(new PotionEffect(MorePotionsMod.waterWalking.id, 20 * 120, 0), 0, 240 * 20, awkward);                                                                  
-		waterBreathing			= new Brewing(new PotionEffect(Potion.waterBreathing.id, 20 * 180, 0), 2, 20 * 360, waterWalking, MorePotionsMod.dustClay, awkward);                                 
-		coldness				= new Brewing(new PotionEffect(MorePotionsMod.coldness.id, 20 * 180, 0), 1, 20 * 360, new ItemStack(Item.snowball), awkward);                                        
+		waterWalking			= new Brewing(new PotionEffect(clashsoft.mods.morepotions.MorePotionsMod.waterWalking.id, 20 * 120, 0), 0, 240 * 20, awkward);                                                                  
+		waterBreathing			= new Brewing(new PotionEffect(Potion.waterBreathing.id, 20 * 180, 0), 2, 20 * 360, waterWalking, clashsoft.mods.morepotions.MorePotionsMod.dustClay, awkward);                                 
+		coldness				= new Brewing(new PotionEffect(clashsoft.mods.morepotions.MorePotionsMod.coldness.id, 20 * 180, 0), 1, 20 * 360, new ItemStack(Item.snowball), awkward);                                        
 		invisibility			= new Brewing(new PotionEffect(Potion.invisibility.id, 20 * 180, 0), 0, 720 * 20, (Brewing) null, Brewing.getBaseBrewing(thin));                                     
 		blindness				= new Brewing(new PotionEffect(Potion.blindness.id, 20 * 90, 0), 0, 20 * 240, new ItemStack(Item.dyePowder, 1, 0), Brewing.getBaseBrewing(thin));                    
 		nightVision				= new Brewing(new PotionEffect(Potion.nightVision.id, 20 * 180, 0), 0, 20 * 300, invisibility, new ItemStack(Item.goldenCarrot), Brewing.getBaseBrewing(thin));      
 		poison					= new Brewing(new PotionEffect(Potion.poison.id, 20 * 45, 0), 2, 20 * 60, new ItemStack(Item.spiderEye), Brewing.getBaseBrewing(acrid));                             
 		hunger					= new Brewing(new PotionEffect(Potion.hunger.id, 20 * 45, 0), 3, 20 * 60, Brewing.getBaseBrewing(acrid));                                                            
 		saturation				= new Brewing(new PotionEffect(Potion.field_76443_y.id, 20 * 45, 0), 3, 20 * 60, hunger, new ItemStack(Item.bread), Brewing.getBaseBrewing(awkward));                
-		wither					= new Brewing(new PotionEffect(Potion.wither.id, 450, 0), 1, 20 * 60, MorePotionsMod.dustWither, Brewing.getBaseBrewing(acrid));                                     
-		explosiveness			= new Brewing(new PotionEffect(MorePotionsMod.explosiveness.id, 20 * 10, 0), 4, 20 * 20, awkward);                                                                   
-		fire					= new Brewing(new PotionEffect(MorePotionsMod.fire.id, 20 * 10, 0), 0, 20 * 20, explosiveness, new ItemStack(Item.fireballCharge), awkward);                         
-		random					= new Brewing(new PotionEffect(MorePotionsMod.random.id, MorePotionsMod.randomMode == 0 ? 1 : 20 * 45, 0), 0, MorePotionsMod.randomMode == 0 ? 1 : 20 * 90, awkward);
-		effectRemove			= new Brewing(new PotionEffect(MorePotionsMod.effectRemove.id, 20 * 45, 0), 0, 20 * 90, random, new ItemStack(Item.bucketMilk), awkward);                            
+		wither					= new Brewing(new PotionEffect(Potion.wither.id, 450, 0), 1, 20 * 60, clashsoft.mods.morepotions.MorePotionsMod.dustWither, Brewing.getBaseBrewing(acrid));                                     
+		explosiveness			= new Brewing(new PotionEffect(clashsoft.mods.morepotions.MorePotionsMod.explosiveness.id, 20 * 10, 0), 4, 20 * 20, awkward);                                                                   
+		fire					= new Brewing(new PotionEffect(clashsoft.mods.morepotions.MorePotionsMod.fire.id, 20 * 10, 0), 0, 20 * 20, explosiveness, new ItemStack(Item.fireballCharge), awkward);                         
+		random					= new Brewing(new PotionEffect(clashsoft.mods.morepotions.MorePotionsMod.random.id, clashsoft.mods.morepotions.MorePotionsMod.randomMode == 0 ? 1 : 20 * 45, 0), 0, clashsoft.mods.morepotions.MorePotionsMod.randomMode == 0 ? 1 : 20 * 90, awkward);
+		effectRemove			= new Brewing(new PotionEffect(clashsoft.mods.morepotions.MorePotionsMod.effectRemove.id, 20 * 45, 0), 0, 20 * 90, random, new ItemStack(Item.bucketMilk), awkward);                            
 	}
 	
 	public static void initializeBaseBrewings_BrewingAPI()
