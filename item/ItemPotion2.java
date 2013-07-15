@@ -240,15 +240,15 @@ public class ItemPotion2 extends Item
 	public void registerIcons(IconRegister par1IconRegister)
 	{
 		this.itemIcon = this.bottle = par1IconRegister.registerIcon(this.func_111208_A() + "_bottle_drinkable");
-        this.splashbottle = par1IconRegister.registerIcon(this.func_111208_A() + "_bottle_splash");
-        this.liquid = par1IconRegister.registerIcon(this.func_111208_A() + "_overlay");
+		this.splashbottle = par1IconRegister.registerIcon(this.func_111208_A() + "_bottle_splash");
+		this.liquid = par1IconRegister.registerIcon(this.func_111208_A() + "_overlay");
 	}
-	
-    @SideOnly(Side.CLIENT)
-    public static Icon func_94589_d(String par0Str)
-    {
-        return par0Str.equals("bottle_drinkable") ? BrewingAPI.potion2.bottle : (par0Str.equals("bottle_splash") ? BrewingAPI.potion2.splashbottle : (par0Str.equals("overlay") ? BrewingAPI.potion2.liquid : null));
-    }
+
+	@SideOnly(Side.CLIENT)
+	public static Icon func_94589_d(String par0Str)
+	{
+		return par0Str.equals("bottle_drinkable") ? BrewingAPI.potion2.bottle : (par0Str.equals("bottle_splash") ? BrewingAPI.potion2.splashbottle : (par0Str.equals("overlay") ? BrewingAPI.potion2.liquid : null));
+	}
 
 	/**
 	 * returns wether or not a potion is a throwable splash potion based on damage value
@@ -305,7 +305,7 @@ public class ItemPotion2 extends Item
 	{
 		return 2;
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean requiresMultipleRenderPasses()
@@ -527,41 +527,41 @@ public class ItemPotion2 extends Item
 					}
 				}
 				/*
-                 * Attribute List
-                 */
+				 * Attribute List
+				 */
 				if (!hashmultimap.isEmpty())
-	            {
-	                par3List.add("");
-	                par3List.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("potion.effects.whenDrank"));
-	                Iterator iterator = hashmultimap.entries().iterator();
+				{
+					par3List.add("");
+					par3List.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("potion.effects.whenDrank"));
+					Iterator iterator = hashmultimap.entries().iterator();
 
-	                while (iterator.hasNext())
-	                {
-	                    Entry entry1 = (Entry)iterator.next();
-	                    AttributeModifier attributemodifier2 = (AttributeModifier)entry1.getValue();
-	                    double d0 = attributemodifier2.func_111164_d();
-	                    double d1;
+					while (iterator.hasNext())
+					{
+						Entry entry1 = (Entry)iterator.next();
+						AttributeModifier attributemodifier2 = (AttributeModifier)entry1.getValue();
+						double d0 = attributemodifier2.func_111164_d();
+						double d1;
 
-	                    if (attributemodifier2.func_111169_c() != 1 && attributemodifier2.func_111169_c() != 2)
-	                    {
-	                        d1 = attributemodifier2.func_111164_d();
-	                    }
-	                    else
-	                    {
-	                        d1 = attributemodifier2.func_111164_d() * 100.0D;
-	                    }
+						if (attributemodifier2.func_111169_c() != 1 && attributemodifier2.func_111169_c() != 2)
+						{
+							d1 = attributemodifier2.func_111164_d();
+						}
+						else
+						{
+							d1 = attributemodifier2.func_111164_d() * 100.0D;
+						}
 
-	                    if (d0 > 0.0D)
-	                    {
-	                        par3List.add(EnumChatFormatting.BLUE + StatCollector.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.func_111169_c(), new Object[] {ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + (String)entry1.getKey())}));
-	                    }
-	                    else if (d0 < 0.0D)
-	                    {
-	                        d1 *= -1.0D;
-	                        par3List.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.func_111169_c(), new Object[] {ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + (String)entry1.getKey())}));
-	                    }
-	                }
-	            }
+						if (d0 > 0.0D)
+						{
+							par3List.add(EnumChatFormatting.BLUE + StatCollector.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.func_111169_c(), new Object[] {ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + (String)entry1.getKey())}));
+						}
+						else if (d0 < 0.0D)
+						{
+							d1 *= -1.0D;
+							par3List.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.func_111169_c(), new Object[] {ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + (String)entry1.getKey())}));
+						}
+					}
+				}
 			}
 			else
 			{
@@ -618,36 +618,41 @@ public class ItemPotion2 extends Item
 					}
 				}
 			}
-			for (Brewing brewing : Brewing.goodEffects)
-			{
-				if (brewing != BrewingLoader.effectRemove)
-				{
-					good1 = brewing.addBrewingToItemStack(good1);
-					good2 = brewing.addBrewingToItemStack(good2);
-				}
-			}
-			for (Brewing brewing : Brewing.badEffects)
-			{
-				if (brewing != BrewingLoader.effectRemove)
-				{
-					bad1 = brewing.addBrewingToItemStack(bad1);
-					bad2 = brewing.addBrewingToItemStack(bad2);
-				}
-			}
-			for (Brewing brewing : Brewing.combinableEffects)
-			{
-				allEffects1 = brewing.addBrewingToItemStack(allEffects1);
-				allEffects2 = brewing.addBrewingToItemStack(allEffects2);
-			}
 
-			par3List.add(allEffects1);
-			par3List.add(allEffects2);
-			par3List.add(good1);
-			par3List.add(good2);
-			par3List.add(bad1);
-			par3List.add(bad2);
+			if (BrewingAPI.MORE_POTIONS_MOD())
+			{
+				System.out.println(BrewingAPI.MORE_POTIONS_MOD());
+				for (Brewing brewing : Brewing.goodEffects)
+				{
+					if (brewing != BrewingLoader.effectRemove)
+					{
+						good1 = brewing.addBrewingToItemStack(good1);
+						good2 = brewing.addBrewingToItemStack(good2);
+					}
+				}
+				for (Brewing brewing : Brewing.badEffects)
+				{
+					if (brewing != BrewingLoader.effectRemove)
+					{
+						bad1 = brewing.addBrewingToItemStack(bad1);
+						bad2 = brewing.addBrewingToItemStack(bad2);
+					}
+				}
+				for (Brewing brewing : Brewing.combinableEffects)
+				{
+					allEffects1 = brewing.addBrewingToItemStack(allEffects1);
+					allEffects2 = brewing.addBrewingToItemStack(allEffects2);
+				}
+
+				par3List.add(allEffects1);
+				par3List.add(allEffects2);
+				par3List.add(good1);
+				par3List.add(good2);
+				par3List.add(bad1);
+				par3List.add(bad2);
+			}
 		}
-		if (BrewingAPI.multiPotions && (par2CreativeTabs == BrewingAPI.potions || par2CreativeTabs == CreativeTabs.tabAllSearch))
+		if (BrewingAPI.MORE_POTIONS_MOD() && BrewingAPI.multiPotions && (par2CreativeTabs == BrewingAPI.potions || par2CreativeTabs == CreativeTabs.tabAllSearch))
 		{
 			for (int i = 1; i <= 2; i++)
 			{

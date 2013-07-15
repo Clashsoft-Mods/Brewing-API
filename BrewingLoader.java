@@ -23,9 +23,7 @@ public class BrewingLoader
 	public static BrewingBase	milky					;//= new BrewingBase("milky", new ItemStack(Block.sapling));
 	public static BrewingBase	diffuse					;//= new BrewingBase("diffuse", new ItemStack(Item.wheat));
 	public static BrewingBase	artless					;//= new BrewingBase("artless", new ItemStack(Item.reed));
-	/** Needed for some                                 ;//
-	 * higher tier extendable                           ;//
-	 * potions **/                                      ;//
+	/** Needed for some higher tier extendable potions **/
 	public static BrewingBase	thin					;//= new BrewingBase("thin", new ItemStack(Item.redstone));
 	public static BrewingBase	flat					;//= new BrewingBase("flat", new ItemStack(Block.waterlily));
 	public static BrewingBase	bulky					;//= new BrewingBase("bulky", new ItemStack(Block.sand));
@@ -34,16 +32,12 @@ public class BrewingLoader
 	public static BrewingBase	smooth					;//= new BrewingBase("smooth", new ItemStack(Item.seeds));
 	public static BrewingBase	suave					;//= new BrewingBase("suave", new ItemStack(Item.dyePowder, 1, 3));
 	public static BrewingBase	debonair				;//= new BrewingBase("debonair", new ItemStack(Item.dyePowder, 1, 2));
-	/** Needed for some                                 ;//
-	 * higher tier improvable                           ;//
-	 * potions **/                                      ;//
+	/** Needed for some higher tier improvable potions **/
 	public static BrewingBase	thick					;//= new BrewingBase("thick", new ItemStack(Item.glowstone));
 	public static BrewingBase	elegant					;//= new BrewingBase("elegant", new ItemStack(Item.enderPearl));
 	public static BrewingBase	fancy					;//= new BrewingBase("fancy", new ItemStack(Item.flint));
 	public static BrewingBase	charming				;//= new BrewingBase("charming", new ItemStack(Block.plantRed));
-	/** Needed for potions                              ;//
-	 * that change                                      ;//
-	 * movement **/                                     ;//
+	/** Needed for potions that change movement **/
 	public static BrewingBase	dashing					;//= new BrewingBase("dashing", new ItemStack(Item.silk));
 	public static BrewingBase	refined					;//= new BrewingBase("refined", new ItemStack(Item.slimeBall));
 	public static BrewingBase	cordial					;//= new BrewingBase("cordial", new ItemStack(Item.dyePowder, 1, 15));
@@ -67,8 +61,7 @@ public class BrewingLoader
 	public static Brewing		harm					;//= new Brewing(new PotionEffect(Potion.harm.id, 1, 0), 1, 0, Brewing.getBaseBrewing(thick));
 	public static Brewing		heal					;//= new Brewing(new PotionEffect(Potion.heal.id, 1, 0), 1, 0, harm, new ItemStack(Item.speckledMelon), Brewing.getBaseBrewing(thick));
 	public static Brewing		doubleLife				;//= new Brewing(new PotionEffect(MorePotionsMod.doubleLife.id, 1625000, 0), 0, 0, harm, MorePotionsMod.dustNetherstar, Brewing.getBaseBrewing(thick));
-	/** Health Boost added                              ;//
-	 * in 1.6 **/                                       ;//
+	/** Health Boost added in 1.6 **/
 	public static Brewing		healthBoost				;//= new Brewing(new PotionEffect(Potion.field_76434_w.id, 45 * 20, 0), 4, 120 * 20, Brewing.getBaseBrewing(thick));
 	/** Absorption added in 1.6 **/
 	public static Brewing		absorption				;//= new Brewing(new PotionEffect(Potion.field_76444_x.id, 45 * 20, 0), 4, 120 * 20, healthBoost, new ItemStack(Item.appleGold), Brewing.getBaseBrewing(thick));
@@ -97,13 +90,15 @@ public class BrewingLoader
 
 	public static void initializeBrewings()
 	{
-		if (BrewingAPI.MORE_POTIONS_MOD)
+		if (BrewingAPI.MORE_POTIONS_MOD())
 		{
+			System.out.println("Initializing MorePotionsMod Brewings");
 			initializeBaseBrewings_MorePotionsMod();
 			initializeBrewings_MorePotionsMod();
 		}
 		else
 		{
+			System.out.println("Initializing BrewingAPI Brewings");
 			initializeBaseBrewings_BrewingAPI();
 			initializeBrewings_BrewingAPI();
 		}
@@ -111,10 +106,18 @@ public class BrewingLoader
 	
 	public static void registerBrewings()
 	{
-		if (BrewingAPI.MORE_POTIONS_MOD)
+		if (BrewingAPI.MORE_POTIONS_MOD())
+		{
+			System.out.println("Registering MorePotionsMod Brewings");
+			registerBaseBrewings_MorePotionsMod();
 			registerBrewings_MorePotionsMod();
+		}
 		else
+		{
+			System.out.println("Registering BrewingAPI Brewings");
+			registerBaseBrewings_BrewingAPI();
 			registerBrewings_BrewingAPI();
+		}
 	}
 	
 	private static void initializeBaseBrewings_MorePotionsMod()
@@ -214,8 +217,6 @@ public class BrewingLoader
 
 	public static void registerBrewings_MorePotionsMod()
 	{
-		registerBaseBrewings_MorePotionsMod();
-
 		regeneration.register();
 		moveSpeed.register();
 		moveSlowdown.register();
@@ -293,9 +294,7 @@ public class BrewingLoader
 	}
 
 	public static void registerBrewings_BrewingAPI()
-	{
-		registerBaseBrewings_BrewingAPI();
-		
+	{	
 		regeneration.register();
 		moveSpeed.register();
 		fireResistance.register();
