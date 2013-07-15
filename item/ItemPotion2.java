@@ -621,7 +621,6 @@ public class ItemPotion2 extends Item
 
 			if (BrewingAPI.MORE_POTIONS_MOD())
 			{
-				System.out.println(BrewingAPI.MORE_POTIONS_MOD());
 				for (Brewing brewing : Brewing.goodEffects)
 				{
 					if (brewing != BrewingLoader.effectRemove)

@@ -11,6 +11,7 @@ import java.util.Random;
 import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.brewing.Brewing;
 import clashsoft.brewingapi.item.ItemPotion2;
+import clashsoft.mods.morepotions.MorePotionsMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.RenderGlobal;
@@ -94,7 +95,7 @@ public class EntityPotion2 extends EntityPotion
     {
     	if (!this.worldObj.isRemote)
         {
-            List list = Item.potion.getEffects(this.potionDamage);
+            List list = BrewingAPI.potion2.getEffects(this.potionDamage);
 
             if (list != null && !list.isEmpty())
             {
