@@ -23,7 +23,6 @@ import clashsoft.brewingapi.item.ItemGlassBottle2;
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.lib.DispenserBehaviorPotion2;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
-import clashsoft.clashsoftapi.CustomCreativeTab;
 import clashsoft.clashsoftapi.util.CSUtil;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -58,7 +57,7 @@ public class BrewingAPI
 
 	public static int				PotionsTab_ID			= CreativeTabs.getNextID();
 
-	public static CustomCreativeTab	potions;
+	public static BAPICreativeTabs	potions;
 
 	public static Block				brewingStand2;
 	public static Item				brewingStand2Item;
@@ -90,7 +89,7 @@ public class BrewingAPI
 		BrewingAPI.load();
 
 		if (multiPotions)
-			potions = new CustomCreativeTab("morepotions", null);
+			potions = new BAPICreativeTabs("morepotions");
 
 		GameRegistry.registerTileEntity(TileEntityBrewingStand2.class, "BrewingStand2");
 		EntityRegistry.registerGlobalEntityID(EntityPotion2.class, "SplashPotion2", SplashPotion2_ID);

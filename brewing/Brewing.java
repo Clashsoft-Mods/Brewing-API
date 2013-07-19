@@ -65,30 +65,25 @@ public class Brewing
 	 * @param par3 Max Duration
 	 * @param par4BrewingBase base
 	 */
-	public Brewing(PotionEffect par1PotionEffect, int par2, int par3, BrewingBase par4BrewingBase)
+	public Brewing(PotionEffect par1PotionEffect, int par2, int par3)
 	{
-		effect = par1PotionEffect;
-		isRandom = false;
-		maxAmplifier = par2;
-		maxDuration = par3;
-		base = par4BrewingBase;
+		this(par1PotionEffect, par2, par3, null);
 	}
 
 	/**
-	 * Creates a new Brewing
+	 * Creates a new Brewing with Opposite
 	 * @param par1PotionEffect Effect
 	 * @param par2 Improvable
 	 * @param par3 Extendable
 	 * @param par4Brewing Opposite
 	 */
-	public Brewing(PotionEffect par1PotionEffect, int par2, int par3, Brewing par4Brewing, BrewingBase par5BrewingBase)
+	public Brewing(PotionEffect par1PotionEffect, int par2, int par3, Brewing par4Brewing)
 	{
-		this(par1PotionEffect, par2, par3, par5BrewingBase);
-		opposite = par4Brewing;
+		this(par1PotionEffect, par2, par3, par4Brewing, null, null);
 	}
 
 	/**
-	 * Creates a new Brewing
+	 * Creates a new Brewing with Ingredient and Base
 	 * @param par1PotionEffect Effect
 	 * @param par2 Improvable
 	 * @param par3 Extendable
@@ -96,12 +91,11 @@ public class Brewing
 	 */
 	public Brewing(PotionEffect par1PotionEffect, int par2, int par3, ItemStack par4ItemStack, BrewingBase par5BrewingBase)
 	{
-		this(par1PotionEffect, par2, par3, par5BrewingBase);
-		ingredient = par4ItemStack;
+		this(par1PotionEffect, par2, par3, null, par4ItemStack, par5BrewingBase);
 	}
 
 	/**
-	 * Creates a new Brewing
+	 * Creates a new Brewing with Opposite, Ingredient and Base
 	 * @param par1PotionEffect Effect
 	 * @param par2 Improvable
 	 * @param par3 Extendable
@@ -110,8 +104,12 @@ public class Brewing
 	 */
 	public Brewing(PotionEffect par1PotionEffect, int par2, int par3, Brewing par4Brewing, ItemStack par5ItemStack, BrewingBase par6BrewingBase)
 	{
-		this(par1PotionEffect, par2, par3, par4Brewing, par6BrewingBase);
-		ingredient = par5ItemStack;
+		this.effect = par1PotionEffect;
+		this.maxAmplifier = par2;
+		this.maxDuration = par3;
+		this.opposite = par4Brewing;
+		this.ingredient = par5ItemStack;
+		this.base = par6BrewingBase;
 	}
 
 
@@ -136,7 +134,7 @@ public class Brewing
 			}
 			if (Potion.potionTypes[this.getEffect().getPotionID()] instanceof CustomPotion)
 			{
-				return ((CustomPotion)Potion.potionTypes[this.getEffect().getPotionID()]).isBadEffect();
+				return ((CustomPotion)Potion.potionTypes[this.getEffect().getPotionID()]).getIsBadEffect();
 			}
 		}
 		return false;
@@ -159,7 +157,7 @@ public class Brewing
 	public boolean isRandom() { return isRandom; }
 	public BrewingBase getBase() { return base; }
 	public boolean isBase() { return this.getEffect() == null; }
-	public int getLiquidColor() { return this.getEffect() != null && this.getEffect().getPotionID() > 0 ? Potion.potionTypes[effect.getPotionID()].getLiquidColor() : 0x0C0CFF; }
+	public int getLiquidColor() { return this.getEffect() != null && this.getEffect().getPotionID() > 0 && Potion.potionTypes[effect.getPotionID()] != null ? Potion.potionTypes[effect.getPotionID()].getLiquidColor() : 0x0C0CFF; }
 	
 	public int getDefaultDuration()
 	{
@@ -483,7 +481,7 @@ public class Brewing
 	public static float getExperience(ItemStack par1ItemStack)
 	{
 		List<Brewing> effects = ItemPotion2.getEffects(par1ItemStack);
-		float f = ItemPotion2.isSplash(par1ItemStack.getItemDamage()) ? 0.3F : 0.2F;
+		float f = par1ItemStack.getItem() instanceof ItemPotion2 && ((ItemPotion2)par1ItemStack.getItem()).isSplash(par1ItemStack.getItemDamage()) ? 0.3F : 0.2F;
 		for (Brewing b : effects)
 		{
 			if (b.getEffect() != null)
@@ -541,7 +539,7 @@ public class Brewing
 		int potionDuration =	(int) ((dataLong >> 35) & ((2 << 43) - 1));
 		int maxDuration =		(int) ((dataLong >> 43));
 		Brewing opposite = oppositeId < brewingList.size() ? brewingList.get(oppositeId) : null;
-		return new Brewing(new PotionEffect(potionId, potionDuration, potionAmplifier), maxAmplifier, maxDuration, opposite, null);
+		return new Brewing(new PotionEffect(potionId, potionDuration, potionAmplifier), maxAmplifier, maxDuration, opposite);
 	}
 	
 	public String toString()

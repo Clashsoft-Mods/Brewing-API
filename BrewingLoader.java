@@ -180,7 +180,7 @@ public class BrewingLoader
 		waterWalking = new Brewing(new PotionEffect(clashsoft.mods.morepotions.MorePotionsMod.waterWalking.id, 20 * 120, 0), 0, 240 * 20, awkward);
 		waterBreathing = new Brewing(new PotionEffect(Potion.waterBreathing.id, 20 * 180, 0), 2, 20 * 360, waterWalking, clashsoft.mods.morepotions.MorePotionsMod.dustClay, awkward);
 		coldness = new Brewing(new PotionEffect(clashsoft.mods.morepotions.MorePotionsMod.coldness.id, 20 * 180, 0), 1, 20 * 360, new ItemStack(Item.snowball), awkward);
-		invisibility = new Brewing(new PotionEffect(Potion.invisibility.id, 20 * 180, 0), 0, 720 * 20, (Brewing) null, Brewing.getBaseBrewing(thin));
+		invisibility = new Brewing(new PotionEffect(Potion.invisibility.id, 20 * 180, 0), 0, 720 * 20);
 		blindness = new Brewing(new PotionEffect(Potion.blindness.id, 20 * 90, 0), 0, 20 * 240, new ItemStack(Item.dyePowder, 1, 0), Brewing.getBaseBrewing(thin));
 		nightVision = new Brewing(new PotionEffect(Potion.nightVision.id, 20 * 180, 0), 0, 20 * 300, invisibility, new ItemStack(Item.goldenCarrot), Brewing.getBaseBrewing(thin));
 		poison = new Brewing(new PotionEffect(Potion.poison.id, 20 * 45, 0), 2, 20 * 60, new ItemStack(Item.spiderEye), Brewing.getBaseBrewing(acrid));
@@ -209,7 +209,7 @@ public class BrewingLoader
 		heal = new Brewing(new PotionEffect(Potion.heal.id, 1, 0), 1, 0, harm, new ItemStack(Item.speckledMelon), Brewing.getBaseBrewing(thick));
 		regeneration = new Brewing(new PotionEffect(Potion.regeneration.id, 20 * 45, 0), 2, 20 * 180, moveSlowdown, new ItemStack(Item.ghastTear), awkward);
 		fireResistance = new Brewing(new PotionEffect(Potion.fireResistance.id, 20 * 180, 0), 0, 20 * 360, moveSlowdown, new ItemStack(Item.magmaCream), awkward);
-		invisibility = new Brewing(new PotionEffect(Potion.invisibility.id, 20 * 180, 0), 0, 720 * 20, (Brewing) null, Brewing.getBaseBrewing(thin));
+		invisibility = new Brewing(new PotionEffect(Potion.invisibility.id, 20 * 180, 0), 0, 720 * 20);
 		nightVision = new Brewing(new PotionEffect(Potion.nightVision.id, 20 * 180, 0), 0, 20 * 300, invisibility, new ItemStack(Item.goldenCarrot), Brewing.getBaseBrewing(thin));
 		poison = new Brewing(new PotionEffect(Potion.poison.id, 20 * 45, 0), 2, 20 * 60, new ItemStack(Item.spiderEye), Brewing.getBaseBrewing(acrid));
 	}

@@ -196,7 +196,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 					{
 						if (brewingItemStacks[var3] != null)
 						{
-							if (ItemPotion2.isSplash(brewingItemStacks[var3].getItemDamage()) || brewingItemStacks[var3].getItemDamage() == 0)
+							if (brewingItemStacks[var3].getItem() instanceof ItemPotion2 && ((ItemPotion2)brewingItemStacks[var3].getItem()).isSplash(brewingItemStacks[var3].getItemDamage()) || brewingItemStacks[var3].getItemDamage() == 0)
 							{
 								var2 = false;
 								break;

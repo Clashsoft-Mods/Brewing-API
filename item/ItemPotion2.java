@@ -253,7 +253,7 @@ public class ItemPotion2 extends Item
 	/**
 	 * returns wether or not a potion is a throwable splash potion based on damage value
 	 */
-	public static boolean isSplash(int par1)
+	public boolean isSplash(int par1)
 	{
 		return par1 == 2 ? true : par1 == 1 ? false : ItemPotion.isSplash(par1);
 	}
