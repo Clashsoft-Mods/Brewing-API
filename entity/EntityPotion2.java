@@ -47,14 +47,14 @@ public class EntityPotion2 extends EntityPotion
 	{
 		super(par1World, par2EntityLiving, par3ItemStack);
 		this.potionDamage = par3ItemStack;
-		this.color = ItemPotion2.getColorFromItemStack2(par3ItemStack, 0);
+		this.color = ((ItemPotion2)par3ItemStack.getItem()).getColorFromItemStack(par3ItemStack, 0);
 	}
 
 	public EntityPotion2(World par1World, double par2, double par4, double par6, ItemStack par8ItemStack)
 	{
 		super(par1World, par2, par4, par6, par8ItemStack);
 		this.potionDamage = par8ItemStack;
-		this.color = ItemPotion2.getColorFromItemStack2(par8ItemStack, 0);
+		this.color = ((ItemPotion2)par8ItemStack.getItem()).getColorFromItemStack(par8ItemStack, 0);
 	}
 
 	/**

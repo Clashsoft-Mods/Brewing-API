@@ -59,7 +59,7 @@ public class ClientProxy extends CommonProxy
     		par0World.spawnParticle(s, d0, d1, d2, random.nextGaussian() * 0.15D, random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D);
     	}
 
-    	j1 = ItemPotion2.getColorFromItemStack2(par4ItemStack, 0);
+    	j1 =  ((ItemPotion2)par4ItemStack.getItem()).getColorFromItemStack(par4ItemStack, 0);
     	float f = (float)(j1 >> 16 & 255) / 255.0F;
     	float f1 = (float)(j1 >> 8 & 255) / 255.0F;
     	float f2 = (float)(j1 >> 0 & 255) / 255.0F;

@@ -124,7 +124,7 @@ public class PotionUtils
 	public static List<String> getUsedTo(ItemStack potion)
 	{
 		List<String> usedTo = new LinkedList<String>();
-		List<Brewing> var5 = ItemPotion2.getEffects(potion);
+		List<Brewing> var5 = ((ItemPotion2)potion.getItem()).getEffects(potion);
 		for (Brewing b1 : Brewing.brewingList)
 		{
 			if (b1 != null && var5.get(0) instanceof BrewingBase)

@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.EntityPotion;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPotion;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionHelper;
 import net.minecraft.util.Icon;
 
@@ -44,7 +45,8 @@ public class RenderPotion2 extends Render
      */
     public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9)
     {
-        Icon icon = BrewingAPI.potion2.splashbottle;
+    	ItemStack stack = ((EntityPotion2)par1Entity).potionDamage;
+        Icon icon = stack != null && stack.getItem() != null ? ((ItemPotion2)stack.getItem()).getSplashIcon(stack) : ItemPotion2.func_94589_d("bottle_splash");
 
         if (icon != null)
         {
@@ -57,7 +59,7 @@ public class RenderPotion2 extends Render
 
             if (icon == ItemPotion.func_94589_d("bottle_splash"))
             {
-                int i = ItemPotion2.getColorFromItemStack2(((EntityPotion2)par1Entity).potionDamage, 0);
+                int i = ((ItemPotion2)stack.getItem()).getColorFromItemStack(stack, 0);
                 float f2 = (float)(i >> 16 & 255) / 255.0F;
                 float f3 = (float)(i >> 8 & 255) / 255.0F;
                 float f4 = (float)(i & 255) / 255.0F;

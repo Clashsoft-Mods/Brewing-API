@@ -74,15 +74,15 @@ public class ItemPotion2 extends Item
 	@Override
 	public CreativeTabs[] getCreativeTabs()
 	{
-		return new CreativeTabs[] { BrewingAPI.potions, CreativeTabs.tabBrewing };
+		return new CreativeTabs[] { BrewingAPI.potions, CreativeTabs.tabBrewing, CreativeTabs.tabAllSearch };
 	}
 
 	/**
 	 * Returns a list of potion effects for the specified itemstack.
 	 */
-	public static List<Brewing> getEffects(ItemStack par1ItemStack)
+	public List<Brewing> getEffects(ItemStack par1ItemStack)
 	{
-		if (par1ItemStack != null)
+		if (par1ItemStack != null && !isWater(par1ItemStack.getItemDamage()))
 		{
 			if (par1ItemStack.hasTagCompound() && par1ItemStack.getTagCompound().hasKey("Brewing"))
 			{
@@ -257,19 +257,17 @@ public class ItemPotion2 extends Item
 	{
 		return par1 == 2 ? true : par1 == 1 ? false : ItemPotion.isSplash(par1);
 	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getColorFromItemStack(ItemStack par1ItemStack, int par2)
+	
+	public boolean isWater(int par1)
 	{
-		return getColorFromItemStack2(par1ItemStack, par2);
+		return par1 == 0;
 	}
 
-	public static int getColorFromItemStack2(ItemStack par1ItemStack, int par2)
+	public int getColorFromItemStack(ItemStack par1ItemStack, int par2)
 	{
 		if (par2 == 0 && par1ItemStack != null)
 		{
-			if (par1ItemStack.getItemDamage() == 0)
+			if (BrewingAPI.potion2.isWater(par1ItemStack.getItemDamage()))
 			{
 				return 0x0C0CFF;
 			}
@@ -317,7 +315,7 @@ public class ItemPotion2 extends Item
 	public String getItemDisplayName(ItemStack par1ItemStack)
 	{
 		List effects = getEffects(par1ItemStack);
-		if (par1ItemStack.getItemDamage() == 0)
+		if (isWater(par1ItemStack.getItemDamage()))
 		{
 			return StatCollector.translateToLocal("item.emptyPotion.name").trim();
 		}
@@ -390,7 +388,7 @@ public class ItemPotion2 extends Item
 	 */
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
 	{	
-		if (par1ItemStack.getItemDamage() != 0)
+		if (!isWater(par1ItemStack.getItemDamage()))
 		{
 			List<Brewing> var5 = this.getEffects(par1ItemStack);
 			HashMultimap hashmultimap = HashMultimap.create();
@@ -709,5 +707,10 @@ public class ItemPotion2 extends Item
 			return e;
 		}
 		return null;
+	}
+
+	public Icon getSplashIcon(ItemStack stack)
+	{
+		return splashbottle;
 	}
 }

@@ -10,6 +10,7 @@ import java.util.List;
 import clashsoft.brewingapi.BrewingLoader;
 import clashsoft.brewingapi.brewing.Brewing;
 import clashsoft.brewingapi.brewing.BrewingBase;
+import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.item.ItemPotion2;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityXPOrb;
@@ -212,13 +213,13 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 				{
 					for (int var3 = 0; var3 < 3; var3++)
 					{
-						if (brewingItemStacks[var3] != null)
+						if (brewingItemStacks[var3] != null && brewingItemStacks[var3].getItem() instanceof ItemPotion2)
 						{
 							if (brewingItemStacks[var3].getItemDamage() == 0)
 							{
 								var2 = true;
 							}
-							for (Object o : ItemPotion2.getEffects(brewingItemStacks[var3]))
+							for (Object o : ((ItemPotion2)brewingItemStacks[var3].getItem()).getEffects(brewingItemStacks[var3]))
 							{
 								if (((Brewing)o).isImprovable())
 								{
@@ -233,13 +234,13 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 				{
 					for (int var3 = 0; var3 < 3; var3++)
 					{
-						if (brewingItemStacks[var3] != null)
+						if (brewingItemStacks[var3] != null && brewingItemStacks[var3].getItem() instanceof ItemPotion2)
 						{
 							if (brewingItemStacks[var3].getItemDamage() == 0)
 							{
 								var2 = true;
 							}
-							for (Object o : ItemPotion2.getEffects(brewingItemStacks[var3]))
+							for (Object o : ((ItemPotion2)brewingItemStacks[var3].getItem()).getEffects(brewingItemStacks[var3]))
 							{
 								if (((Brewing)o).isExtendable())
 								{
@@ -254,13 +255,13 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 				{
 					for (int var3 = 0; var3 < 3; var3++)
 					{
-						if (brewingItemStacks[var3] != null)
+						if (brewingItemStacks[var3] != null && brewingItemStacks[var3].getItem() instanceof ItemPotion2)
 						{
 							if (brewingItemStacks[var3].getItemDamage() == 0)
 							{
 								var2 = true;
 							}
-							for (Object o : ItemPotion2.getEffects(brewingItemStacks[var3]))
+							for (Object o : ((ItemPotion2)brewingItemStacks[var3].getItem()).getEffects(brewingItemStacks[var3]))
 							{
 								Brewing b = (Brewing)o;
 

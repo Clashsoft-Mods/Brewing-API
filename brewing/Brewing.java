@@ -39,7 +39,7 @@ public class Brewing
 	public static List<BrewingBase> baseBrewings = new LinkedList<BrewingBase>();
 	/** List that stores all brewings with effects **/
 	public static List<Brewing> effectBrewings = new LinkedList<Brewing>();
-	
+
 	/** Version identifier for NBTs. **/
 	public static String NBTVersion = "1.0.1";
 
@@ -57,7 +57,7 @@ public class Brewing
 	private boolean isRandom = false;
 	/** Determines the base that is needed to brew the potion **/
 	private BrewingBase base;
-	
+
 	/**
 	 * Creates a new Brewing
 	 * @param par1PotionEffect Effect
@@ -158,7 +158,7 @@ public class Brewing
 	public BrewingBase getBase() { return base; }
 	public boolean isBase() { return this.getEffect() == null; }
 	public int getLiquidColor() { return this.getEffect() != null && this.getEffect().getPotionID() > 0 && Potion.potionTypes[effect.getPotionID()] != null ? Potion.potionTypes[effect.getPotionID()].getLiquidColor() : 0x0C0CFF; }
-	
+
 	public int getDefaultDuration()
 	{
 		for (Brewing b : this.brewingList)
@@ -178,7 +178,7 @@ public class Brewing
 	public Brewing setIngredient(ItemStack par1) { ingredient = par1; return this; }
 	public Brewing setIsRandom(boolean par1) { isRandom = par1; return this; }
 	public Brewing setBase(BrewingBase par1) { base = par1; return this; }
-	
+
 	public Brewing onImproved()
 	{
 		if (isImprovable() && this.getEffect() != null)
@@ -187,7 +187,7 @@ public class Brewing
 		}
 		return this;
 	}
-	
+
 	public Brewing onExtended()
 	{
 		if (isExtendable() && this.getEffect() != null)
@@ -227,7 +227,7 @@ public class Brewing
 		{
 			baseBrewings.add((BrewingBase)this);
 		}
-		
+
 		return this;
 	}
 
@@ -298,7 +298,7 @@ public class Brewing
 		}
 		return BrewingLoader.awkward;
 	}
-	
+
 	/**
 	 * Checks if the ingredient has any effect on a potion
 	 * @param ingredient
@@ -312,7 +312,7 @@ public class Brewing
 		}
 		return getBrewingFromIngredient(ingredient) != null || (getHandlerForIngredient(ingredient) != null);
 	}
-	
+
 	/**
 	 * Finds the first registered IngredientHandler that can handle the ingredient
 	 * @param ingredient
@@ -329,7 +329,7 @@ public class Brewing
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Checks if the ingredient needs an IngredientHandler to be applied to a potion
 	 * @param ingredient
@@ -339,7 +339,7 @@ public class Brewing
 	{
 		return getHandlerForIngredient(ingredient) != null;
 	}
-	
+
 	/**
 	 * Applys an ingredient to a potion
 	 * @param ingredient Ingredient
@@ -357,7 +357,7 @@ public class Brewing
 			return getHandlerForIngredient(ingredient).applyIngredient(ingredient, potion);
 		}
 	}
-	
+
 	/**
 	 * Returns a brewing that is brewed with the itemstack. it doesn't check for the amount.
 	 * Ignores Special Ingredient Handlers
@@ -444,7 +444,7 @@ public class Brewing
 		int potionID = par1NBTTagCompound.hasKey("PotionID") ? par1NBTTagCompound.getInteger("PotionID") : 0;
 		int potionDuration = par1NBTTagCompound.hasKey("PotionDuration") ? par1NBTTagCompound.getInteger("PotionDuration") :  0;
 		int potionAmplifier = par1NBTTagCompound.hasKey("PotionAmplifier") ? par1NBTTagCompound.getInteger("PotionAmplifier") : 0;
-		
+
 		if (potionID == 0 || par1NBTTagCompound.hasKey("BaseName"))
 		{
 			return BrewingBase.readFromNBT(par1NBTTagCompound);
@@ -480,25 +480,29 @@ public class Brewing
 	 */
 	public static float getExperience(ItemStack par1ItemStack)
 	{
-		List<Brewing> effects = ItemPotion2.getEffects(par1ItemStack);
-		float f = par1ItemStack.getItem() instanceof ItemPotion2 && ((ItemPotion2)par1ItemStack.getItem()).isSplash(par1ItemStack.getItemDamage()) ? 0.3F : 0.2F;
-		for (Brewing b : effects)
+		if (par1ItemStack.getItem() instanceof ItemPotion2)
 		{
-			if (b.getEffect() != null)
+			List<Brewing> effects = ((ItemPotion2)par1ItemStack.getItem()).getEffects(par1ItemStack);
+			float f = ((ItemPotion2)par1ItemStack.getItem()).isSplash(par1ItemStack.getItemDamage()) ? 0.3F : 0.2F;
+			for (Brewing b : effects)
 			{
-				if (b.isBadEffect())
+				if (b.getEffect() != null)
 				{
-					f += 0.4F + b.getEffect().getAmplifier() * 0.1F + (b.getEffect().getDuration() / (600));
-				}
-				else
-				{
-					f += 0.5F + b.getEffect().getAmplifier() * 0.1F + (b.getEffect().getDuration() / (600));
+					if (b.isBadEffect())
+					{
+						f += 0.4F + b.getEffect().getAmplifier() * 0.1F + (b.getEffect().getDuration() / (600));
+					}
+					else
+					{
+						f += 0.5F + b.getEffect().getAmplifier() * 0.1F + (b.getEffect().getDuration() / (600));
+					}
 				}
 			}
+			return f;
 		}
-		return f;
+		return 0F;
 	}
-	
+
 	/**
 	 * Used to determine if it should use the actual Base or awkward when turned off in the config
 	 * @param par1BrewingBase Brewing Base
@@ -512,7 +516,7 @@ public class Brewing
 		}
 		return par1BrewingBase;
 	}
-	
+
 	public long createDataLong()
 	{
 		long l = 0;
@@ -529,7 +533,7 @@ public class Brewing
 		l += this.getMaxDuration() << 42L;
 		return l;
 	}
-	
+
 	public static Brewing fromDataLong(long dataLong)
 	{
 		int potionId = 			(int) (dataLong 		& ((2 << 11) - 1));
@@ -541,7 +545,7 @@ public class Brewing
 		Brewing opposite = oppositeId < brewingList.size() ? brewingList.get(oppositeId) : null;
 		return new Brewing(new PotionEffect(potionId, potionDuration, potionAmplifier), maxAmplifier, maxDuration, opposite);
 	}
-	
+
 	public String toString()
 	{
 		String s = "Brewing{";
@@ -557,7 +561,7 @@ public class Brewing
 		s += "}";
 		return s;
 	}
-	
+
 	public static Collection<Brewing> removeDuplicates(Collection<Brewing> list)
 	{
 		if (list != null && list.size() > 0)
@@ -583,7 +587,7 @@ public class Brewing
 		}
 		return list;
 	}
-	
+
 	public static List<Brewing> removeDuplicates(Brewing[] list)
 	{
 		if (list != null && list.length > 0)
