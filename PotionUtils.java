@@ -1,5 +1,6 @@
 package clashsoft.brewingapi;
 
+import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,7 +11,6 @@ import net.minecraft.util.StatCollector;
 import clashsoft.brewingapi.brewing.Brewing;
 import clashsoft.brewingapi.brewing.BrewingBase;
 import clashsoft.brewingapi.item.ItemPotion2;
-import clashsoft.clashsoftapi.util.CSUtil;
 
 public class PotionUtils
 {
@@ -157,5 +157,24 @@ public class PotionUtils
 			usedTo.add(" - " + potion.getDisplayName() + " (" + (Potion.getDurationString(var5.get(0).onExtended().getEffect())) + ")");
 		}
 		return usedTo;
+	}
+	
+	public static int combineColors(int... par1)
+	{
+		int r = 0;
+		int g = 0;
+		int b = 0;
+		for (int i : par1)
+		{
+			Color c = new Color(i);
+			r += c.getRed();
+			g += c.getGreen();
+			b += c.getBlue();
+		}
+		r /= par1.length;
+		g /= par1.length;
+		b /= par1.length;
+		
+		return (b + (g * 256) + (r * 65536));
 	}
 }

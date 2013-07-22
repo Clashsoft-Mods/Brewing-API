@@ -6,7 +6,6 @@ import clashsoft.brewingapi.gui.GuiBrewingStand2;
 import clashsoft.brewingapi.inventory.ContainerBrewingStand2;
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
-import clashsoft.clashsoftapi.util.CSUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.command.ServerCommandManager;

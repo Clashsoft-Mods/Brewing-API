@@ -23,7 +23,6 @@ import clashsoft.brewingapi.item.ItemGlassBottle2;
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.lib.DispenserBehaviorPotion2;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
-import clashsoft.clashsoftapi.util.CSUtil;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -35,8 +34,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
-@Mod(modid = "BrewingAPI", name = "Brewing API", version = CSUtil.CURRENT_VERION)
-@NetworkMod(clientSideRequired = true)
+@Mod(modid = "BrewingAPI", name = "Brewing API", version = "1.6.2")
+@NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class BrewingAPI
 {
 	@Instance("BrewingAPI")
@@ -135,6 +134,19 @@ public class BrewingAPI
 		try
 		{
 			Class.forName("clashsoft.mods.morepotions.MorePotionsMod");
+			return true;
+		}
+		catch(ClassNotFoundException e)
+		{
+			return false;
+		}
+	}
+	
+	public static boolean CLASHSOFT_API()
+	{
+		try
+		{
+			Class.forName("clashsoft.clashsoftapi.ClashsoftMod");
 			return true;
 		}
 		catch(ClassNotFoundException e)

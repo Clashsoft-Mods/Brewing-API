@@ -10,7 +10,6 @@ import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.BrewingLoader;
 import clashsoft.brewingapi.IIngredientHandler;
 import clashsoft.brewingapi.item.ItemPotion2;
-import clashsoft.clashsoftapi.CustomPotion;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -132,9 +131,12 @@ public class Brewing
 			case 19:
 			case 20: return true;
 			}
-			if (Potion.potionTypes[this.getEffect().getPotionID()] instanceof CustomPotion)
+			if (BrewingAPI.CLASHSOFT_API())
 			{
-				return ((CustomPotion)Potion.potionTypes[this.getEffect().getPotionID()]).getIsBadEffect();
+				if (Potion.potionTypes[this.getEffect().getPotionID()] instanceof clashsoft.clashsoftapi.CustomPotion)
+				{
+					return ((clashsoft.clashsoftapi.CustomPotion)Potion.potionTypes[this.getEffect().getPotionID()]).getIsGoodOrNotGoodEffect();
+				}
 			}
 		}
 		return false;
