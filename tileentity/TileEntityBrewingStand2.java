@@ -30,7 +30,6 @@ import net.minecraft.stats.AchievementList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityBrewingStand;
 import net.minecraft.util.MathHelper;
-import net.minecraftforge.common.ISidedInventory;
 import net.minecraftforge.common.ForgeDirection;
 
 public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements IInventory

@@ -4,25 +4,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.Mod.Init;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.PreInit;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
-import clashsoft.brewingapi.block.BlockBrewingStand2;
-import clashsoft.brewingapi.brewing.Brewing;
-import clashsoft.brewingapi.entity.EntityPotion2;
-import clashsoft.brewingapi.item.ItemBrewingStand2;
-import clashsoft.brewingapi.item.ItemGlassBottle2;
-import clashsoft.brewingapi.item.ItemPotion2;
-import clashsoft.brewingapi.lib.DispenserBehaviorPotion2;
-import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -33,6 +14,25 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import clashsoft.brewingapi.block.BlockBrewingStand2;
+import clashsoft.brewingapi.brewing.Brewing;
+import clashsoft.brewingapi.entity.EntityPotion2;
+import clashsoft.brewingapi.item.ItemBrewingStand2;
+import clashsoft.brewingapi.item.ItemGlassBottle2;
+import clashsoft.brewingapi.item.ItemPotion2;
+import clashsoft.brewingapi.lib.DispenserBehaviorPotion2;
+import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.Mod.PreInit;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.EntityRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = "BrewingAPI", name = "Brewing API", version = "1.6.2")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
@@ -41,7 +41,7 @@ public class BrewingAPI
 	@Instance("BrewingAPI")
 	public static BrewingAPI instance;
 
-	@SidedProxy(clientSide = "clashsoft.brewingapi.ClientProxy", serverSide = "clashsoft.brewingapi.CommonProxy")
+	@SidedProxy(modId = "BrewingAPI", clientSide = "clashsoft.brewingapi.ClientProxy", serverSide = "clashsoft.brewingapi.CommonProxy")
 	public static CommonProxy		proxy;
 
 	public static boolean			multiPotions			= false;
@@ -64,7 +64,7 @@ public class BrewingAPI
 	public static ItemPotion2		potion2;
 	public static ItemGlassBottle2	glassBottle2;
 
-	@PreInit
+	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{	
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
@@ -82,9 +82,10 @@ public class BrewingAPI
 		config.save();
 	}
 
-	@Init
+	@EventHandler
 	public void load(FMLInitializationEvent event)
 	{
+		NetworkRegistry.instance().registerGuiHandler(instance, proxy);
 		BrewingAPI.load();
 
 		if (multiPotions)
@@ -109,7 +110,6 @@ public class BrewingAPI
 
 		MinecraftForge.EVENT_BUS.register(this);
 		ModLoader.addDispenserBehavior(potion2, new DispenserBehaviorPotion2());
-		NetworkRegistry.instance().registerGuiHandler(instance, proxy);
 		proxy.registerRenderInformation();
 		proxy.registerRenderers();
 
