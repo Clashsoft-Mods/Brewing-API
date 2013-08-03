@@ -1,4 +1,4 @@
-package clashsoft.brewingapi;
+package clashsoft.brewingapi.lib;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;

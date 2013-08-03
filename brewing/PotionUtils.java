@@ -1,4 +1,4 @@
-package clashsoft.brewingapi;
+package clashsoft.brewingapi.brewing;
 
 import java.awt.Color;
 import java.util.LinkedList;
@@ -8,8 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.StatCollector;
-import clashsoft.brewingapi.brewing.Brewing;
-import clashsoft.brewingapi.brewing.BrewingBase;
 import clashsoft.brewingapi.item.ItemPotion2;
 
 public class PotionUtils

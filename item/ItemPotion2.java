@@ -16,10 +16,10 @@ import org.lwjgl.input.Keyboard;
 import com.google.common.collect.HashMultimap;
 
 import clashsoft.brewingapi.BrewingAPI;
-import clashsoft.brewingapi.BrewingLoader;
-import clashsoft.brewingapi.PotionUtils;
 import clashsoft.brewingapi.brewing.Brewing;
 import clashsoft.brewingapi.brewing.BrewingBase;
+import clashsoft.brewingapi.brewing.BrewingList;
+import clashsoft.brewingapi.brewing.PotionUtils;
 import clashsoft.brewingapi.entity.EntityPotion2;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -109,7 +109,7 @@ public class ItemPotion2 extends Item
 			List<Brewing> ret = new ArrayList<Brewing>();
 			for (PotionEffect effect : par2List)
 			{
-				ret.add(new Brewing(effect, 0, effect.getDuration(), BrewingLoader.awkward));
+				ret.add(new Brewing(effect, 0, effect.getDuration(), BrewingList.awkward));
 			}
 			return ret;
 		}
@@ -623,7 +623,7 @@ public class ItemPotion2 extends Item
 			{
 				for (Brewing brewing : Brewing.goodEffects)
 				{
-					if (brewing != BrewingLoader.effectRemove)
+					if (brewing != BrewingList.effectRemove)
 					{
 						good1 = brewing.addBrewingToItemStack(good1);
 						good2 = brewing.addBrewingToItemStack(good2);
@@ -631,7 +631,7 @@ public class ItemPotion2 extends Item
 				}
 				for (Brewing brewing : Brewing.badEffects)
 				{
-					if (brewing != BrewingLoader.effectRemove)
+					if (brewing != BrewingList.effectRemove)
 					{
 						bad1 = brewing.addBrewingToItemStack(bad1);
 						bad2 = brewing.addBrewingToItemStack(bad2);

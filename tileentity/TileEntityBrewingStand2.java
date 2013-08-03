@@ -7,9 +7,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 import java.util.LinkedList;
 import java.util.List;
 
-import clashsoft.brewingapi.BrewingLoader;
 import clashsoft.brewingapi.brewing.Brewing;
 import clashsoft.brewingapi.brewing.BrewingBase;
+import clashsoft.brewingapi.brewing.BrewingList;
 import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.item.ItemPotion2;
 import net.minecraft.block.Block;
@@ -350,14 +350,14 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 					{
 						if (brewingItemStacks[var2].getItemDamage() == 0)
 						{
-							brewings[0] = BrewingLoader.thick;
+							brewings[0] = BrewingList.thick;
 						}
 						else
 						{
 							for (int var3 = 0; var3 < list.tagCount(); var3++)
 							{
-								Brewing brewing = (list != null) ? Brewing.readFromNBT((NBTTagCompound)list.tagAt(var3)) : BrewingLoader.awkward;
-								if (brewing != BrewingLoader.awkward)
+								Brewing brewing = (list != null) ? Brewing.readFromNBT((NBTTagCompound)list.tagAt(var3)) : BrewingList.awkward;
+								if (brewing != BrewingList.awkward)
 								{
 									brewings[var3] = brewing.onImproved();
 								}
@@ -368,14 +368,14 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 					{
 						if (brewingItemStacks[var2].getItemDamage() == 0)
 						{
-							brewings[0] = BrewingLoader.thin;
+							brewings[0] = BrewingList.thin;
 						}
 						else
 						{
 							for (int var3 = 0; var3 < list.tagCount(); var3++)
 							{
-								Brewing brewing = (list != null) ? Brewing.readFromNBT((NBTTagCompound)list.tagAt(var3)) : BrewingLoader.awkward;
-								if (brewing != BrewingLoader.awkward)
+								Brewing brewing = (list != null) ? Brewing.readFromNBT((NBTTagCompound)list.tagAt(var3)) : BrewingList.awkward;
+								if (brewing != BrewingList.awkward)
 								{
 									brewings[var3] = brewing.onExtended();
 								}
@@ -392,7 +392,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 						{
 							for (int var3 = 0; var3 < list.tagCount(); var3++)
 							{
-								Brewing brewing = (list != null) ? Brewing.readFromNBT((NBTTagCompound)list.tagAt(var3)) : BrewingLoader.awkward;
+								Brewing brewing = (list != null) ? Brewing.readFromNBT((NBTTagCompound)list.tagAt(var3)) : BrewingList.awkward;
 								brewing = brewing.getOpposite() != null ? brewing.getOpposite() : brewing;
 								brewing.setOpposite(null);
 								brewings[var3] = brewing;
@@ -401,7 +401,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 					}
 					else if (ingredient.getItem() == Item.netherStalkSeeds)
 					{
-						brewings[0] = BrewingLoader.awkward;
+						brewings[0] = BrewingList.awkward;
 					}
 					else if (ingredient.getItem() == Item.gunpowder)
 					{
@@ -418,7 +418,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 						}
 						else
 						{
-							brewings[0] = BrewingLoader.awkward;
+							brewings[0] = BrewingList.awkward;
 						}
 					}
 					else if (brewingItemStacks[var2].getItemDamage() == 0)

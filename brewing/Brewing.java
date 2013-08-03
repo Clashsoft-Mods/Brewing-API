@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 import clashsoft.brewingapi.BrewingAPI;
-import clashsoft.brewingapi.BrewingLoader;
-import clashsoft.brewingapi.IIngredientHandler;
+import clashsoft.brewingapi.api.IIngredientHandler;
 import clashsoft.brewingapi.item.ItemPotion2;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -221,7 +220,7 @@ public class Brewing
 		{
 			effectBrewings.add(this);
 		}
-		if (!(this instanceof BrewingBase) && this != BrewingLoader.effectRemove && this != BrewingLoader.random)
+		if (!(this instanceof BrewingBase) && this != BrewingList.effectRemove && this != BrewingList.random)
 		{
 			combinableEffects.add(this);
 		}
@@ -298,7 +297,7 @@ public class Brewing
 				return readFromNBT(compound);
 			}
 		}
-		return BrewingLoader.awkward;
+		return BrewingList.awkward;
 	}
 
 	/**
@@ -459,7 +458,7 @@ public class Brewing
 		int ingredientAmount = par1NBTTagCompound.hasKey("IngredientAmount") ? par1NBTTagCompound.getInteger("IngredientAmount") : 0;
 		int ingredientDamage = par1NBTTagCompound.hasKey("IngredientDamage") ? par1NBTTagCompound.getInteger("IngredientDamage") : 0;
 		Brewing opposite = par1NBTTagCompound.hasKey("Opposite") ? readFromNBT(par1NBTTagCompound.getCompoundTag("Opposite")) : null;
-		BrewingBase base = (BrewingBase) (par1NBTTagCompound.hasKey("Base") ? BrewingBase.readFromNBT(par1NBTTagCompound) : BrewingLoader.awkward);
+		BrewingBase base = (BrewingBase) (par1NBTTagCompound.hasKey("Base") ? BrewingBase.readFromNBT(par1NBTTagCompound) : BrewingList.awkward);
 
 		return new Brewing(new PotionEffect(potionID, potionDuration, potionAmplifier), maxamp, maxdur, opposite, new ItemStack(ingredientID, ingredientAmount, ingredientDamage), base);
 	}
@@ -512,9 +511,9 @@ public class Brewing
 	 */
 	public static BrewingBase getBaseBrewing(BrewingBase par1BrewingBase)
 	{
-		if (BrewingLoader.DEFAULT_AWKWARD_BREWING)
+		if (BrewingList.DEFAULT_AWKWARD_BREWING)
 		{
-			return BrewingLoader.awkward;
+			return BrewingList.awkward;
 		}
 		return par1BrewingBase;
 	}
@@ -524,26 +523,26 @@ public class Brewing
 		long l = 0;
 		if (this.getEffect() != null)
 		{
-			l += this.getEffect().getPotionID();
-			l += this.getEffect().getAmplifier() << 10L;
+			l |= this.getEffect().getPotionID();
+			l |= this.getEffect().getAmplifier() << 10L;
 		}
-		l += this.getMaxAmplifier() << 18L;
+		l |= this.getMaxAmplifier() << 18L;
 		if (this.getOpposite() != null)
-			l += brewingList.indexOf(this.getOpposite()) << 26L;
+			l |= brewingList.indexOf(this.getOpposite()) << 26L;
 		if (this.getEffect() != null)
-			l += this.getEffect().getDuration() << 34L;
-		l += this.getMaxDuration() << 42L;
+			l |= this.getEffect().getDuration() << 34L;
+		l |= this.getMaxDuration() << 42L;
 		return l;
 	}
 
 	public static Brewing fromDataLong(long dataLong)
 	{
-		int potionId = 			(int) (dataLong 		& ((2 << 11) - 1));
-		int potionAmplifier =	(int) ((dataLong >> 11) & ((2 << 19) - 1));
-		int maxAmplifier =		(int) ((dataLong >> 19) & ((2 << 27) - 1));
-		int oppositeId =		(int) ((dataLong >> 27) & ((2 << 35) - 1));
-		int potionDuration =	(int) ((dataLong >> 35) & ((2 << 43) - 1));
-		int maxDuration =		(int) ((dataLong >> 43));
+		int potionId = 			(int) (dataLong 		 & 0b1111111111L);
+		int potionAmplifier =	(int) ((dataLong >> 10L) & 0b0011111111L);
+		int maxAmplifier =		(int) ((dataLong >> 18L) & 0b0011111111L);
+		int oppositeId =		(int) ((dataLong >> 26L) & 0b0011111111L);
+		int potionDuration =	(int) ((dataLong >> 34L) & 0b0011111111L);
+		int maxDuration =		(int) ((dataLong >> 42L));
 		Brewing opposite = oppositeId < brewingList.size() ? brewingList.get(oppositeId) : null;
 		return new Brewing(new PotionEffect(potionId, potionDuration, potionAmplifier), maxAmplifier, maxDuration, opposite);
 	}
@@ -559,7 +558,9 @@ public class Brewing
 		if (this.getIngredient() != null)
 			s += "Ingredient<" + this.getIngredient().itemID + ":" + this.getIngredient().getItemDamage() + ">";
 		if (this.getBase() != null)
-			s += this.getBase().toString();
+			s += "Base<" + this.getBase().toString() + ">";
+		if (this.getEffect() != null)
+			s += "Name<" + this.getEffect().getEffectName() + ">";
 		s += "}";
 		return s;
 	}

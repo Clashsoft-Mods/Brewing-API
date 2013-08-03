@@ -14,12 +14,16 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import clashsoft.brewingapi.api.IIngredientHandler;
+import clashsoft.brewingapi.api.IPotionEffectHandler;
 import clashsoft.brewingapi.block.BlockBrewingStand2;
 import clashsoft.brewingapi.brewing.Brewing;
+import clashsoft.brewingapi.brewing.BrewingList;
 import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.item.ItemBrewingStand2;
 import clashsoft.brewingapi.item.ItemGlassBottle2;
 import clashsoft.brewingapi.item.ItemPotion2;
+import clashsoft.brewingapi.lib.BAPICreativeTabs;
 import clashsoft.brewingapi.lib.DispenserBehaviorPotion2;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
 import cpw.mods.fml.common.Mod;
@@ -114,15 +118,15 @@ public class BrewingAPI
 		proxy.registerRenderers();
 
 		if (multiPotions)
-			potions.setIconItemStack(BrewingLoader.damageBoost.addBrewingToItemStack(new ItemStack(BrewingAPI.potion2, 0, 1)));
+			potions.setIconItemStack(BrewingList.damageBoost.addBrewingToItemStack(new ItemStack(BrewingAPI.potion2, 0, 1)));
 	}
 	
 	public static void load()
 	{
 		if (!hasLoaded)
 		{
-			BrewingLoader.initializeBrewings();
-			BrewingLoader.registerBrewings();
+			BrewingList.initializeBrewings();
+			BrewingList.registerBrewings();
 			hasLoaded = true;
 		}
 	}

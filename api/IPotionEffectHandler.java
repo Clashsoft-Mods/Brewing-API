@@ -1,4 +1,4 @@
-package clashsoft.brewingapi;
+package clashsoft.brewingapi.api;
 
 import java.util.LinkedList;
 import java.util.List;

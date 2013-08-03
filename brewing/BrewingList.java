@@ -1,14 +1,13 @@
-package clashsoft.brewingapi;
+package clashsoft.brewingapi.brewing;
 
-import clashsoft.brewingapi.brewing.Brewing;
-import clashsoft.brewingapi.brewing.BrewingBase;
+import clashsoft.brewingapi.BrewingAPI;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
-public class BrewingLoader
+public class BrewingList
 {
 	public static boolean		DEFAULT_AWKWARD_BREWING	= false;
 	public static boolean		SHOW_ALL_BASEBREWINGS	= false;
