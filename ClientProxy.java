@@ -7,15 +7,10 @@ import clashsoft.brewingapi.entity.RenderPotion2;
 import clashsoft.brewingapi.item.ItemPotion2;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.renderer.entity.RenderSnowball;
-import net.minecraft.command.ServerCommandManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
-import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.registry.EntityRegistry;
 
 public class ClientProxy extends CommonProxy
 {
@@ -23,6 +18,7 @@ public class ClientProxy extends CommonProxy
 	public static int cauldronRenderType;
 	public static int splashpotioncolor;
 	
+	@Override
 	public void registerRenderers()
 	{
 		RenderingRegistry.registerEntityRenderingHandler(EntityPotion2.class, new RenderPotion2(BrewingAPI.potion2, 154));
@@ -49,9 +45,9 @@ public class ClientProxy extends CommonProxy
     	double d6;
     	double d7;
 
-    	d0 = (double)par1;
-    	d1 = (double)par2;
-    	d2 = (double)par3;
+    	d0 = par1;
+    	d1 = par2;
+    	d2 = par3;
     	s = "iconcrack_" + Item.potion.itemID;
 
     	for (j1 = 0; j1 < 8; ++j1)
@@ -60,9 +56,9 @@ public class ClientProxy extends CommonProxy
     	}
 
     	j1 =  ((ItemPotion2)par4ItemStack.getItem()).getColorFromItemStack(par4ItemStack, 0);
-    	float f = (float)(j1 >> 16 & 255) / 255.0F;
-    	float f1 = (float)(j1 >> 8 & 255) / 255.0F;
-    	float f2 = (float)(j1 >> 0 & 255) / 255.0F;
+    	float f = (j1 >> 16 & 255) / 255.0F;
+    	float f1 = (j1 >> 8 & 255) / 255.0F;
+    	float f2 = (j1 >> 0 & 255) / 255.0F;
     	String s1 = "spell";
 
     	if (BrewingAPI.potion2.isEffectInstant(par4ItemStack))

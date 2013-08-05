@@ -5,10 +5,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Map.Entry;
 
 import org.lwjgl.input.Keyboard;
@@ -21,7 +19,6 @@ import clashsoft.brewingapi.brewing.BrewingBase;
 import clashsoft.brewingapi.brewing.BrewingList;
 import clashsoft.brewingapi.brewing.PotionUtils;
 import clashsoft.brewingapi.entity.EntityPotion2;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -29,7 +26,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityPotion;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPotion;
@@ -38,26 +34,23 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionHelper;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
-import net.minecraft.world.MinecraftException;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 
 /**
  * @author Clashsoft
  */
 public class ItemPotion2 extends Item
 {
-	private static boolean SHOW_DOUBLE_POTIONS = false;
-	public static boolean SHIFT = false;
-	private Icon bottle;
-	public Icon splashbottle;
-	private Icon liquid;
-
+	private static boolean	SHOW_DOUBLE_POTIONS	= false;
+	public static boolean	SHIFT				= false;
+	private Icon			bottle;
+	public Icon				splashbottle;
+	private Icon			liquid;
+	
 	public ItemPotion2(int par1)
 	{
 		super(par1);
@@ -66,13 +59,13 @@ public class ItemPotion2 extends Item
 		this.setCreativeTab(CreativeTabs.tabBrewing);
 		this.func_111206_d("potion");
 	}
-
+	
 	@Override
 	public CreativeTabs[] getCreativeTabs()
 	{
 		return new CreativeTabs[] { BrewingAPI.potions, CreativeTabs.tabBrewing, CreativeTabs.tabAllSearch };
 	}
-
+	
 	/**
 	 * Returns a list of potion effects for the specified itemstack.
 	 */
@@ -85,10 +78,10 @@ public class ItemPotion2 extends Item
 				List var6 = new ArrayList();
 				NBTTagList var3 = par1ItemStack.getTagCompound().getTagList("Brewing");
 				boolean var2 = true;
-
+				
 				for (int var4 = 0; var4 < var3.tagCount(); ++var4)
 				{
-					NBTTagCompound var5 = (NBTTagCompound)var3.tagAt(var4);
+					NBTTagCompound var5 = (NBTTagCompound) var3.tagAt(var4);
 					Brewing b = Brewing.readFromNBT(var5);
 					var6.add(b);
 				}
@@ -101,7 +94,7 @@ public class ItemPotion2 extends Item
 		}
 		return new ArrayList();
 	}
-
+	
 	private static List brewingTransform(int par1, List<PotionEffect> par2List)
 	{
 		if (par2List != null && par2List.size() > 0)
@@ -115,7 +108,7 @@ public class ItemPotion2 extends Item
 		}
 		return new ArrayList();
 	}
-
+	
 	@Override
 	public ItemStack onEaten(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
 	{
@@ -123,18 +116,18 @@ public class ItemPotion2 extends Item
 		{
 			--par1ItemStack.stackSize;
 		}
-
+		
 		if (!par2World.isRemote)
 		{
 			List var4 = this.getEffects(par1ItemStack);
-
+			
 			if (var4 != null)
 			{
 				Iterator var5 = var4.iterator();
-
+				
 				while (var5.hasNext())
 				{
-					Brewing var6 = (Brewing)var5.next();
+					Brewing var6 = (Brewing) var5.next();
 					if (var6.getEffect() != null)
 					{
 						par3EntityPlayer.addPotionEffect(var6.getEffect());
@@ -142,20 +135,20 @@ public class ItemPotion2 extends Item
 				}
 			}
 		}
-
+		
 		if (!par3EntityPlayer.capabilities.isCreativeMode)
 		{
 			if (par1ItemStack.stackSize <= 0)
 			{
 				return new ItemStack(Item.glassBottle);
 			}
-
+			
 			par3EntityPlayer.inventory.addItemStackToInventory(new ItemStack(Item.glassBottle));
 		}
-
+		
 		return par1ItemStack;
 	}
-
+	
 	/**
 	 * How long it takes to use or consume an item
 	 */
@@ -164,18 +157,20 @@ public class ItemPotion2 extends Item
 	{
 		return 32;
 	}
-
+	
 	/**
-	 * returns the action that specifies what animation to play when the items is being used
+	 * returns the action that specifies what animation to play when the items
+	 * is being used
 	 */
 	@Override
 	public EnumAction getItemUseAction(ItemStack par1ItemStack)
 	{
 		return EnumAction.drink;
 	}
-
+	
 	/**
-	 * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
+	 * Called whenever this item is equipped and the right mouse button is
+	 * pressed. Args: itemStack, world, entityPlayer
 	 */
 	@Override
 	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
@@ -186,14 +181,14 @@ public class ItemPotion2 extends Item
 			{
 				--par1ItemStack.stackSize;
 			}
-
+			
 			par2World.playSoundAtEntity(par3EntityPlayer, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-
+			
 			if (!par2World.isRemote)
 			{
 				par2World.spawnEntityInWorld(new EntityPotion2(par2World, par3EntityPlayer, par1ItemStack));
 			}
-
+			
 			return par1ItemStack;
 		}
 		else
@@ -202,17 +197,18 @@ public class ItemPotion2 extends Item
 			return par1ItemStack;
 		}
 	}
-
+	
 	/**
-	 * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
-	 * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
+	 * Callback for item usage. If the item does something special on right
+	 * clicking, he will have one of those. Return True if something happen and
+	 * false if it don't. This is for ITEMS, not BLOCKS
 	 */
 	@Override
 	public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
 	{
 		return false;
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	/**
@@ -222,15 +218,14 @@ public class ItemPotion2 extends Item
 	{
 		return isSplash(par1) ? splashbottle : bottle;
 	}
-
-
+	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public Icon getIcon(ItemStack par1ItemStack, int par2)
 	{
 		return par2 == 0 ? this.liquid : (isSplash(par1ItemStack.getItemDamage()) ? splashbottle : bottle);
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerIcons(IconRegister par1IconRegister)
@@ -239,26 +234,27 @@ public class ItemPotion2 extends Item
 		this.splashbottle = par1IconRegister.registerIcon(this.func_111208_A() + "_bottle_splash");
 		this.liquid = par1IconRegister.registerIcon(this.func_111208_A() + "_overlay");
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	public static Icon func_94589_d(String par0Str)
 	{
 		return par0Str.equals("bottle_drinkable") ? BrewingAPI.potion2.bottle : (par0Str.equals("bottle_splash") ? BrewingAPI.potion2.splashbottle : (par0Str.equals("overlay") ? BrewingAPI.potion2.liquid : null));
 	}
-
+	
 	/**
-	 * returns wether or not a potion is a throwable splash potion based on damage value
+	 * returns wether or not a potion is a throwable splash potion based on
+	 * damage value
 	 */
 	public boolean isSplash(int par1)
 	{
 		return par1 == 2 ? true : par1 == 1 ? false : ItemPotion.isSplash(par1);
 	}
-
+	
 	public boolean isWater(int par1)
 	{
 		return par1 == 0;
 	}
-
+	
 	public int getColorFromItemStack(ItemStack par1ItemStack, int par2)
 	{
 		if (par2 == 0 && par1ItemStack != null)
@@ -271,13 +267,13 @@ public class ItemPotion2 extends Item
 			if (effects != null && effects.size() > 0)
 			{
 				int[] i1 = new int[effects.size()];
-
+				
 				int i = 0;
 				for (int j = 0; j < effects.size(); j++)
 				{
-					Brewing b = (Brewing)effects.get(j);
+					Brewing b = (Brewing) effects.get(j);
 					i += b.getLiquidColor();
-					i1[j] = ((Brewing)effects.get(j)).getLiquidColor();
+					i1[j] = ((Brewing) effects.get(j)).getLiquidColor();
 				}
 				i /= effects.size() != 0 ? effects.size() : 1;
 				return PotionUtils.combineColors(i1);
@@ -292,21 +288,21 @@ public class ItemPotion2 extends Item
 			return 16777215;
 		}
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getRenderPasses(int i)
 	{
 		return 2;
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean requiresMultipleRenderPasses()
 	{
 		return true;
 	}
-
+	
 	@Override
 	public String getItemDisplayName(ItemStack par1ItemStack)
 	{
@@ -318,15 +314,15 @@ public class ItemPotion2 extends Item
 		else
 		{
 			String var2 = "";
-
+			
 			if (isSplash(par1ItemStack.getItemDamage()))
 			{
 				var2 = StatCollector.translateToLocal("potion.prefix.grenade").trim() + " ";
 			}
-
+			
 			List<Brewing> var3 = this.getEffects(par1ItemStack);
 			String var4 = "";
-
+			
 			if (var3 != null && !var3.isEmpty())
 			{
 				if (var3.size() == Brewing.combinableEffects.size())
@@ -339,23 +335,23 @@ public class ItemPotion2 extends Item
 				}
 				else if (var3.get(0).isBase())
 				{
-					return StatCollector.translateToLocal("potion.prefix." + ((BrewingBase)var3.get(0)).basename).trim() + " " + var2 + super.getItemDisplayName(par1ItemStack);
+					return StatCollector.translateToLocal("potion.prefix." + ((BrewingBase) var3.get(0)).basename).trim() + " " + var2 + super.getItemDisplayName(par1ItemStack);
 				}
-				for(int i = 0; i < var3.size(); i++)
+				for (int i = 0; i < var3.size(); i++)
 				{
 					if (i == 0)
 					{
-						var4 = StatCollector.translateToLocal(((Brewing)var3.get(i)).getEffect() != null && ((Brewing)var3.get(i)).getEffect().getPotionID() > 0 ? (((Brewing)var3.get(i)).getEffect().getEffectName() + ".postfix") : "");
+						var4 = StatCollector.translateToLocal(((Brewing) var3.get(i)).getEffect() != null && ((Brewing) var3.get(i)).getEffect().getPotionID() > 0 ? (((Brewing) var3.get(i)).getEffect().getEffectName() + ".postfix") : "");
 						var2 += StatCollector.translateToLocal(var4).trim();
 					}
 					else if (i + 1 == var3.size())
 					{
-						var4 = ((Brewing)var3.get(i)).getEffect().getEffectName();
+						var4 = ((Brewing) var3.get(i)).getEffect().getEffectName();
 						var2 += " " + StatCollector.translateToLocal("potion.and") + " " + StatCollector.translateToLocal(var4).trim();
 					}
 					else
 					{
-						var4 = ((Brewing)var3.get(i)).getEffect().getEffectName();
+						var4 = ((Brewing) var3.get(i)).getEffect().getEffectName();
 						var2 += ", " + StatCollector.translateToLocal(var4).trim();
 					}
 				}
@@ -367,7 +363,7 @@ public class ItemPotion2 extends Item
 			}
 		}
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public FontRenderer getFontRenderer(ItemStack stack)
@@ -377,21 +373,21 @@ public class ItemPotion2 extends Item
 		else
 			return super.getFontRenderer(stack);
 	}
-
-
-	float glowPos = 0F;
+	
+	float	glowPos	= 0F;
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	/**
 	 * allows items to add custom lines of information to the mouseover description
 	 */
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
-	{	
+	{
 		if (!isWater(par1ItemStack.getItemDamage()))
 		{
 			List<Brewing> var5 = this.getEffects(par1ItemStack);
 			HashMultimap hashmultimap = HashMultimap.create();
-
+			
 			if (var5 != null && !var5.isEmpty())
 			{
 				int longestString = this.getItemDisplayName(par1ItemStack).length() + 10;
@@ -402,11 +398,11 @@ public class ItemPotion2 extends Item
 				}
 				for (int i = 0; i < var5.size(); i++)
 				{
-					Brewing var7 = (Brewing)var5.get(i);
+					Brewing var7 = (Brewing) var5.get(i);
 					boolean isBase = var7.getEffect() != null && var7.getEffect().getPotionID() > 0;
 					String var8 = (isBase ? StatCollector.translateToLocal(var7.getEffect().getEffectName()) : "\u00a77" + StatCollector.translateToLocal("potion.empty")).trim();
 					int randPos = 0;
-
+					
 					/*
 					 * Fills the Attribute List Map
 					 */
@@ -414,21 +410,21 @@ public class ItemPotion2 extends Item
 					{
 						Potion potion = Potion.potionTypes[var7.getEffect().getPotionID()];
 						Map map = potion.func_111186_k();
-
+						
 						if (map != null && map.size() > 0)
 						{
 							Iterator iterator1 = map.entrySet().iterator();
-
+							
 							while (iterator1.hasNext())
 							{
-								Entry entry = (Entry)iterator1.next();
-								AttributeModifier attributemodifier = (AttributeModifier)entry.getValue();
+								Entry entry = (Entry) iterator1.next();
+								AttributeModifier attributemodifier = (AttributeModifier) entry.getValue();
 								AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.func_111166_b(), potion.func_111183_a(var7.getEffect().getAmplifier(), attributemodifier), attributemodifier.func_111169_c());
-								hashmultimap.put(((Attribute)entry.getKey()).func_111108_a(), attributemodifier1);
+								hashmultimap.put(((Attribute) entry.getKey()).func_111108_a(), attributemodifier1);
 							}
 						}
 					}
-
+					
 					if (var7.getEffect() != null && var7.getEffect().getAmplifier() > 0)
 					{
 						var8 = var8 + " " + StatCollector.translateToLocal("potion.potency." + var7.getEffect().getAmplifier()).trim();
@@ -437,23 +433,23 @@ public class ItemPotion2 extends Item
 					{
 						var8 += " (" + (var7.getEffect().getDuration() >= 1000000 ? StatCollector.translateToLocal("potion.infinite") : Potion.getDurationString(var7.getEffect())) + ")";
 					}
-
+					
 					int glowPos2 = MathHelper.floor_float(glowPos) < var8.length() ? MathHelper.floor_float(glowPos) : var8.length();
-
+					
 					String var10 = var8.substring(0, glowPos2);
 					String var11 = glowPos2 < var8.length() ? String.valueOf(var8.charAt(glowPos2)) : "";
 					String var12 = glowPos2 + 1 < var8.length() ? var8.substring(glowPos2 + 1, var8.length()) : "";
-
+					
 					if (BrewingAPI.CLASHSOFT_API())
 					{
-						if (var7.getEffect() != null && Potion.potionTypes[var7.getEffect().getPotionID()] instanceof clashsoft.clashsoftapi.CustomPotion && ((clashsoft.clashsoftapi.CustomPotion)(Potion.potionTypes[var7.getEffect().getPotionID()])).getCustomColor() >= 0)
+						if (var7.getEffect() != null && Potion.potionTypes[var7.getEffect().getPotionID()] instanceof clashsoft.clashsoftapi.CustomPotion && ((clashsoft.clashsoftapi.CustomPotion) (Potion.potionTypes[var7.getEffect().getPotionID()])).getCustomColor() >= 0)
 						{
-							int c = ((clashsoft.clashsoftapi.CustomPotion)Potion.potionTypes[var7.getEffect().getPotionID()]).getCustomColor();
+							int c = ((clashsoft.clashsoftapi.CustomPotion) Potion.potionTypes[var7.getEffect().getPotionID()]).getCustomColor();
 							String colorLight = "\u00a7" + Integer.toHexString(c >= 8 ? c : c + 8);
 							String colorDark = "\u00a7" + Integer.toHexString(c);
 							var8 = !isBase ? var8 : (colorDark + var10 + colorLight + var11 + colorDark + var12);
 						}
-					}	
+					}
 					else if (var7.isBadEffect())
 					{
 						var8 = !isBase ? var8 : ((EnumChatFormatting.RED) + var10 + (EnumChatFormatting.RED) + var11 + (EnumChatFormatting.RED) + var12);
@@ -499,16 +495,16 @@ public class ItemPotion2 extends Item
 						{
 							String green = (EnumChatFormatting.GREEN) + "\u00a7o";
 							String red = (EnumChatFormatting.RED) + "\u00a7o";
-
+							
 							int goodEffects = PotionUtils.getGoodEffects(var5);
-							float goodEffectsPercentage = (float)goodEffects / (float)var5.size() * 100;
+							float goodEffectsPercentage = (float) goodEffects / (float) var5.size() * 100;
 							int badEffects = PotionUtils.getBadEffects(var5);
-							float badEffectsPercentage = (float)badEffects / (float)var5.size() * 100;
+							float badEffectsPercentage = (float) badEffects / (float) var5.size() * 100;
 							int averageAmplifier = PotionUtils.getAverageAmplifier(var5);
 							int averageDuration = PotionUtils.getAverageDuration(var5);
 							int maxAmplifier = PotionUtils.getMaxAmplifier(var5);
 							int maxDuration = PotionUtils.getMaxDuration(var5);
-
+							
 							if (goodEffects > 1)
 								par3List.add((EnumChatFormatting.GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.goodeffects") + ": " + green + goodEffects + " (" + String.format("%.1f", goodEffectsPercentage) + "%)");
 							if (badEffects > 1)
@@ -534,14 +530,14 @@ public class ItemPotion2 extends Item
 					par3List.add("");
 					par3List.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("potion.effects.whenDrank"));
 					Iterator iterator = hashmultimap.entries().iterator();
-
+					
 					while (iterator.hasNext())
 					{
-						Entry entry1 = (Entry)iterator.next();
-						AttributeModifier attributemodifier2 = (AttributeModifier)entry1.getValue();
+						Entry entry1 = (Entry) iterator.next();
+						AttributeModifier attributemodifier2 = (AttributeModifier) entry1.getValue();
 						double d0 = attributemodifier2.func_111164_d();
 						double d1;
-
+						
 						if (attributemodifier2.func_111169_c() != 1 && attributemodifier2.func_111169_c() != 2)
 						{
 							d1 = attributemodifier2.func_111164_d();
@@ -550,15 +546,15 @@ public class ItemPotion2 extends Item
 						{
 							d1 = attributemodifier2.func_111164_d() * 100.0D;
 						}
-
+						
 						if (d0 > 0.0D)
 						{
-							par3List.add(EnumChatFormatting.BLUE + StatCollector.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.func_111169_c(), new Object[] {ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + (String)entry1.getKey())}));
+							par3List.add(EnumChatFormatting.BLUE + StatCollector.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.func_111169_c(), new Object[] { ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + (String) entry1.getKey()) }));
 						}
 						else if (d0 < 0.0D)
 						{
 							d1 *= -1.0D;
-							par3List.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.func_111169_c(), new Object[] {ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + (String)entry1.getKey())}));
+							par3List.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.func_111169_c(), new Object[] { ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + (String) entry1.getKey()) }));
 						}
 					}
 				}
@@ -570,15 +566,15 @@ public class ItemPotion2 extends Item
 			}
 		}
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean hasEffect(ItemStack par1ItemStack, int par1)
 	{
 		List var2 = this.getEffects(par1ItemStack);
-		return var2 != null && !var2.isEmpty() && ((Brewing)var2.get(0)).getEffect() != null && par1 == 0;
+		return var2 != null && !var2.isEmpty() && ((Brewing) var2.get(0)).getEffect() != null && par1 == 0;
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	/**
@@ -595,7 +591,7 @@ public class ItemPotion2 extends Item
 			ItemStack good2 = new ItemStack(this, 1, 2);
 			ItemStack bad1 = new ItemStack(this, 1, 1);
 			ItemStack bad2 = new ItemStack(this, 1, 2);
-
+			
 			for (BrewingBase brewing : Brewing.baseBrewings)
 			{
 				for (int i = 1; i <= 2; i++)
@@ -618,7 +614,7 @@ public class ItemPotion2 extends Item
 					}
 				}
 			}
-
+			
 			if (BrewingAPI.MORE_POTIONS_MOD())
 			{
 				for (Brewing brewing : Brewing.goodEffects)
@@ -642,7 +638,7 @@ public class ItemPotion2 extends Item
 					allEffects1 = brewing.addBrewingToItemStack(allEffects1);
 					allEffects2 = brewing.addBrewingToItemStack(allEffects2);
 				}
-
+				
 				par3List.add(allEffects1);
 				par3List.add(allEffects2);
 				par3List.add(good1);
@@ -677,40 +673,44 @@ public class ItemPotion2 extends Item
 				}
 			}
 		}
-		/*ItemStack skyPotion = Brewing.digSpeed.addBrewingToItemStack(Brewing.heal.addBrewingToItemStack(new ItemStack(this, 1, i)));
-    		skyPotion.setItemName("\u00a7eSky's Butter Potion"); //6, e
-    		par3List.add(skyPotion);*/
+		/*
+		 * ItemStack skyPotion =
+		 * Brewing.digSpeed.addBrewingToItemStack(Brewing.heal
+		 * .addBrewingToItemStack(new ItemStack(this, 1, i)));
+		 * skyPotion.setItemName("\u00a7eSky's Butter Potion"); //6, e
+		 * par3List.add(skyPotion);
+		 */
 	}
-
+	
 	public boolean isEffectInstant(ItemStack par1ItemStack)
 	{
 		Brewing b = Brewing.getBrewingFromItemStack(par1ItemStack);
 		return b != null ? (b.getEffect() != null && b.getEffect().getPotionID() > 0 ? Potion.potionTypes[b.getEffect().getPotionID()].isInstant() : false) : false;
 	}
-
+	
 	@Override
 	public Entity createEntity(World world, Entity entity, ItemStack itemstack)
 	{
 		if (entity instanceof EntityPlayer && isSplash(itemstack.getItemDamage()))
 		{
-			if (!((EntityPlayer)entity).capabilities.isCreativeMode)
+			if (!((EntityPlayer) entity).capabilities.isCreativeMode)
 			{
 				--itemstack.stackSize;
 			}
-
-			world.playSoundAtEntity(((EntityPlayer)entity), "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-			Entity e = new EntityPotion2(world, ((EntityPlayer)entity), itemstack);
-
+			
+			world.playSoundAtEntity(((EntityPlayer) entity), "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+			Entity e = new EntityPotion2(world, ((EntityPlayer) entity), itemstack);
+			
 			if (!world.isRemote)
 			{
 				world.spawnEntityInWorld(e);
 			}
-
+			
 			return e;
 		}
 		return null;
 	}
-
+	
 	public Icon getSplashIcon(ItemStack stack)
 	{
 		return splashbottle;

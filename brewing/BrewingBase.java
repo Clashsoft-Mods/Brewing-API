@@ -9,9 +9,9 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class BrewingBase extends Brewing
 {
-	public String basename;
+	public String					basename;
 	
-	public static List<BrewingBase> baseBrewings2 = new LinkedList<BrewingBase>();
+	public static List<BrewingBase>	baseBrewings2	= new LinkedList<BrewingBase>();
 	
 	public BrewingBase(String par1, ItemStack par2ItemStack)
 	{
@@ -41,7 +41,9 @@ public class BrewingBase extends Brewing
 				}
 			}
 		}
-		catch (Exception ex) {}
+		catch (Exception ex)
+		{
+		}
 		return null;
 	}
 	
@@ -69,7 +71,7 @@ public class BrewingBase extends Brewing
 			s += "Name<" + basename + ">";
 		if (this.getIngredient() != null)
 			s += "Ingredient<" + this.getIngredient().itemID + ":" + this.getIngredient().getItemDamage() + ">";
-		s  += "}";
+		s += "}";
 		return s;
 	}
 }

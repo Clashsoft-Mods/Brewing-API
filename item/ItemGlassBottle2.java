@@ -1,7 +1,6 @@
 package clashsoft.brewingapi.item;
 
 import clashsoft.brewingapi.BrewingAPI;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGlassBottle;
 import net.minecraft.util.Icon;
 

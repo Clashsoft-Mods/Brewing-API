@@ -9,14 +9,11 @@ import java.util.Random;
 import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.api.IIngredientHandler;
 import clashsoft.brewingapi.item.ItemPotion2;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.src.ModLoader;
 import net.minecraftforge.oredict.OreDictionary;
 
 /**
@@ -162,7 +159,7 @@ public class Brewing
 
 	public int getDefaultDuration()
 	{
-		for (Brewing b : this.brewingList)
+		for (Brewing b : Brewing.brewingList)
 		{
 			if (b.getEffect() != null && b.getEffect().getPotionID() == this.getEffect().getPotionID())
 			{
@@ -547,6 +544,7 @@ public class Brewing
 		return new Brewing(new PotionEffect(potionId, potionDuration, potionAmplifier), maxAmplifier, maxDuration, opposite);
 	}
 
+	@Override
 	public String toString()
 	{
 		String s = "Brewing{";

@@ -10,8 +10,6 @@ import java.util.Random;
 import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
 import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;

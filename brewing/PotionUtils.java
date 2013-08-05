@@ -6,7 +6,6 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.StatCollector;
 import clashsoft.brewingapi.item.ItemPotion2;
 

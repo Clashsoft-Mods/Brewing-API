@@ -3,7 +3,6 @@ package clashsoft.brewingapi.api;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.PotionEffect;
 

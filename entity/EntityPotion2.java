@@ -1,32 +1,18 @@
 package clashsoft.brewingapi.entity;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
-
 import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.brewing.Brewing;
 import clashsoft.brewingapi.item.ItemPotion2;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityPotion;
-import net.minecraft.entity.projectile.EntityThrowable;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.src.ModLoader;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.IWorldAccess;
 import net.minecraft.world.World;
 
 public class EntityPotion2 extends EntityPotion
