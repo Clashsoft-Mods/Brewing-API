@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class BrewingBase extends Brewing
+public class BrewingBase extends Brewing implements Comparable<Brewing>
 {
 	public String					basename;
 	
@@ -73,5 +73,14 @@ public class BrewingBase extends Brewing
 			s += "Ingredient<" + this.getIngredient().itemID + ":" + this.getIngredient().getItemDamage() + ">";
 		s += "}";
 		return s;
+	}
+
+	@Override
+	public int compareTo(Brewing o)
+	{
+		if (o instanceof BrewingBase)
+			return (basename != null && ((BrewingBase)o).basename != null) ? basename.compareTo(basename) : 0; 
+		else
+			return super.compareTo(o);
 	}
 }

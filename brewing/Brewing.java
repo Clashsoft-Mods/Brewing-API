@@ -1,14 +1,11 @@
 package clashsoft.brewingapi.brewing;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.api.IIngredientHandler;
 import clashsoft.brewingapi.item.ItemPotion2;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -20,7 +17,7 @@ import net.minecraftforge.oredict.OreDictionary;
  * Class that stores all data that the new potion need and all new potion types
  * @author Clashsoft
  */
-public class Brewing
+public class Brewing implements Comparable<Brewing>
 {	
 	/** List that stores ALL brewings **/
 	public static List<Brewing> brewingList = new LinkedList<Brewing>();
@@ -612,11 +609,12 @@ public class Brewing
 			}
 			return result;
 		}
-		List<Brewing> ret = new ArrayList<Brewing>();
-		for (Brewing b : list)
-		{
-			ret.add(b);
-		}
-		return ret;
+		return new LinkedList<Brewing>();
+	}
+
+	@Override
+	public int compareTo(Brewing o)
+	{
+		return (this.getEffect() != null && o.getEffect() != null) ? Integer.compare(this.getEffect().getPotionID(), o.getEffect().getPotionID()) : 0;
 	}
 }
