@@ -534,11 +534,11 @@ public class Brewing
 
 	public static Brewing fromDataLong(long dataLong)
 	{
-		int potionId = 			(int) (dataLong 		 & 0b1111111111L);
-		int potionAmplifier =	(int) ((dataLong >> 10L) & 0b0011111111L);
-		int maxAmplifier =		(int) ((dataLong >> 18L) & 0b0011111111L);
-		int oppositeId =		(int) ((dataLong >> 26L) & 0b0011111111L);
-		int potionDuration =	(int) ((dataLong >> 34L) & 0b0011111111L);
+		int potionId = 			(int) (dataLong 		 & 1023L);
+		int potionAmplifier =	(int) ((dataLong >> 10L) & 255L);
+		int maxAmplifier =		(int) ((dataLong >> 18L) & 255L);
+		int oppositeId =		(int) ((dataLong >> 26L) & 255L);
+		int potionDuration =	(int) ((dataLong >> 34L) & 255L);
 		int maxDuration =		(int) ((dataLong >> 42L));
 		Brewing opposite = oppositeId < brewingList.size() ? brewingList.get(oppositeId) : null;
 		return new Brewing(new PotionEffect(potionId, potionDuration, potionAmplifier), maxAmplifier, maxDuration, opposite);

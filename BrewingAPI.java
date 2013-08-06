@@ -199,16 +199,18 @@ public class BrewingAPI
 					handler.onPotionUpdate(event.entityLiving, (PotionEffect) effect);
 				}
 			}
-			for (PotionEffect pe : handler.addEffectQueue)
+			List<PotionEffect> addqueue = handler.getAddQueue();
+			for (PotionEffect pe : addqueue)
 			{
 				event.entityLiving.addPotionEffect(pe);
 			}
-			handler.addEffectQueue.clear();
-			for (int i : handler.removeEffectQueue)
+			handler.clearRemoveQueue();
+			List<Integer> removequeue = handler.getRemoveQueue();
+			for (int i : removequeue)
 			{
 				event.entityLiving.removePotionEffect(i);
 			}
-			handler.removeEffectQueue.clear();
+			handler.clearRemoveQueue();
 		}
 	}
 }
