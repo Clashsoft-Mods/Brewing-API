@@ -6,12 +6,13 @@ import clashsoft.brewingapi.gui.GuiBrewingStand2;
 import clashsoft.brewingapi.inventory.ContainerBrewingStand2;
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
+import cpw.mods.fml.common.network.IGuiHandler;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.network.IGuiHandler;
 
 public class CommonProxy implements IGuiHandler
 {
@@ -21,6 +22,7 @@ public class CommonProxy implements IGuiHandler
 		
 	}
 	
+	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
 		if (ID == BrewingAPI.BrewingStand2_TEID)
@@ -30,6 +32,7 @@ public class CommonProxy implements IGuiHandler
 		return null;
 	}
 	
+	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int X, int Y, int Z)
 	{
 		TileEntity te = world.getBlockTileEntity(X, Y, Z);
@@ -68,9 +71,9 @@ public class CommonProxy implements IGuiHandler
 		double d6;
 		double d7;
 		
-		d0 = (double) par1;
-		d1 = (double) par2;
-		d2 = (double) par3;
+		d0 = par1;
+		d1 = par2;
+		d2 = par3;
 		s = "iconcrack_" + Item.potion.itemID;
 		
 		for (j1 = 0; j1 < 8; ++j1)
@@ -79,9 +82,9 @@ public class CommonProxy implements IGuiHandler
 		}
 		
 		j1 = ((ItemPotion2) par4ItemStack.getItem()).getColorFromItemStack(par4ItemStack, 0);
-		float f = (float) (j1 >> 16 & 255) / 255.0F;
-		float f1 = (float) (j1 >> 8 & 255) / 255.0F;
-		float f2 = (float) (j1 >> 0 & 255) / 255.0F;
+		float f = (j1 >> 16 & 255) / 255.0F;
+		float f1 = (j1 >> 8 & 255) / 255.0F;
+		float f2 = (j1 >> 0 & 255) / 255.0F;
 		String s1 = "spell";
 		
 		if (BrewingAPI.potion2.isEffectInstant(par4ItemStack))

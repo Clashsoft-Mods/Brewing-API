@@ -6,18 +6,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.src.ModLoader;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-
 import clashsoft.brewingapi.api.IIngredientHandler;
 import clashsoft.brewingapi.api.IPotionEffectHandler;
 import clashsoft.brewingapi.block.BlockBrewingStand2;
@@ -30,16 +18,28 @@ import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.lib.BAPICreativeTabs;
 import clashsoft.brewingapi.lib.DispenserBehaviorPotion2;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
-import cpw.mods.fml.common.*;
+import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.Metadata;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+
+import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.src.ModLoader;
+import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
 @Mod(modid = "BrewingAPI", name = "Brewing API", version = "1.6.2")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
@@ -70,8 +70,8 @@ public class BrewingAPI
 	
 	public static ItemPotion2		potion2;
 	public static ItemGlassBottle2	glassBottle2;
-
-	public static final int POTION_LIST_LENGTH = 1024;
+	
+	public static final int			POTION_LIST_LENGTH		= 1024;
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -220,7 +220,6 @@ public class BrewingAPI
 			handler.clearRemoveQueue();
 		}
 	}
-
 	
 	public static void expandPotionList()
 	{
@@ -256,7 +255,7 @@ public class BrewingAPI
 					System.err.println("Severe error, please report this to the mod author:");
 					System.err.println(e);
 				}
-			}	
+			}
 		}
 	}
 }
