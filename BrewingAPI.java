@@ -1,5 +1,7 @@
 package clashsoft.brewingapi;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,6 +10,7 @@ import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.src.ModLoader;
 import net.minecraftforge.common.Configuration;
@@ -67,6 +70,8 @@ public class BrewingAPI
 	
 	public static ItemPotion2		potion2;
 	public static ItemGlassBottle2	glassBottle2;
+
+	public static final int POTION_LIST_LENGTH = 1024;
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -125,6 +130,7 @@ public class BrewingAPI
 	{
 		if (!hasLoaded)
 		{
+			expandPotionList();
 			BrewingList.initializeBrewings();
 			BrewingList.registerBrewings();
 			hasLoaded = true;
@@ -212,6 +218,45 @@ public class BrewingAPI
 				event.entityLiving.removePotionEffect(i);
 			}
 			handler.clearRemoveQueue();
+		}
+	}
+
+	
+	public static void expandPotionList()
+	{
+		Potion[] potionTypes = null;
+		
+		if (Potion.potionTypes.length != POTION_LIST_LENGTH)
+		{
+			for (Field f : Potion.class.getDeclaredFields())
+			{
+				f.setAccessible(true);
+				try
+				{
+					if (f.getName().equals("potionTypes") || f.getName().equals("field_76425_a"))
+					{
+						Field modfield = Field.class.getDeclaredField("modifiers");
+						modfield.setAccessible(true);
+						modfield.setInt(f, f.getModifiers() & ~Modifier.FINAL);
+						
+						potionTypes = (Potion[]) f.get(null);
+						final Potion[] newPotionTypes = new Potion[POTION_LIST_LENGTH];
+						for (int i = 0; i < newPotionTypes.length; i++)
+						{
+							if (i < Potion.potionTypes.length)
+								newPotionTypes[i] = Potion.potionTypes[i];
+							else
+								newPotionTypes[i] = null;
+						}
+						f.set(null, newPotionTypes);
+					}
+				}
+				catch (Exception e)
+				{
+					System.err.println("Severe error, please report this to the mod author:");
+					System.err.println(e);
+				}
+			}	
 		}
 	}
 }
