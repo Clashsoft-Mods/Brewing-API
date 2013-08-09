@@ -152,7 +152,18 @@ public class Brewing implements Comparable<Brewing>
 	public boolean isRandom() { return isRandom; }
 	public BrewingBase getBase() { return base; }
 	public boolean isBase() { return this.getEffect() == null; }
-	public int getLiquidColor() { return this.getEffect() != null && this.getEffect().getPotionID() > 0 && Potion.potionTypes[effect.getPotionID()] != null ? Potion.potionTypes[effect.getPotionID()].getLiquidColor() : 0x0C0CFF; }
+	
+	public int getLiquidColor()
+	{
+		if (this.getEffect() != null)
+		{
+			if (this.getEffect().getPotionID() < Potion.potionTypes.length && Potion.potionTypes[this.getEffect().getPotionID()] != null)
+			{
+				return Potion.potionTypes[this.getEffect().getPotionID()].getLiquidColor();
+			}
+		}
+		return 0;
+	}
 
 	public int getDefaultDuration()
 	{

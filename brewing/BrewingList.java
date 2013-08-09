@@ -152,7 +152,6 @@ public class BrewingList
 		acrid = new BrewingBase("acrid", new ItemStack(Item.fermentedSpiderEye));
 		gross = new BrewingBase("gross", new ItemStack(Item.pumpkinSeeds));
 		stinky = new BrewingBase("stinky", new ItemStack(Item.fishRaw));
-
 	}
 
 	public static void initializeBrewings_MorePotionsMod()
@@ -195,6 +194,7 @@ public class BrewingList
 	public static void initializeBaseBrewings_BrewingAPI()
 	{
 		SHOW_ALL_BASEBREWINGS = false;
+		DEFAULT_AWKWARD_BREWING = true;
 		awkward = new BrewingBase("awkward", new ItemStack(Item.netherStalkSeeds));
 	}
 

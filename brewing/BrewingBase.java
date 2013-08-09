@@ -1,8 +1,5 @@
 package clashsoft.brewingapi.brewing;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
@@ -11,13 +8,10 @@ public class BrewingBase extends Brewing implements Comparable<Brewing>
 {
 	public String					basename;
 	
-	public static List<BrewingBase>	baseBrewings2	= new LinkedList<BrewingBase>();
-	
 	public BrewingBase(String par1, ItemStack par2ItemStack)
 	{
 		super(null, 0, 0, par2ItemStack, null);
 		basename = par1;
-		baseBrewings2.add(this);
 	}
 	
 	public BrewingBase(String par1)
@@ -29,7 +23,7 @@ public class BrewingBase extends Brewing implements Comparable<Brewing>
 	{
 		try
 		{
-			for (BrewingBase b : baseBrewings2)
+			for (BrewingBase b : baseBrewings)
 			{
 				if (OreDictionary.itemMatches(b.getIngredient(), par1ItemStack, true))
 				{

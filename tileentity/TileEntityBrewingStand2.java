@@ -265,7 +265,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 					{
 						if (brewingItemStacks[var3] != null)
 						{
-							if (brewingItemStacks[var3].getItemDamage() == 0)
+							if (((ItemPotion2)brewingItemStacks[var3].getItem()).isWater(brewingItemStacks[var3].getItemDamage()))
 							{
 								if (BrewingBase.getBrewingBaseFromIngredient(var1) != null)
 								{
@@ -407,7 +407,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 							brewings[0] = BrewingList.awkward;
 						}
 					}
-					else if (brewingItemStacks[var2].getItemDamage() == 0)
+					else if (((ItemPotion2)brewingItemStacks[var2].getItem()).isWater(brewingItemStacks[var2].getItemDamage()))
 					{
 						if (BrewingBase.getBrewingBaseFromIngredient(ingredient) != null)
 						{
