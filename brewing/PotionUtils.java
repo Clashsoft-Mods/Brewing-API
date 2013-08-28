@@ -126,7 +126,7 @@ public class PotionUtils
 		{
 			if (b1 != null && var5.get(0) instanceof BrewingBase)
 			{
-				if (((BrewingBase)var5.get(0)).basename == (b1.getBase() != null ? b1.getBase().basename : ""))
+				if (((BrewingBase)var5.get(0)).basename.equals(b1.getBase() != null ? b1.getBase().basename : ""))
 				{
 					usedTo.add(" - " + b1.addBrewingToItemStack(new ItemStack(potion.getItem(), 1, 1)).getDisplayName());
 				}

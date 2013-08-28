@@ -73,7 +73,7 @@ public class BrewingBase extends Brewing implements Comparable<Brewing>
 	public int compareTo(Brewing o)
 	{
 		if (o instanceof BrewingBase)
-			return (basename != null && ((BrewingBase)o).basename != null) ? basename.compareTo(basename) : 0; 
+			return (basename != null && ((BrewingBase)o).basename != null) ? basename.compareTo(((BrewingBase)o).basename) : 0; 
 		else
 			return super.compareTo(o);
 	}

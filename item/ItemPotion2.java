@@ -480,7 +480,7 @@ public class ItemPotion2 extends Item
 								if (b.getEffect() != null)
 								{
 									String s = StatCollector.translateToLocal(b.getEffect().getEffectName() + ".description");
-									if (s != b.getEffect().getEffectName() + ".description")
+									if (!s.equals(b.getEffect().getEffectName() + ".description"))
 									{
 										s = clashsoft.clashsoftapi.util.CSUtil.cutString(s, par1ItemStack.getDisplayName().length());
 										for (String s1 : clashsoft.clashsoftapi.util.CSUtil.makeLineList(s))

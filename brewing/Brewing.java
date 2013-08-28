@@ -535,8 +535,8 @@ public class Brewing implements Comparable<Brewing>
 		if (this.getOpposite() != null)
 			l |= brewingList.indexOf(this.getOpposite()) << 26L;
 		if (this.getEffect() != null)
-			l |= this.getEffect().getDuration() << 34L;
-		l |= this.getMaxDuration() << 42L;
+			l |= ((long)this.getEffect().getDuration()) << 34L;
+		l |= ((long)this.getMaxDuration()) << 42L;
 		return l;
 	}
 
