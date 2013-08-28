@@ -1,7 +1,7 @@
 package clashsoft.brewingapi.brewing;
 
 import java.awt.Color;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -120,7 +120,7 @@ public class PotionUtils
 	
 	public static List<String> getUsedTo(ItemStack potion)
 	{
-		List<String> usedTo = new LinkedList<String>();
+		List<String> usedTo = new ArrayList<String>();
 		List<Brewing> var5 = ((ItemPotion2)potion.getItem()).getEffects(potion);
 		for (Brewing b1 : Brewing.brewingList)
 		{

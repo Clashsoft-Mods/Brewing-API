@@ -162,7 +162,7 @@ public class Brewing implements Comparable<Brewing>
 				return Potion.potionTypes[this.getEffect().getPotionID()].getLiquidColor();
 			}
 		}
-		return 0;
+		return 0x0C0CFF;
 	}
 
 	public int getDefaultDuration()

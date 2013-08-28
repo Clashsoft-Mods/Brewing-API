@@ -1,17 +1,9 @@
 package clashsoft.brewingapi.item;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.lwjgl.input.Keyboard;
-
-import com.google.common.collect.HashMultimap;
 
 import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.brewing.Brewing;
@@ -19,6 +11,13 @@ import clashsoft.brewingapi.brewing.BrewingBase;
 import clashsoft.brewingapi.brewing.BrewingList;
 import clashsoft.brewingapi.brewing.PotionUtils;
 import clashsoft.brewingapi.entity.EntityPotion2;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multiset;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -259,7 +258,7 @@ public class ItemPotion2 extends Item
 	{
 		if (par2 == 0 && par1ItemStack != null)
 		{
-			if (BrewingAPI.potion2.isWater(par1ItemStack.getItemDamage()))
+			if (isWater(par1ItemStack.getItemDamage()))
 			{
 				return 0x0C0CFF;
 			}
@@ -280,7 +279,7 @@ public class ItemPotion2 extends Item
 			}
 			else
 			{
-				return (0x0C0CFF);
+				return 0x0C0CFF;
 			}
 		}
 		else
@@ -386,21 +385,19 @@ public class ItemPotion2 extends Item
 		if (!isWater(par1ItemStack.getItemDamage()))
 		{
 			List<Brewing> var5 = this.getEffects(par1ItemStack);
-			HashMultimap hashmultimap = HashMultimap.create();
+			HashMultimap<String, AttributeModifier> hashmultimap = HashMultimap.create();
 			
 			if (var5 != null && !var5.isEmpty())
 			{
 				int longestString = this.getItemDisplayName(par1ItemStack).length() + 10;
 				glowPos += 0.25F;
-				if (glowPos >= longestString)
-				{
-					glowPos = 0;
-				}
+				glowPos %= longestString;
 				for (int i = 0; i < var5.size(); i++)
 				{
 					Brewing var7 = (Brewing) var5.get(i);
-					boolean isBase = var7.getEffect() != null && var7.getEffect().getPotionID() > 0;
-					String var8 = (isBase ? StatCollector.translateToLocal(var7.getEffect().getEffectName()) : "\u00a77" + StatCollector.translateToLocal("potion.empty")).trim();
+					boolean isNormalEffect = var7.getEffect() != null && var7.getEffect().getPotionID() > 0;
+					String var8 = (isNormalEffect ? StatCollector.translateToLocal(var7.getEffect().getEffectName()) : "\u00a77" + StatCollector.translateToLocal("potion.empty")).trim();
+					StringBuilder builder = new StringBuilder(var8);
 					int randPos = 0;
 					
 					/*
@@ -413,52 +410,58 @@ public class ItemPotion2 extends Item
 						
 						if (map != null && map.size() > 0)
 						{
-							Iterator iterator1 = map.entrySet().iterator();
-							
-							while (iterator1.hasNext())
+							for (Object o : map.keySet())
 							{
-								Entry entry = (Entry) iterator1.next();
-								AttributeModifier attributemodifier = (AttributeModifier) entry.getValue();
-								AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.func_111166_b(), potion.func_111183_a(var7.getEffect().getAmplifier(), attributemodifier), attributemodifier.func_111169_c());
-								hashmultimap.put(((Attribute) entry.getKey()).func_111108_a(), attributemodifier1);
+								AttributeModifier attributemodifier = (AttributeModifier) map.get(o);
+								if (attributemodifier != null)
+								{
+									AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.func_111166_b(), potion.func_111183_a(var7.getEffect().getAmplifier(), attributemodifier), attributemodifier.func_111169_c());
+									hashmultimap.put(((Attribute) o).func_111108_a(), attributemodifier1);
+								}
 							}
 						}
 					}
 					
 					if (var7.getEffect() != null && var7.getEffect().getAmplifier() > 0)
 					{
-						var8 = var8 + " " + StatCollector.translateToLocal("potion.potency." + var7.getEffect().getAmplifier()).trim();
+						builder.append(" ").append(StatCollector.translateToLocal("potion.potency." + var7.getEffect().getAmplifier()));
 					}
 					if (var7.getEffect() != null && var7.getEffect().getDuration() > 20)
 					{
-						var8 += " (" + (var7.getEffect().getDuration() >= 1000000 ? StatCollector.translateToLocal("potion.infinite") : Potion.getDurationString(var7.getEffect())) + ")";
+						builder.append(" (").append(var7.getEffect().getDuration() >= 1000000 ? StatCollector.translateToLocal("potion.infinite") : Potion.getDurationString(var7.getEffect())).append(")");
 					}
 					
 					int glowPos2 = MathHelper.floor_float(glowPos) < var8.length() ? MathHelper.floor_float(glowPos) : var8.length();
 					
-					String var10 = var8.substring(0, glowPos2);
-					String var11 = glowPos2 < var8.length() ? String.valueOf(var8.charAt(glowPos2)) : "";
-					String var12 = glowPos2 + 1 < var8.length() ? var8.substring(glowPos2 + 1, var8.length()) : "";
+					String var10 = builder.substring(0, glowPos2);
+					String var11 = glowPos2 < builder.length() ? String.valueOf(builder.charAt(glowPos2)) : "";
+					String var12 = glowPos2 + 1 < builder.length() ? builder.substring(glowPos2 + 1) : "";
 					
-					if (BrewingAPI.CLASHSOFT_API())
+					if (isNormalEffect)
 					{
-						if (var7.getEffect() != null && Potion.potionTypes[var7.getEffect().getPotionID()] instanceof clashsoft.clashsoftapi.CustomPotion && ((clashsoft.clashsoftapi.CustomPotion) (Potion.potionTypes[var7.getEffect().getPotionID()])).getCustomColor() >= 0)
+						builder.delete(0, builder.length());
+						String colorLight = "";
+						String colorDark = "";
+						if (BrewingAPI.CLASHSOFT_API() && var7.getEffect() != null && Potion.potionTypes[var7.getEffect().getPotionID()] instanceof clashsoft.clashsoftapi.CustomPotion && ((clashsoft.clashsoftapi.CustomPotion) (Potion.potionTypes[var7.getEffect().getPotionID()])).getCustomColor() >= 0)
 						{
 							int c = ((clashsoft.clashsoftapi.CustomPotion) Potion.potionTypes[var7.getEffect().getPotionID()]).getCustomColor();
-							String colorLight = "\u00a7" + Integer.toHexString(c >= 8 ? c : c + 8);
-							String colorDark = "\u00a7" + Integer.toHexString(c);
-							var8 = !isBase ? var8 : (colorDark + var10 + colorLight + var11 + colorDark + var12);
+							colorLight = "\u00a7" + Integer.toHexString(c >= 8 ? c : c + 8);
+							colorDark = "\u00a7" + Integer.toHexString(c);
+							
 						}
+						else if (var7.isBadEffect())
+						{
+							colorLight = EnumChatFormatting.RED.toString();
+							colorDark = EnumChatFormatting.DARK_RED.toString();
+						}
+						else
+						{
+							colorLight = EnumChatFormatting.GREEN.toString();
+							colorDark = EnumChatFormatting.DARK_GREEN.toString();
+						}
+						builder.append(colorDark).append(var10).append(colorLight).append(var11).append(colorDark).append(var12);
 					}
-					else if (var7.isBadEffect())
-					{
-						var8 = !isBase ? var8 : ((EnumChatFormatting.RED) + var10 + (EnumChatFormatting.RED) + var11 + (EnumChatFormatting.RED) + var12);
-					}
-					else
-					{
-						var8 = !isBase ? var8 : ((EnumChatFormatting.GREEN) + var10 + (EnumChatFormatting.RED) + var11 + (EnumChatFormatting.GREEN) + var12);
-					}
-					par3List.add(var8);
+					par3List.add(builder.toString());
 				}
 				/*
 				 * Advanced Potion Info
@@ -529,32 +532,31 @@ public class ItemPotion2 extends Item
 				{
 					par3List.add("");
 					par3List.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("potion.effects.whenDrank"));
-					Iterator iterator = hashmultimap.entries().iterator();
-					
-					while (iterator.hasNext())
+					for (String key : hashmultimap.keys())
 					{
-						Entry entry1 = (Entry) iterator.next();
-						AttributeModifier attributemodifier2 = (AttributeModifier) entry1.getValue();
-						double d0 = attributemodifier2.func_111164_d();
-						double d1;
-						
-						if (attributemodifier2.func_111169_c() != 1 && attributemodifier2.func_111169_c() != 2)
+						for (AttributeModifier attributemodifier2 : hashmultimap.get(key))
 						{
-							d1 = attributemodifier2.func_111164_d();
-						}
-						else
-						{
-							d1 = attributemodifier2.func_111164_d() * 100.0D;
-						}
-						
-						if (d0 > 0.0D)
-						{
-							par3List.add(EnumChatFormatting.BLUE + StatCollector.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.func_111169_c(), new Object[] { ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + (String) entry1.getKey()) }));
-						}
-						else if (d0 < 0.0D)
-						{
-							d1 *= -1.0D;
-							par3List.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.func_111169_c(), new Object[] { ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + (String) entry1.getKey()) }));
+							double d0 = attributemodifier2.func_111164_d();
+							double d1;
+							
+							if (attributemodifier2.func_111169_c() != 1 && attributemodifier2.func_111169_c() != 2)
+							{
+								d1 = attributemodifier2.func_111164_d();
+							}
+							else
+							{
+								d1 = attributemodifier2.func_111164_d() * 100.0D;
+							}
+							
+							if (d0 > 0.0D)
+							{
+								par3List.add(EnumChatFormatting.BLUE + StatCollector.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.func_111169_c(), new Object[] { ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + key) }));
+							}
+							else if (d0 < 0.0D)
+							{
+								d1 *= -1.0D;
+								par3List.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.func_111169_c(), new Object[] { ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + key) }));
+							}
 						}
 					}
 				}
