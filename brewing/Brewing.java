@@ -3,10 +3,12 @@ package clashsoft.brewingapi.brewing;
 import java.util.*;
 
 import clashsoft.brewingapi.BrewingAPI;
+import clashsoft.brewingapi.api.IBrewingAttribute;
 import clashsoft.brewingapi.api.IIngredientHandler;
 import clashsoft.brewingapi.item.ItemPotion2;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
@@ -21,38 +23,42 @@ import net.minecraftforge.oredict.OreDictionary;
 public class Brewing implements Comparable<Brewing>
 {
 	/** List that stores ALL brewings **/
-	public static List<Brewing>		brewingList			= new LinkedList<Brewing>();
+	public static List<Brewing>						brewingList					= new LinkedList<Brewing>();
 	/** List that stores all brewings with good effects **/
-	public static List<Brewing>		goodEffects			= new LinkedList<Brewing>();
+	public static List<Brewing>						goodEffects					= new LinkedList<Brewing>();
 	/** List that stores all brewings with bad effects **/
-	public static List<Brewing>		badEffects			= new LinkedList<Brewing>();
+	public static List<Brewing>						badEffects					= new LinkedList<Brewing>();
 	/**
 	 * List that stores brewings that can be used together with other brewings
 	 * (e.g. Effect Remover potion is not inside)
 	 **/
-	public static List<Brewing>		combinableEffects	= new LinkedList<Brewing>();
+	public static List<Brewing>						combinableEffects			= new LinkedList<Brewing>();
 	/** List that stores all base brewing (e.g. awkward, mundane, ...) **/
-	public static List<BrewingBase>	baseBrewings		= new LinkedList<BrewingBase>();
+	public static List<BrewingBase>					baseBrewings				= new LinkedList<BrewingBase>();
 	/** List that stores all brewings with effects **/
-	public static List<Brewing>		effectBrewings		= new LinkedList<Brewing>();
+	public static List<Brewing>						effectBrewings				= new LinkedList<Brewing>();
 	
 	/** Version identifier for NBTs. **/
-	public static String			NBTVersion			= "1.0.1";
+	public static String							NBTVersion					= "1.0.1";
+	
+	public static Map<String, IBrewingAttribute>	defaultExtendedAttributes	= new HashMap<String, IBrewingAttribute>();
 	
 	/** The effect **/
-	private PotionEffect			effect;
+	private PotionEffect							effect;
 	/** Max effect amplifier **/
-	private int						maxAmplifier;
+	private int										maxAmplifier;
 	/** Max effect duration **/
-	private int						maxDuration;
+	private int										maxDuration;
 	/** Fermented Spider Eye **/
-	private Brewing					opposite			= null;
+	private Brewing									opposite					= null;
 	/** The ingredient to brew the potion **/
-	private ItemStack				ingredient			= new ItemStack(0, 0, 0);
+	private ItemStack								ingredient					= new ItemStack(0, 0, 0);
 	/** Used by the random potion **/
-	private boolean					isRandom			= false;
+	private boolean									isRandom					= false;
 	/** Determines the base that is needed to brew the potion **/
-	private BrewingBase				base;
+	private BrewingBase								base;
+	
+	private Map<String, IBrewingAttribute>			extendedAttributes			= new HashMap<String, IBrewingAttribute>();
 	
 	/**
 	 * Creates a new Brewing
@@ -238,6 +244,16 @@ public class Brewing implements Comparable<Brewing>
 		return this.getEffect().getDuration();
 	}
 	
+	public Map<String, IBrewingAttribute> getExtendedAttributes()
+	{
+		return this.extendedAttributes;
+	}
+	
+	public <T> T getExtendedAttribute(String name)
+	{
+		return (T) extendedAttributes.get(name);
+	}
+	
 	public Brewing setEffect(PotionEffect par1)
 	{
 		effect = par1;
@@ -278,6 +294,23 @@ public class Brewing implements Comparable<Brewing>
 	{
 		base = par1;
 		return this;
+	}
+	
+	public Object setExtendedAttribute(String name, IBrewingAttribute value)
+	{
+		Object old = getExtendedAttribute(name);
+		extendedAttributes.put(name, value);
+		return old;
+	}
+	
+	public static void registerExtendedAttribute(String name, IBrewingAttribute defaultValue)
+	{
+		defaultExtendedAttributes.put(name, defaultValue);
+	}
+	
+	public static void unregisterExtendedAttribute(String name)
+	{
+		defaultExtendedAttributes.remove(name);
 	}
 	
 	public Brewing onImproved()
@@ -375,7 +408,7 @@ public class Brewing implements Comparable<Brewing>
 				par1.stackTagCompound.setTag("Brewing", new NBTTagList("Brewing"));
 			}
 			NBTTagList var2 = (NBTTagList) par1.stackTagCompound.getTag("Brewing");
-			var2.appendTag(this instanceof BrewingBase ? ((BrewingBase) this).createNBT() : this.createNBT());
+			var2.appendTag(this.createNBT());
 			return par1;
 		}
 		else
@@ -554,6 +587,15 @@ public class Brewing implements Comparable<Brewing>
 		{
 			nbt.setCompoundTag("Opposite", opposite.createNBT());
 		}
+		if (extendedAttributes != null)
+		{
+			NBTTagList list = new NBTTagList();
+			for (String s : extendedAttributes.keySet())
+			{
+				list.appendTag(extendedAttributes.get(s).toNBT());
+			}
+			nbt.setTag("ExtendedAttributes", list);
+		}
 		return nbt;
 	}
 	
@@ -584,7 +626,27 @@ public class Brewing implements Comparable<Brewing>
 		Brewing opposite = par1NBTTagCompound.hasKey("Opposite") ? readFromNBT(par1NBTTagCompound.getCompoundTag("Opposite")) : null;
 		BrewingBase base = (BrewingBase) (par1NBTTagCompound.hasKey("Base") ? BrewingBase.readFromNBT(par1NBTTagCompound) : BrewingList.awkward);
 		
-		return new Brewing(new PotionEffect(potionID, potionDuration, potionAmplifier), maxamp, maxdur, opposite, new ItemStack(ingredientID, ingredientAmount, ingredientDamage), base);
+		Brewing brewing = new Brewing(new PotionEffect(potionID, potionDuration, potionAmplifier), maxamp, maxdur, opposite, new ItemStack(ingredientID, ingredientAmount, ingredientDamage), base);
+		
+		if (par1NBTTagCompound.hasKey("ExtendedAttributes"))
+		{
+			NBTTagList list = par1NBTTagCompound.getTagList("ExtendedAttributes");
+			
+			for (int i = 0; i < list.tagCount(); i++)
+			{
+				NBTBase nbtbase = list.tagAt(i);
+				if (nbtbase != null)
+				{
+					for (IBrewingAttribute attribute : defaultExtendedAttributes.values())
+					{
+						attribute = attribute.fromNBT(nbtbase);
+						brewing.setExtendedAttribute(attribute.getName(), attribute);
+					}
+				}
+			}
+		}
+		
+		return brewing;
 	}
 	
 	/**
