@@ -1,6 +1,7 @@
 package clashsoft.brewingapi.item;
 
 import clashsoft.brewingapi.BrewingAPI;
+
 import net.minecraft.item.ItemReed;
 
 public class ItemBrewingStand2 extends ItemReed

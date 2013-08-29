@@ -1,7 +1,9 @@
 package clashsoft.brewingapi.item;
 
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.lwjgl.input.Keyboard;
 
@@ -13,7 +15,6 @@ import clashsoft.brewingapi.brewing.PotionUtils;
 import clashsoft.brewingapi.entity.EntityPotion2;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multiset;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -44,6 +45,7 @@ import net.minecraft.world.World;
  */
 public class ItemPotion2 extends Item
 {
+	@SuppressWarnings("unused")
 	private static boolean	SHOW_DOUBLE_POTIONS	= false;
 	public static boolean	SHIFT				= false;
 	private Icon			bottle;
@@ -254,6 +256,7 @@ public class ItemPotion2 extends Item
 		return par1 == 0;
 	}
 	
+	@Override
 	public int getColorFromItemStack(ItemStack par1ItemStack, int par2)
 	{
 		if (par2 == 0 && par1ItemStack != null)
@@ -340,17 +343,17 @@ public class ItemPotion2 extends Item
 				{
 					if (i == 0)
 					{
-						var4 = StatCollector.translateToLocal(((Brewing) var3.get(i)).getEffect() != null && ((Brewing) var3.get(i)).getEffect().getPotionID() > 0 ? (((Brewing) var3.get(i)).getEffect().getEffectName() + ".postfix") : "");
+						var4 = StatCollector.translateToLocal(var3.get(i).getEffect() != null && var3.get(i).getEffect().getPotionID() > 0 ? (var3.get(i).getEffect().getEffectName() + ".postfix") : "");
 						var2 += StatCollector.translateToLocal(var4).trim();
 					}
 					else if (i + 1 == var3.size())
 					{
-						var4 = ((Brewing) var3.get(i)).getEffect().getEffectName();
+						var4 = var3.get(i).getEffect().getEffectName();
 						var2 += " " + StatCollector.translateToLocal("potion.and") + " " + StatCollector.translateToLocal(var4).trim();
 					}
 					else
 					{
-						var4 = ((Brewing) var3.get(i)).getEffect().getEffectName();
+						var4 = var3.get(i).getEffect().getEffectName();
 						var2 += ", " + StatCollector.translateToLocal(var4).trim();
 					}
 				}
@@ -391,10 +394,11 @@ public class ItemPotion2 extends Item
 			{
 				int longestString = this.getItemDisplayName(par1ItemStack).length() + 10;
 				glowPos += 0.25F;
-				glowPos %= longestString;
+				if (glowPos >= longestString)
+					glowPos = 0;
 				for (int i = 0; i < var5.size(); i++)
 				{
-					Brewing var7 = (Brewing) var5.get(i);
+					Brewing var7 = var5.get(i);
 					boolean isNormalEffect = var7.getEffect() != null && var7.getEffect().getPotionID() > 0;
 					String var8 = (isNormalEffect ? StatCollector.translateToLocal(var7.getEffect().getEffectName()) : "\u00a77" + StatCollector.translateToLocal("potion.empty")).trim();
 					StringBuilder builder = new StringBuilder(var8);
@@ -686,8 +690,13 @@ public class ItemPotion2 extends Item
 	
 	public boolean isEffectInstant(ItemStack par1ItemStack)
 	{
-		Brewing b = Brewing.getBrewingFromItemStack(par1ItemStack);
-		return b != null ? (b.getEffect() != null && b.getEffect().getPotionID() > 0 ? Potion.potionTypes[b.getEffect().getPotionID()].isInstant() : false) : false;
+		List<Brewing> effects = getEffects(par1ItemStack);
+		if (effects.size() == 0)
+			return false;
+		boolean flag = true;
+		for (Brewing b : effects)
+			flag &= (b.getEffect() != null ? Potion.potionTypes[b.getEffect().getPotionID()].isInstant() : true);
+		return flag;
 	}
 	
 	@Override
@@ -700,7 +709,7 @@ public class ItemPotion2 extends Item
 				--itemstack.stackSize;
 			}
 			
-			world.playSoundAtEntity(((EntityPlayer) entity), "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+			world.playSoundAtEntity((entity), "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 			Entity e = new EntityPotion2(world, ((EntityPlayer) entity), itemstack);
 			
 			if (!world.isRemote)

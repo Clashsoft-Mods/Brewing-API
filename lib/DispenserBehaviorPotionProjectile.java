@@ -1,6 +1,7 @@
 package clashsoft.brewingapi.lib;
 
 import clashsoft.brewingapi.entity.EntityPotion2;
+
 import net.minecraft.dispenser.BehaviorProjectileDispense;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.entity.IProjectile;

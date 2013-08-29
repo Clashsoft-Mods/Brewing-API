@@ -1,11 +1,11 @@
 package clashsoft.brewingapi.tileentity;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import clashsoft.brewingapi.brewing.Brewing;
 import clashsoft.brewingapi.brewing.BrewingBase;
 import clashsoft.brewingapi.brewing.BrewingList;
 import clashsoft.brewingapi.item.ItemPotion2;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
@@ -46,6 +46,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	/**
 	 * Returns the number of slots in the inventory.
 	 */
+	@Override
 	public int getSizeInventory()
 	{
 		return this.brewingItemStacks.length;
@@ -56,6 +57,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	 * e.g. the mob spawner uses this to count ticks and creates a new spawn
 	 * inside its implementation.
 	 */
+	@Override
 	public void updateEntity()
 	{
 		if (this.brewTime > 0)
@@ -117,9 +119,9 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 			}
 			else if (f < 1.0F)
 			{
-				j = MathHelper.floor_float((float) i * f);
+				j = MathHelper.floor_float(i * f);
 				
-				if (j < MathHelper.ceiling_float_int((float) i * f) && (float) Math.random() < (float) i * f - (float) j)
+				if (j < MathHelper.ceiling_float_int(i * f) && (float) Math.random() < i * f - j)
 				{
 					++j;
 				}
@@ -158,6 +160,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 		return 400;
 	}
 	
+	@Override
 	public int getBrewTime()
 	{
 		return this.brewTime;
@@ -485,6 +488,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	/**
 	 * Reads a tile entity from NBT.
 	 */
+	@Override
 	public void readFromNBT(NBTTagCompound par1NBTTagCompound)
 	{
 		super.readFromNBT(par1NBTTagCompound);
@@ -508,6 +512,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	/**
 	 * Writes a tile entity to NBT.
 	 */
+	@Override
 	public void writeToNBT(NBTTagCompound par1NBTTagCompound)
 	{
 		super.writeToNBT(par1NBTTagCompound);
@@ -531,6 +536,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	/**
 	 * Returns the stack in slot i
 	 */
+	@Override
 	public ItemStack getStackInSlot(int par1)
 	{
 		return par1 >= 0 && par1 < this.brewingItemStacks.length ? this.brewingItemStacks[par1] : null;
@@ -540,6 +546,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	 * Removes from an inventory slot (first arg) up to a specified number
 	 * (second arg) of items and returns them in a new stack.
 	 */
+	@Override
 	public ItemStack decrStackSize(int par1, int par2)
 	{
 		if (par1 >= 0 && par1 < this.brewingItemStacks.length)
@@ -559,6 +566,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	 * whatever it returns as an EntityItem - like when you close a workbench
 	 * GUI.
 	 */
+	@Override
 	public ItemStack getStackInSlotOnClosing(int par1)
 	{
 		if (par1 >= 0 && par1 < this.brewingItemStacks.length)
@@ -577,6 +585,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	 * Sets the given item stack to the specified slot in the inventory (can be
 	 * crafting or armor sections).
 	 */
+	@Override
 	public void setInventorySlotContents(int par1, ItemStack par2ItemStack)
 	{
 		if (par1 >= 0 && par1 < this.brewingItemStacks.length)
@@ -589,6 +598,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	 * Returns the maximum stack size for a inventory slot. Seems to always be
 	 * 64, possibly will be extended. *Isn't this more of a set than a get?*
 	 */
+	@Override
 	public int getInventoryStackLimit()
 	{
 		return 1;
@@ -598,16 +608,19 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	 * Do not make give this method the name canInteractWith because it clashes
 	 * with Container
 	 */
+	@Override
 	public boolean isUseableByPlayer(EntityPlayer par1EntityPlayer)
 	{
 		thePlayer = par1EntityPlayer;
-		return this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : par1EntityPlayer.getDistanceSq((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D) <= 64.0D;
+		return this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : par1EntityPlayer.getDistanceSq(this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D) <= 64.0D;
 	}
 	
+	@Override
 	public void openChest()
 	{
 	}
 	
+	@Override
 	public void closeChest()
 	{
 	}
@@ -647,6 +660,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 		return par1 == 3 ? Item.itemsList[par2ItemStack.itemID].isPotionIngredient() : par2ItemStack.itemID == Item.potion.itemID || par2ItemStack.itemID == Item.glassBottle.itemID;
 	}
 	
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void setBrewTime(int par1)
 	{
@@ -657,6 +671,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	 * returns an integer with each bit specifying wether that slot of the stand
 	 * contains a potion
 	 */
+	@Override
 	public int getFilledSlots()
 	{
 		int i = 0;

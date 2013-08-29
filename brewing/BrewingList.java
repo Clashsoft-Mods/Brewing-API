@@ -1,6 +1,7 @@
 package clashsoft.brewingapi.brewing;
 
 import clashsoft.brewingapi.BrewingAPI;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -11,7 +12,7 @@ public class BrewingList
 {
 	public static boolean		DEFAULT_AWKWARD_BREWING	= false;
 	public static boolean		SHOW_ALL_BASEBREWINGS	= false;
-
+	
 	/** Base needed for all potions **/
 	public static BrewingBase	awkward;
 	public static BrewingBase	mundane;
@@ -49,7 +50,7 @@ public class BrewingList
 	public static BrewingBase	acrid;
 	public static BrewingBase	gross;
 	public static BrewingBase	stinky;
-
+	
 	public static Brewing		moveSlowdown;
 	public static Brewing		moveSpeed;
 	public static Brewing		digSlowdown;
@@ -85,7 +86,7 @@ public class BrewingList
 	public static Brewing		fire;
 	public static Brewing		random;
 	public static Brewing		effectRemove;
-
+	
 	public static void initializeBrewings()
 	{
 		if (BrewingAPI.MORE_POTIONS_MOD())
@@ -101,7 +102,7 @@ public class BrewingList
 			initializeBrewings_BrewingAPI();
 		}
 	}
-
+	
 	public static void registerBrewings()
 	{
 		if (BrewingAPI.MORE_POTIONS_MOD())
@@ -117,7 +118,7 @@ public class BrewingList
 			registerBrewings_BrewingAPI();
 		}
 	}
-
+	
 	private static void initializeBaseBrewings_MorePotionsMod()
 	{
 		awkward = new BrewingBase("awkward", new ItemStack(Item.netherStalkSeeds));
@@ -153,7 +154,7 @@ public class BrewingList
 		gross = new BrewingBase("gross", new ItemStack(Item.pumpkinSeeds));
 		stinky = new BrewingBase("stinky", new ItemStack(Item.fishRaw));
 	}
-
+	
 	public static void initializeBrewings_MorePotionsMod()
 	{
 		moveSlowdown = new Brewing(new PotionEffect(Potion.moveSlowdown.id, 20 * 90, 0), 4, 20 * 240, Brewing.getBaseBrewing(dashing));
@@ -190,14 +191,14 @@ public class BrewingList
 		random = new Brewing(new PotionEffect(clashsoft.mods.morepotions.MorePotionsMod.random.id, clashsoft.mods.morepotions.MorePotionsMod.randomMode == 0 ? 1 : 20 * 45, 0), 0, clashsoft.mods.morepotions.MorePotionsMod.randomMode == 0 ? 1 : 20 * 90, awkward);
 		effectRemove = new Brewing(new PotionEffect(clashsoft.mods.morepotions.MorePotionsMod.effectRemove.id, 20 * 45, 0), 0, 20 * 90, random, new ItemStack(Item.bucketMilk), awkward);
 	}
-
+	
 	public static void initializeBaseBrewings_BrewingAPI()
 	{
 		SHOW_ALL_BASEBREWINGS = false;
 		DEFAULT_AWKWARD_BREWING = true;
 		awkward = new BrewingBase("awkward", new ItemStack(Item.netherStalkSeeds));
 	}
-
+	
 	public static void initializeBrewings_BrewingAPI()
 	{
 		moveSlowdown = new Brewing(new PotionEffect(Potion.moveSlowdown.id, 20 * 90, 0), 4, 20 * 240, Brewing.getBaseBrewing(dashing));
@@ -212,7 +213,7 @@ public class BrewingList
 		nightVision = new Brewing(new PotionEffect(Potion.nightVision.id, 20 * 180, 0), 0, 20 * 300, invisibility, new ItemStack(Item.goldenCarrot), Brewing.getBaseBrewing(thin));
 		poison = new Brewing(new PotionEffect(Potion.poison.id, 20 * 45, 0), 2, 20 * 60, new ItemStack(Item.spiderEye), Brewing.getBaseBrewing(acrid));
 	}
-
+	
 	public static void registerBrewings_MorePotionsMod()
 	{
 		regeneration.register();
@@ -249,7 +250,7 @@ public class BrewingList
 		effectRemove.register(); //
 		random.register();
 	}
-
+	
 	public static void registerBaseBrewings_MorePotionsMod()
 	{
 		awkward.register();
@@ -257,7 +258,7 @@ public class BrewingList
 		thin.register();
 		dashing.register();
 		acrid.register();
-
+		
 		if (SHOW_ALL_BASEBREWINGS)
 		{
 			mundane.register();
@@ -290,7 +291,7 @@ public class BrewingList
 			stinky.register();
 		}
 	}
-
+	
 	public static void registerBrewings_BrewingAPI()
 	{
 		regeneration.register();
@@ -305,7 +306,7 @@ public class BrewingList
 		harm.register();
 		invisibility.register();
 	}
-
+	
 	private static void registerBaseBrewings_BrewingAPI()
 	{
 		awkward.register();

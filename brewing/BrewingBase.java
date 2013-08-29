@@ -6,7 +6,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class BrewingBase extends Brewing implements Comparable<Brewing>
 {
-	public String					basename;
+	public String	basename;
 	
 	public BrewingBase(String par1, ItemStack par2ItemStack)
 	{
@@ -58,6 +58,7 @@ public class BrewingBase extends Brewing implements Comparable<Brewing>
 		return new BrewingBase(name, new ItemStack(ingredientID, ingredientAmount, ingredientDamage));
 	}
 	
+	@Override
 	public String toString()
 	{
 		String s = "BrewingBase{";
@@ -68,12 +69,12 @@ public class BrewingBase extends Brewing implements Comparable<Brewing>
 		s += "}";
 		return s;
 	}
-
+	
 	@Override
 	public int compareTo(Brewing o)
 	{
 		if (o instanceof BrewingBase)
-			return (basename != null && ((BrewingBase)o).basename != null) ? basename.compareTo(((BrewingBase)o).basename) : 0; 
+			return (basename != null && ((BrewingBase) o).basename != null) ? basename.compareTo(((BrewingBase) o).basename) : 0;
 		else
 			return super.compareTo(o);
 	}

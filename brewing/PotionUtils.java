@@ -4,10 +4,11 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import clashsoft.brewingapi.item.ItemPotion2;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.StatCollector;
-import clashsoft.brewingapi.item.ItemPotion2;
 
 public class PotionUtils
 {
@@ -65,7 +66,7 @@ public class PotionUtils
 		}
 		averageAmplifier /= var5.size();
 		averageAmplifier -= 1;
-
+		
 		return averageAmplifier;
 	}
 	
@@ -95,7 +96,7 @@ public class PotionUtils
 				maxAmplifier = var5.get(i).getEffect().getAmplifier();
 			}
 		}
-
+		
 		return maxAmplifier;
 	}
 	
@@ -121,12 +122,12 @@ public class PotionUtils
 	public static List<String> getUsedTo(ItemStack potion)
 	{
 		List<String> usedTo = new ArrayList<String>();
-		List<Brewing> var5 = ((ItemPotion2)potion.getItem()).getEffects(potion);
+		List<Brewing> var5 = ((ItemPotion2) potion.getItem()).getEffects(potion);
 		for (Brewing b1 : Brewing.brewingList)
 		{
 			if (b1 != null && var5.get(0) instanceof BrewingBase)
 			{
-				if (((BrewingBase)var5.get(0)).basename.equals(b1.getBase() != null ? b1.getBase().basename : ""))
+				if (((BrewingBase) var5.get(0)).basename.equals(b1.getBase() != null ? b1.getBase().basename : ""))
 				{
 					usedTo.add(" - " + b1.addBrewingToItemStack(new ItemStack(potion.getItem(), 1, 1)).getDisplayName());
 				}
