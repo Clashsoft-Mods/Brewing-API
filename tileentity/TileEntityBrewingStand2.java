@@ -155,7 +155,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	{
 		if (thePlayer != null && thePlayer.capabilities.isCreativeMode)
 		{
-			return 40;
+			return 60;
 		}
 		return 400;
 	}
@@ -339,7 +339,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 					NBTTagCompound compound = this.brewingItemStacks[var2].stackTagCompound;
 					
 					NBTTagList list = compound != null ? compound.getTagList("Brewing") : null;
-					Brewing[] brewings = new Brewing[list != null ? list.tagCount() : 1];
+					Brewing[] brewings = new Brewing[list != null && list.tagCount() != 0 ? list.tagCount() : 1];
 					if (list != null)
 						if (ingredient.getItem() == Item.glowstone)
 						{
@@ -400,20 +400,13 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 						}
 						else if (ingredient.getItem() == Item.gunpowder)
 						{
-							if (list != null)
+							for (int i = 0; i < list.tagCount(); i++)
 							{
-								for (int i = 0; i < list.tagCount(); i++)
+								brewings[i] = Brewing.readFromNBT((NBTTagCompound) list.tagAt(i));
+								if (brewings[i] != null && brewings[i].getEffect() != null && brewings[i].getEffect().getPotionID() > 0)
 								{
-									brewings[i] = Brewing.readFromNBT((NBTTagCompound) list.tagAt(i));
-									if (brewings[i] != null && brewings[i].getEffect() != null && brewings[i].getEffect().getPotionID() > 0)
-									{
-										brewings[i].setEffect(new PotionEffect(brewings[i].getEffect().getPotionID(), MathHelper.ceiling_double_int(brewings[i].getEffect().getDuration() * 0.75D), brewings[i].getEffect().getAmplifier()));
-									}
+									brewings[i].setEffect(new PotionEffect(brewings[i].getEffect().getPotionID(), MathHelper.ceiling_double_int(brewings[i].getEffect().getDuration() * 0.75D), brewings[i].getEffect().getAmplifier()));
 								}
-							}
-							else
-							{
-								brewings[0] = BrewingList.awkward;
 							}
 						}
 						else if (((ItemPotion2) brewingItemStacks[var2].getItem()).isWater(brewingItemStacks[var2].getItemDamage()))

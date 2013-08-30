@@ -101,7 +101,7 @@ public class ItemPotion2 extends Item
 	{
 		if (par2List != null && par2List.size() > 0)
 		{
-			List<Brewing> ret = new ArrayList<Brewing>();
+			List<Brewing> ret = new ArrayList<Brewing>(par2List.size());
 			for (PotionEffect effect : par2List)
 			{
 				ret.add(new Brewing(effect, 0, effect.getDuration(), BrewingList.awkward));
@@ -257,28 +257,28 @@ public class ItemPotion2 extends Item
 		return par1 == 0;
 	}
 	
+	public float hue = 0;
 	@Override
 	public int getColorFromItemStack(ItemStack par1ItemStack, int par2)
 	{
+		//hue = (hue + 0.0005F);
+		//int color = Color.HSBtoRGB(hue, 1F, 1F);
 		if (par2 == 0 && par1ItemStack != null)
 		{
 			if (isWater(par1ItemStack.getItemDamage()))
 			{
 				return 0x0C0CFF;
 			}
-			List effects = getEffects(par1ItemStack);
+			List<Brewing> effects = getEffects(par1ItemStack);
 			if (effects != null && effects.size() > 0)
 			{
 				int[] i1 = new int[effects.size()];
 				
-				int i = 0;
 				for (int j = 0; j < effects.size(); j++)
 				{
-					Brewing b = (Brewing) effects.get(j);
-					i += b.getLiquidColor();
-					i1[j] = ((Brewing) effects.get(j)).getLiquidColor();
+					Brewing b = effects.get(j);
+					i1[j] = b instanceof BrewingBase ? 0x0C0CFF : b.getLiquidColor();
 				}
-				i /= effects.size() != 0 ? effects.size() : 1;
 				return PotionUtils.combineColors(i1);
 			}
 			else
