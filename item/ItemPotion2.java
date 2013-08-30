@@ -13,6 +13,7 @@ import clashsoft.brewingapi.brewing.BrewingBase;
 import clashsoft.brewingapi.brewing.BrewingList;
 import clashsoft.brewingapi.brewing.PotionUtils;
 import clashsoft.brewingapi.entity.EntityPotion2;
+import clashsoft.clashsoftapi.util.CSString;
 
 import com.google.common.collect.HashMultimap;
 
@@ -428,7 +429,7 @@ public class ItemPotion2 extends Item
 					
 					if (var7.getEffect() != null && var7.getEffect().getAmplifier() > 0)
 					{
-						builder.append(" ").append(StatCollector.translateToLocal("potion.potency." + var7.getEffect().getAmplifier()));
+						builder.append(" ").append(CSString.convertToRoman(var7.getEffect().getAmplifier() + 1));
 					}
 					if (var7.getEffect() != null && var7.getEffect().getDuration() > 20)
 					{
@@ -536,6 +537,7 @@ public class ItemPotion2 extends Item
 				{
 					par3List.add("");
 					par3List.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("potion.effects.whenDrank"));
+					
 					for (String key : hashmultimap.keys())
 					{
 						for (AttributeModifier attributemodifier2 : hashmultimap.get(key))
