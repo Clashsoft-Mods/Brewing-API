@@ -49,7 +49,9 @@ public class RenderPotion2 extends Render
 			
 			if (stack != null)
 			{
-				int i = potion.color; //((ItemPotion2) stack.getItem()).getColorFromItemStack(stack, 0);
+				int i = potion.color; // ((ItemPotion2)
+										// stack.getItem()).getColorFromItemStack(stack,
+										// 0);
 				float f2 = (i >> 16 & 255) / 255.0F;
 				float f3 = (i >> 8 & 255) / 255.0F;
 				float f4 = (i & 255) / 255.0F;
@@ -99,7 +101,7 @@ public class RenderPotion2 extends Render
 		par1Tessellator.addVertexWithUV(0.0F - f5, f4 - f6, 0.0D, f, f2);
 		par1Tessellator.draw();
 	}
-
+	
 	@Override
 	protected ResourceLocation getEntityTexture(Entity entity)
 	{

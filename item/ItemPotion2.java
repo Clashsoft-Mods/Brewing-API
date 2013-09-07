@@ -5,6 +5,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.lwjgl.input.Keyboard;
+
+import clashsoft.brewingapi.BrewingAPI;
+import clashsoft.brewingapi.brewing.Brewing;
+import clashsoft.brewingapi.brewing.BrewingBase;
+import clashsoft.brewingapi.brewing.BrewingList;
+import clashsoft.brewingapi.brewing.PotionUtils;
+import clashsoft.brewingapi.entity.EntityPotion2;
+import clashsoft.clashsoftapi.util.CSString;
+
+import com.google.common.collect.HashMultimap;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -25,21 +40,6 @@ import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-
-import org.lwjgl.input.Keyboard;
-
-import clashsoft.brewingapi.BrewingAPI;
-import clashsoft.brewingapi.brewing.Brewing;
-import clashsoft.brewingapi.brewing.BrewingBase;
-import clashsoft.brewingapi.brewing.BrewingList;
-import clashsoft.brewingapi.brewing.PotionUtils;
-import clashsoft.brewingapi.entity.EntityPotion2;
-import clashsoft.clashsoftapi.util.CSString;
-
-import com.google.common.collect.HashMultimap;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * @author Clashsoft
@@ -256,12 +256,13 @@ public class ItemPotion2 extends Item
 		return par1 == 0;
 	}
 	
-	public float hue = 0;
+	public float	hue	= 0;
+	
 	@Override
 	public int getColorFromItemStack(ItemStack par1ItemStack, int par2)
 	{
-		//hue = (hue + 0.0005F);
-		//int color = Color.HSBtoRGB(hue, 1F, 1F);
+		// hue = (hue + 0.0005F);
+		// int color = Color.HSBtoRGB(hue, 1F, 1F);
 		if (par2 == 0 && par1ItemStack != null)
 		{
 			if (isWater(par1ItemStack.getItemDamage()))
