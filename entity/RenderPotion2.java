@@ -1,12 +1,5 @@
 package clashsoft.brewingapi.entity;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
-import clashsoft.brewingapi.item.ItemPotion2;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -16,12 +9,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.util.ResourceLocation;
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
+import clashsoft.brewingapi.item.ItemPotion2;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 @SideOnly(Side.CLIENT)
 public class RenderPotion2 extends Render
 {
-	@SuppressWarnings("unused")
 	private ItemPotion2	item;
-	@SuppressWarnings("unused")
 	private int			metadata;
 	
 	public RenderPotion2(ItemPotion2 par1Item, int par2)
@@ -46,7 +44,7 @@ public class RenderPotion2 extends Render
 			GL11.glTranslatef((float) x, (float) y, (float) z);
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 			GL11.glScalef(0.5F, 0.5F, 0.5F);
-			this.func_110777_b(potion);
+			this.bindEntityTexture(potion);
 			Tessellator tessellator = Tessellator.instance;
 			
 			if (stack != null)
@@ -82,12 +80,6 @@ public class RenderPotion2 extends Render
 		renderPotion((EntityPotion2) par1Entity, par2, par4, par6, par8, par9);
 	}
 	
-	@Override
-	protected ResourceLocation func_110775_a(Entity par1Entity)
-	{
-		return TextureMap.field_110576_c;
-	}
-	
 	private void func_77026_a(Tessellator par1Tessellator, Icon par2Icon)
 	{
 		float f = par2Icon.getMinU();
@@ -106,5 +98,11 @@ public class RenderPotion2 extends Render
 		par1Tessellator.addVertexWithUV(f4 - f5, f4 - f6, 0.0D, f1, f2);
 		par1Tessellator.addVertexWithUV(0.0F - f5, f4 - f6, 0.0D, f, f2);
 		par1Tessellator.draw();
+	}
+
+	@Override
+	protected ResourceLocation getEntityTexture(Entity entity)
+	{
+		return TextureMap.locationItemsTexture;
 	}
 }

@@ -10,7 +10,7 @@ public class ItemGlassBottle2 extends ItemGlassBottle
 	public ItemGlassBottle2(int par1)
 	{
 		super(par1);
-		this.func_111206_d("potion");
+		this.setTextureName("potion");
 	}
 	
 	/**

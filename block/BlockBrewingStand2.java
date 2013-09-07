@@ -32,7 +32,7 @@ public class BlockBrewingStand2 extends BlockBrewingStand
 	public BlockBrewingStand2(int par1)
 	{
 		super(par1);
-		this.func_111022_d("brewing_stand");
+		this.setTextureName("brewing_stand");
 	}
 	
 	/**
@@ -258,7 +258,7 @@ public class BlockBrewingStand2 extends BlockBrewingStand
 	public void registerIcons(IconRegister par1IconRegister)
 	{
 		super.registerIcons(par1IconRegister);
-		this.texture = par1IconRegister.registerIcon(this.func_111023_E() + "_base");
+		this.texture = par1IconRegister.registerIcon(this.getTextureName() + "_base");
 	}
 	
 	@Override

@@ -166,6 +166,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 		return this.brewTime;
 	}
 	
+	@SuppressWarnings("deprecation")
 	private boolean canBrew()
 	{
 		boolean potionSlotsFilled = !(brewingItemStacks[0] == null && brewingItemStacks[1] == null && brewingItemStacks[2] == null);
@@ -323,6 +324,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void brewPotions()
 	{
 		if (this.canBrew())

@@ -9,6 +9,6 @@ public class ItemBrewingStand2 extends ItemReed
 	public ItemBrewingStand2(int id)
 	{
 		super(id, BrewingAPI.brewingStand2);
-		this.func_111206_d("brewing_stand");
+		this.setTextureName("brewing_stand");
 	}
 }

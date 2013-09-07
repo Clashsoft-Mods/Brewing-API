@@ -5,21 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.lwjgl.input.Keyboard;
-
-import clashsoft.brewingapi.BrewingAPI;
-import clashsoft.brewingapi.brewing.Brewing;
-import clashsoft.brewingapi.brewing.BrewingBase;
-import clashsoft.brewingapi.brewing.BrewingList;
-import clashsoft.brewingapi.brewing.PotionUtils;
-import clashsoft.brewingapi.entity.EntityPotion2;
-import clashsoft.clashsoftapi.util.CSString;
-
-import com.google.common.collect.HashMultimap;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -41,12 +26,26 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import org.lwjgl.input.Keyboard;
+
+import clashsoft.brewingapi.BrewingAPI;
+import clashsoft.brewingapi.brewing.Brewing;
+import clashsoft.brewingapi.brewing.BrewingBase;
+import clashsoft.brewingapi.brewing.BrewingList;
+import clashsoft.brewingapi.brewing.PotionUtils;
+import clashsoft.brewingapi.entity.EntityPotion2;
+import clashsoft.clashsoftapi.util.CSString;
+
+import com.google.common.collect.HashMultimap;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 /**
  * @author Clashsoft
  */
 public class ItemPotion2 extends Item
 {
-	@SuppressWarnings("unused")
 	private static boolean	SHOW_DOUBLE_POTIONS	= false;
 	public static boolean	SHIFT				= false;
 	private Icon			bottle;
@@ -59,7 +58,7 @@ public class ItemPotion2 extends Item
 		this.setMaxStackSize(BrewingAPI.potionStackSize);
 		this.setHasSubtypes(true);
 		this.setCreativeTab(CreativeTabs.tabBrewing);
-		this.func_111206_d("potion");
+		this.setTextureName("potion");
 	}
 	
 	@Override
@@ -232,9 +231,9 @@ public class ItemPotion2 extends Item
 	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
-		this.itemIcon = this.bottle = par1IconRegister.registerIcon(this.func_111208_A() + "_bottle_drinkable");
-		this.splashbottle = par1IconRegister.registerIcon(this.func_111208_A() + "_bottle_splash");
-		this.liquid = par1IconRegister.registerIcon(this.func_111208_A() + "_overlay");
+		this.itemIcon = this.bottle = par1IconRegister.registerIcon(this.getIconString() + "_bottle_drinkable");
+		this.splashbottle = par1IconRegister.registerIcon(this.getIconString() + "_bottle_splash");
+		this.liquid = par1IconRegister.registerIcon(this.getIconString() + "_overlay");
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -420,8 +419,8 @@ public class ItemPotion2 extends Item
 								AttributeModifier attributemodifier = (AttributeModifier) map.get(o);
 								if (attributemodifier != null)
 								{
-									AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.func_111166_b(), potion.func_111183_a(var7.getEffect().getAmplifier(), attributemodifier), attributemodifier.func_111169_c());
-									hashmultimap.put(((Attribute) o).func_111108_a(), attributemodifier1);
+									AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.func_111183_a(var7.getEffect().getAmplifier(), attributemodifier), attributemodifier.getOperation());
+									hashmultimap.put(((Attribute) o).getAttributeUnlocalizedName(), attributemodifier1);
 								}
 							}
 						}
@@ -542,26 +541,27 @@ public class ItemPotion2 extends Item
 					{
 						for (AttributeModifier attributemodifier2 : hashmultimap.get(key))
 						{
-							double d0 = attributemodifier2.func_111164_d();
+							int op = attributemodifier2.getOperation();
+							double d0 = attributemodifier2.getAmount();
 							double d1;
 							
-							if (attributemodifier2.func_111169_c() != 1 && attributemodifier2.func_111169_c() != 2)
+							if (op != 1 && op != 2)
 							{
-								d1 = attributemodifier2.func_111164_d();
+								d1 = d0;
 							}
 							else
 							{
-								d1 = attributemodifier2.func_111164_d() * 100.0D;
+								d1 = d0 * 100.0D;
 							}
 							
 							if (d0 > 0.0D)
 							{
-								par3List.add(EnumChatFormatting.BLUE + StatCollector.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.func_111169_c(), new Object[] { ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + key) }));
+								par3List.add(EnumChatFormatting.BLUE + StatCollector.translateToLocalFormatted("attribute.modifier.plus." + op, new Object[] { ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + key) }));
 							}
 							else if (d0 < 0.0D)
 							{
 								d1 *= -1.0D;
-								par3List.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.func_111169_c(), new Object[] { ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + key) }));
+								par3List.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + op, new Object[] { ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + key) }));
 							}
 						}
 					}
