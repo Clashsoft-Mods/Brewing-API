@@ -19,13 +19,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderPotion2 extends Render
 {
-	private ItemPotion2	item;
-	private int			metadata;
-	
 	public RenderPotion2(ItemPotion2 par1Item, int par2)
 	{
-		this.item = par1Item;
-		this.metadata = par2;
 	}
 	
 	public RenderPotion2(ItemPotion2 par1Item)

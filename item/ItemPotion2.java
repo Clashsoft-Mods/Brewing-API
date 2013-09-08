@@ -46,7 +46,6 @@ import net.minecraft.world.World;
  */
 public class ItemPotion2 extends Item
 {
-	private static boolean	SHOW_DOUBLE_POTIONS	= false;
 	public static boolean	SHIFT				= false;
 	private Icon			bottle;
 	public Icon				splashbottle;
