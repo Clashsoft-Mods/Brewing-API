@@ -156,7 +156,7 @@ public class BrewingAPI
 	{
 		try
 		{
-			Class.forName("clashsoft.clashsoftapi.ClashsoftMod");
+			Class.forName("clashsoft.clashsoftapi.util.CSUtil");
 			return true;
 		}
 		catch (ClassNotFoundException e)

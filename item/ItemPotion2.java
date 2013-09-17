@@ -370,10 +370,7 @@ public class ItemPotion2 extends Item
 	@Override
 	public FontRenderer getFontRenderer(ItemStack stack)
 	{
-		if (BrewingAPI.CLASHSOFT_API())
-			return clashsoft.clashsoftapi.util.CSFontRenderer.getFontRenderer();
-		else
-			return super.getFontRenderer(stack);
+		return super.getFontRenderer(stack);
 	}
 	
 	float	glowPos	= 0F;
@@ -480,20 +477,25 @@ public class ItemPotion2 extends Item
 					}
 					else
 					{
-						if (var5.size() == 1 && BrewingAPI.CLASHSOFT_API())
+						if (var5.size() == 1 && BrewingAPI.CLASHSOFT_API() && BrewingAPI.MORE_POTIONS_MOD())
 						{
 							for (Brewing b : var5)
 							{
 								if (b.getEffect() != null)
 								{
-									String s = StatCollector.translateToLocal(b.getEffect().getEffectName() + ".description");
-									if (!s.equals(b.getEffect().getEffectName() + ".description"))
+									String desc = b.getEffect().getEffectName() + ".description";
+									String s = StatCollector.translateToLocal(desc);
+									if (s != desc)
 									{
 										s = clashsoft.clashsoftapi.util.CSUtil.cutString(s, par1ItemStack.getDisplayName().length());
 										for (String s1 : clashsoft.clashsoftapi.util.CSUtil.makeLineList(s))
 										{
-											par3List.add((EnumChatFormatting.BLUE) + "\u00a7o" + s1);
+											par3List.add(EnumChatFormatting.BLUE + "" + EnumChatFormatting.ITALIC + s1);
 										}
+									}
+									else
+									{
+										par3List.add(EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("potion.description.missing"));
 									}
 								}
 							}

@@ -23,20 +23,20 @@ import net.minecraftforge.oredict.OreDictionary;
 public class Brewing implements Comparable<Brewing>
 {
 	/** List that stores ALL brewings **/
-	public static List<Brewing>						brewingList					= new LinkedList<Brewing>();
+	public static List<Brewing>						brewingList					= new ArrayList<Brewing>();
 	/** List that stores all brewings with good effects **/
-	public static List<Brewing>						goodEffects					= new LinkedList<Brewing>();
+	public static List<Brewing>						goodEffects					= new ArrayList<Brewing>();
 	/** List that stores all brewings with bad effects **/
-	public static List<Brewing>						badEffects					= new LinkedList<Brewing>();
+	public static List<Brewing>						badEffects					= new ArrayList<Brewing>();
 	/**
 	 * List that stores brewings that can be used together with other brewings
 	 * (e.g. Effect Remover potion is not inside)
 	 **/
-	public static List<Brewing>						combinableEffects			= new LinkedList<Brewing>();
+	public static List<Brewing>						combinableEffects			= new ArrayList<Brewing>();
 	/** List that stores all base brewing (e.g. awkward, mundane, ...) **/
-	public static List<BrewingBase>					baseBrewings				= new LinkedList<BrewingBase>();
+	public static List<BrewingBase>					baseBrewings				= new ArrayList<BrewingBase>();
 	/** List that stores all brewings with effects **/
-	public static List<Brewing>						effectBrewings				= new LinkedList<Brewing>();
+	public static List<Brewing>						effectBrewings				= new ArrayList<Brewing>();
 	
 	/** Version identifier for NBTs. **/
 	public static String							NBTVersion					= "1.0.1";
