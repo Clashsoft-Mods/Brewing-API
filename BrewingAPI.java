@@ -18,6 +18,7 @@ import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.lib.BAPICreativeTabs;
 import clashsoft.brewingapi.lib.DispenserBehaviorPotion2;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
+import clashsoft.clashsoftapi.util.CSUtil;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -31,6 +32,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -39,12 +41,16 @@ import net.minecraft.src.ModLoader;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
-@Mod(modid = "BrewingAPI", name = "Brewing API", version = "1.6.2")
+@Mod(modid = "BrewingAPI", name = "Brewing API", version = BrewingAPI.VERSION)
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class BrewingAPI
 {
+	public static final int			REVISION				= 0;
+	public static final String		VERSION					= CSUtil.CURRENT_VERION + "-" + REVISION;
+	
 	@Instance("BrewingAPI")
 	public static BrewingAPI		instance;
 	
@@ -124,6 +130,17 @@ public class BrewingAPI
 		
 		if (multiPotions)
 			potions.setIconItemStack(BrewingList.damageBoost.addBrewingToItemStack(new ItemStack(BrewingAPI.potion2, 0, 1)));
+	}
+	
+	@ForgeSubscribe
+	public void playerJoined(EntityJoinWorldEvent event)
+	{
+		if (event.entity instanceof EntityPlayer)
+		{	
+			String nextVersion = CSUtil.checkForUpdate("bapi", CSUtil.CLASHSOFT_ADFLY, VERSION);
+			if (nextVersion != VERSION)
+				((EntityPlayer) event.entity).addChatMessage("A new Brewing API version is available: " + nextVersion + ". You are using " + VERSION);
+		}
 	}
 	
 	public static void load()
