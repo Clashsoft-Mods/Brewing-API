@@ -48,7 +48,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class BrewingAPI
 {
-	public static final int			REVISION				= 0;
+	public static final int			REVISION				= 2;
 	public static final String		VERSION					= CSUtil.CURRENT_VERION + "-" + REVISION;
 	
 	@Instance("BrewingAPI")
@@ -135,7 +135,7 @@ public class BrewingAPI
 	@ForgeSubscribe
 	public void playerJoined(EntityJoinWorldEvent event)
 	{
-		if (event.entity instanceof EntityPlayer)
+		if (event.entity instanceof EntityPlayer && CLASHSOFT_API())
 		{	
 			String nextVersion = CSUtil.checkForUpdate("bapi", CSUtil.CLASHSOFT_ADFLY, VERSION);
 			if (nextVersion != VERSION)
