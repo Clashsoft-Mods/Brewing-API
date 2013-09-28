@@ -19,6 +19,7 @@ import clashsoft.brewingapi.lib.BAPICreativeTabs;
 import clashsoft.brewingapi.lib.DispenserBehaviorPotion2;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
 import clashsoft.clashsoftapi.util.CSUtil;
+import clashsoft.clashsoftapi.util.update.ModUpdate;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -137,9 +138,8 @@ public class BrewingAPI
 	{
 		if (event.entity instanceof EntityPlayer && CLASHSOFT_API())
 		{	
-			String nextVersion = CSUtil.checkForUpdate("bapi", CSUtil.CLASHSOFT_ADFLY, VERSION);
-			if (nextVersion != VERSION)
-				((EntityPlayer) event.entity).addChatMessage("A new Brewing API version is available: " + nextVersion + ". You are using " + VERSION);
+			ModUpdate update = CSUtil.checkForUpdate("bapi", CSUtil.CLASHSOFT_ADFLY, BrewingAPI.VERSION);
+			CSUtil.notifyUpdate((EntityPlayer) event.entity, "Brewing API", update);
 		}
 	}
 	
