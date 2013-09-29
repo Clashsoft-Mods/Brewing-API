@@ -18,7 +18,7 @@ import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.lib.BAPICreativeTabs;
 import clashsoft.brewingapi.lib.DispenserBehaviorPotion2;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
-import clashsoft.clashsoftapi.util.CSUtil;
+import clashsoft.clashsoftapi.util.CSUpdate;
 import clashsoft.clashsoftapi.util.update.ModUpdate;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -50,7 +50,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 public class BrewingAPI
 {
 	public static final int			REVISION				= 2;
-	public static final String		VERSION					= CSUtil.CURRENT_VERION + "-" + REVISION;
+	public static final String		VERSION					= CSUpdate.CURRENT_VERION + "-" + REVISION;
 	
 	@Instance("BrewingAPI")
 	public static BrewingAPI		instance;
@@ -138,8 +138,8 @@ public class BrewingAPI
 	{
 		if (event.entity instanceof EntityPlayer && CLASHSOFT_API())
 		{	
-			ModUpdate update = CSUtil.checkForUpdate("bapi", CSUtil.CLASHSOFT_ADFLY, BrewingAPI.VERSION);
-			CSUtil.notifyUpdate((EntityPlayer) event.entity, "Brewing API", update);
+			ModUpdate update = CSUpdate.checkForUpdate("Brewing API", "bapi", BrewingAPI.VERSION);
+			CSUpdate.notifyUpdate((EntityPlayer) event.entity, "Brewing API", update);
 		}
 	}
 	
