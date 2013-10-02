@@ -53,7 +53,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class BrewingAPI
 {
-	public static final int			REVISION				= 3;
+	public static final int			REVISION				= 4;
 	public static final String		VERSION					= CSUpdate.CURRENT_VERION + "-" + REVISION;
 	
 	@Instance("BrewingAPI")
