@@ -11,6 +11,7 @@ import clashsoft.brewingapi.api.IPotionEffectHandler;
 import clashsoft.brewingapi.block.BlockBrewingStand2;
 import clashsoft.brewingapi.brewing.Brewing;
 import clashsoft.brewingapi.brewing.BrewingList;
+import clashsoft.brewingapi.command.CommandGivePotion;
 import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.item.ItemBrewingStand2;
 import clashsoft.brewingapi.item.ItemGlassBottle2;
@@ -26,12 +27,15 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 
 import net.minecraft.block.Block;
+import net.minecraft.command.ServerCommandManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -129,8 +133,20 @@ public class BrewingAPI
 		proxy.registerRenderInformation();
 		proxy.registerRenderers();
 		
+		LanguageRegistry.instance().addStringLocalization("commands.givepotion.usage", "/givepotion <player> <effect> [seconds] [amplifier] [splash]");
+		LanguageRegistry.instance().addStringLocalization("commands.givepotion.success", "Given Potion (%1\u0024s (ID %2\u0024d) level %3\u0024d for %5\u0024d seconds) to %4\u0024s.");
+		LanguageRegistry.instance().addStringLocalization("commands.givepotion.success.splash", "Given Splash Potion (%1\u0024s (ID %2\u0024d) level %3\u0024d for %5\u0024d seconds) to %4\u0024s.");
+		
+		
 		if (multiPotions)
 			potions.setIconItemStack(BrewingList.damageBoost.addBrewingToItemStack(new ItemStack(BrewingAPI.potion2, 0, 1)));
+	}
+	
+	@EventHandler
+	public void serverStart(FMLServerStartingEvent event)
+	{
+		ServerCommandManager command = (ServerCommandManager)event.getServer().getCommandManager();
+		command.registerCommand(new CommandGivePotion());
 	}
 	
 	@ForgeSubscribe

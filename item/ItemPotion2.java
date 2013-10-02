@@ -487,8 +487,8 @@ public class ItemPotion2 extends Item
 									String s = StatCollector.translateToLocal(desc);
 									if (s != desc)
 									{
-										s = clashsoft.clashsoftapi.util.CSUtil.cutString(s, par1ItemStack.getDisplayName().length());
-										for (String s1 : clashsoft.clashsoftapi.util.CSUtil.makeLineList(s))
+										s = clashsoft.clashsoftapi.util.CSString.cutString(s, par1ItemStack.getDisplayName().length());
+										for (String s1 : clashsoft.clashsoftapi.util.CSString.makeLineList(s))
 										{
 											par3List.add(EnumChatFormatting.BLUE + "" + EnumChatFormatting.ITALIC + s1);
 										}
