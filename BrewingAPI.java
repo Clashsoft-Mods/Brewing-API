@@ -19,8 +19,8 @@ import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.lib.BAPICreativeTabs;
 import clashsoft.brewingapi.lib.DispenserBehaviorPotion2;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
-import clashsoft.clashsoftapi.util.CSUpdate;
-import clashsoft.clashsoftapi.util.update.ModUpdate;
+import clashsoft.cslib.minecraft.update.CSUpdate;
+import clashsoft.cslib.minecraft.update.ModUpdate;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -35,6 +35,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDispenser;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,7 +43,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.src.ModLoader;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -54,7 +54,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 public class BrewingAPI
 {
 	public static final int			REVISION				= 4;
-	public static final String		VERSION					= CSUpdate.CURRENT_VERION + "-" + REVISION;
+	public static final String		VERSION					= CSUpdate.CURRENT_VERSION + "-" + REVISION;
 	
 	@Instance("BrewingAPI")
 	public static BrewingAPI		instance;
@@ -117,7 +117,7 @@ public class BrewingAPI
 		
 		Block.blocksList[Block.brewingStand.blockID] = null;
 		brewingStand2 = (new BlockBrewingStand2(Block.brewingStand.blockID)).setHardness(0.5F).setLightValue(0.125F).setUnlocalizedName("brewingStand");
-		ModLoader.registerBlock(brewingStand2);
+		GameRegistry.registerBlock(brewingStand2, "BAPIBrewingStand");
 		
 		Item.itemsList[Item.brewingStand.itemID] = null;
 		brewingStand2Item = (new ItemBrewingStand2(123)).setUnlocalizedName("brewingStand").setCreativeTab(CreativeTabs.tabBrewing);
@@ -129,7 +129,7 @@ public class BrewingAPI
 		glassBottle2 = (ItemGlassBottle2) (new ItemGlassBottle2(118)).setUnlocalizedName("glassBottle");
 		
 		MinecraftForge.EVENT_BUS.register(this);
-		ModLoader.addDispenserBehavior(potion2, new DispenserBehaviorPotion2());
+		BlockDispenser.dispenseBehaviorRegistry.putObject(potion2, new DispenserBehaviorPotion2());
 		proxy.registerRenderInformation();
 		proxy.registerRenderers();
 		

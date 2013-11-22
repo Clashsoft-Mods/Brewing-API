@@ -13,7 +13,7 @@ import clashsoft.brewingapi.brewing.BrewingBase;
 import clashsoft.brewingapi.brewing.BrewingList;
 import clashsoft.brewingapi.brewing.PotionUtils;
 import clashsoft.brewingapi.entity.EntityPotion2;
-import clashsoft.clashsoftapi.util.CSString;
+import clashsoft.cslib.util.CSString;
 
 import com.google.common.collect.HashMultimap;
 
@@ -443,9 +443,9 @@ public class ItemPotion2 extends Item
 						builder.delete(0, builder.length());
 						String colorLight = "";
 						String colorDark = "";
-						if (BrewingAPI.CLASHSOFT_API() && var7.getEffect() != null && Potion.potionTypes[var7.getEffect().getPotionID()] instanceof clashsoft.clashsoftapi.CustomPotion && ((clashsoft.clashsoftapi.CustomPotion) (Potion.potionTypes[var7.getEffect().getPotionID()])).getCustomColor() >= 0)
+						if (BrewingAPI.CLASHSOFT_API() && var7.getEffect() != null && Potion.potionTypes[var7.getEffect().getPotionID()] instanceof clashsoft.cslib.minecraft.CustomPotion && ((clashsoft.cslib.minecraft.CustomPotion) (Potion.potionTypes[var7.getEffect().getPotionID()])).getCustomColor() >= 0)
 						{
-							int c = ((clashsoft.clashsoftapi.CustomPotion) Potion.potionTypes[var7.getEffect().getPotionID()]).getCustomColor();
+							int c = ((clashsoft.cslib.minecraft.CustomPotion) Potion.potionTypes[var7.getEffect().getPotionID()]).getCustomColor();
 							colorLight = "\u00a7" + Integer.toHexString(c >= 8 ? c : c + 8);
 							colorDark = "\u00a7" + Integer.toHexString(c);
 							
@@ -487,8 +487,8 @@ public class ItemPotion2 extends Item
 									String s = StatCollector.translateToLocal(desc);
 									if (s != desc)
 									{
-										s = clashsoft.clashsoftapi.util.CSString.cutString(s, par1ItemStack.getDisplayName().length());
-										for (String s1 : clashsoft.clashsoftapi.util.CSString.makeLineList(s))
+										s = clashsoft.cslib.util.CSString.cutString(s, par1ItemStack.getDisplayName().length());
+										for (String s1 : clashsoft.cslib.util.CSString.makeLineList(s))
 										{
 											par3List.add(EnumChatFormatting.BLUE + "" + EnumChatFormatting.ITALIC + s1);
 										}

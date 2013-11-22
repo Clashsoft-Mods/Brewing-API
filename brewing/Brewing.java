@@ -157,9 +157,9 @@ public class Brewing implements Comparable<Brewing>
 			}
 			if (BrewingAPI.CLASHSOFT_API())
 			{
-				if (Potion.potionTypes[this.getEffect().getPotionID()] instanceof clashsoft.clashsoftapi.CustomPotion)
+				if (Potion.potionTypes[this.getEffect().getPotionID()] instanceof clashsoft.cslib.minecraft.CustomPotion)
 				{
-					return ((clashsoft.clashsoftapi.CustomPotion) Potion.potionTypes[this.getEffect().getPotionID()]).getIsGoodOrNotGoodEffect();
+					return ((clashsoft.cslib.minecraft.CustomPotion) Potion.potionTypes[this.getEffect().getPotionID()]).getIsGoodOrNotGoodEffect();
 				}
 			}
 		}
@@ -523,26 +523,20 @@ public class Brewing implements Comparable<Brewing>
 	{
 		if (par1 != null)
 		{
-			if (BrewingBase.getBrewingBaseFromIngredient(par1) != null)
-			{
-				return BrewingBase.getBrewingBaseFromIngredient(par1);
-			}
+			BrewingBase base = BrewingBase.getBrewingBaseFromIngredient(par1);
+			if (base != null)
+				return base;
 			for (Brewing b : brewingList)
 			{
 				if (b.getIngredient() != null)
 				{
 					// Include Ore Dictionary
 					if (OreDictionary.itemMatches(b.getIngredient(), par1, true))
-					{
 						return b;
-					}
 					if (b.getIngredient().getItem() == par1.getItem() && b.getIngredient().getItemDamage() == par1.getItemDamage())
-					{
 						return b;
-					}
 				}
 			}
-			
 		}
 		return null;
 	}
@@ -742,20 +736,20 @@ public class Brewing implements Comparable<Brewing>
 	@Override
 	public String toString()
 	{
-		String s = "Brewing{";
+		StringBuilder s = new StringBuilder("Brewing{");
 		if (this.getEffect() != null)
-			s += "PotionEffect<" + this.getEffect().getPotionID() + " [" + this.getEffect().getDuration() + "] x " + this.getEffect().getAmplifier() + ">";
-		s += "MaxValues<[" + this.getMaxDuration() + "] x " + this.getMaxAmplifier() + ">";
+			s.append("PotionEffect<").append(this.getEffect().getPotionID()).append(" [").append(this.getEffect().getDuration()).append("] x ").append(this.getEffect().getAmplifier()).append(">");
+		s.append("MaxValues<[").append(this.getMaxDuration()).append("] x ").append(this.getMaxAmplifier()).append(">");
 		if (this.getOpposite() != null)
-			s += "Opposite<" + this.getOpposite().toString() + ">";
+			s.append("Opposite<").append(this.getOpposite().toString()).append(">");
 		if (this.getIngredient() != null)
-			s += "Ingredient<" + this.getIngredient().itemID + ":" + this.getIngredient().getItemDamage() + ">";
+			s.append("Ingredient<").append(this.getIngredient().itemID).append(":").append(this.getIngredient().getItemDamage()).append(">");
 		if (this.getBase() != null)
-			s += "Base<" + this.getBase().toString() + ">";
+			s.append("Base<").append(this.getBase().toString()).append(">");
 		if (this.getEffect() != null)
-			s += "Name<" + this.getEffect().getEffectName() + ">";
-		s += "}";
-		return s;
+			s.append("Name<").append(this.getEffect().getEffectName()).append(">");
+		s.append("}");
+		return s.toString();
 	}
 	
 	public static Collection<Brewing> removeDuplicates(Collection<Brewing> list)
@@ -775,9 +769,7 @@ public class Brewing implements Comparable<Brewing>
 					}
 				}
 				if (!duplicate)
-				{
 					result.add(b);
-				}
 			}
 			return result;
 		}
@@ -801,9 +793,7 @@ public class Brewing implements Comparable<Brewing>
 					}
 				}
 				if (!duplicate)
-				{
 					result.add(b);
-				}
 			}
 			return result;
 		}

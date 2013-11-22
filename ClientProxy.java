@@ -15,8 +15,6 @@ import net.minecraft.world.World;
 
 public class ClientProxy extends CommonProxy
 {
-	public static int	mixerRenderType;
-	public static int	cauldronRenderType;
 	public static int	splashpotioncolor;
 	
 	@Override
