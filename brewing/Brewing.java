@@ -155,7 +155,7 @@ public class Brewing implements Comparable<Brewing>
 			case 20:
 				return true;
 			}
-			if (BrewingAPI.CLASHSOFT_API())
+			if (BrewingAPI.isClashsoftLibInstalled())
 			{
 				if (Potion.potionTypes[this.getEffect().getPotionID()] instanceof clashsoft.cslib.minecraft.CustomPotion)
 				{

@@ -3,6 +3,7 @@ package clashsoft.brewingapi;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -137,7 +138,6 @@ public class BrewingAPI
 		LanguageRegistry.instance().addStringLocalization("commands.givepotion.success", "Given Potion (%1\u0024s (ID %2\u0024d) level %3\u0024d for %5\u0024d seconds) to %4\u0024s.");
 		LanguageRegistry.instance().addStringLocalization("commands.givepotion.success.splash", "Given Splash Potion (%1\u0024s (ID %2\u0024d) level %3\u0024d for %5\u0024d seconds) to %4\u0024s.");
 		
-		
 		if (multiPotions)
 			potions.setIconItemStack(BrewingList.damageBoost.addBrewingToItemStack(new ItemStack(BrewingAPI.potion2, 0, 1)));
 	}
@@ -145,15 +145,15 @@ public class BrewingAPI
 	@EventHandler
 	public void serverStart(FMLServerStartingEvent event)
 	{
-		ServerCommandManager command = (ServerCommandManager)event.getServer().getCommandManager();
+		ServerCommandManager command = (ServerCommandManager) event.getServer().getCommandManager();
 		command.registerCommand(new CommandGivePotion());
 	}
 	
 	@ForgeSubscribe
 	public void playerJoined(EntityJoinWorldEvent event)
 	{
-		if (event.entity instanceof EntityPlayer && CLASHSOFT_API())
-		{	
+		if (event.entity instanceof EntityPlayer && isClashsoftLibInstalled())
+		{
 			ModUpdate update = CSUpdate.checkForUpdate("Brewing API", "bapi", BrewingAPI.VERSION);
 			CSUpdate.notifyUpdate((EntityPlayer) event.entity, "Brewing API", update);
 		}
@@ -172,12 +172,17 @@ public class BrewingAPI
 	
 	// API Stuff
 	
-	public static boolean MORE_POTIONS_MOD()
+	public static boolean	MORE_POTIONS_MOD	= false;
+	
+	public static boolean isMorePotionsModInstalled()
 	{
+		if (MORE_POTIONS_MOD)
+			return true;
+		
 		try
 		{
-			Class.forName("clashsoft.mods.morepotions.MorePotionsMod");
-			return true;
+			Class.forName("clashsoft.mods.morepotions.MorePotionsMod", false, ClassLoader.getSystemClassLoader());
+			return MORE_POTIONS_MOD = true;
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -185,12 +190,17 @@ public class BrewingAPI
 		}
 	}
 	
-	public static boolean CLASHSOFT_API()
+	public static boolean	CLASHSOFT_LIB	= false;
+	
+	public static boolean isClashsoftLibInstalled()
 	{
+		if (CLASHSOFT_LIB)
+			return true;
+		
 		try
 		{
-			Class.forName("clashsoft.clashsoftapi.util.CSUtil");
-			return true;
+			Class.forName("clashsoft.cslib.util.CSUtil", false, ClassLoader.getSystemClassLoader());
+			return CLASHSOFT_LIB = true;
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -229,28 +239,39 @@ public class BrewingAPI
 	@ForgeSubscribe
 	public void onEntityUpdate(LivingUpdateEvent event)
 	{
-		Collection c = event.entityLiving.getActivePotionEffects();
-		for (IPotionEffectHandler handler : effectHandlers)
+		if (event.entityLiving != null && !event.entityLiving.worldObj.isRemote)
 		{
-			for (Object effect : c)
+			Collection<PotionEffect> c = event.entityLiving.getActivePotionEffects();
+			for (IPotionEffectHandler handler : effectHandlers)
 			{
-				if (handler.canHandle((PotionEffect) effect))
+				try
 				{
-					handler.onPotionUpdate(event.entityLiving, (PotionEffect) effect);
+					for (PotionEffect effect : c)
+					{
+						if (handler.canHandle(effect))
+						{
+							handler.onPotionUpdate(event.entityLiving, effect);
+						}
+					}
 				}
+				catch (ConcurrentModificationException ex)
+				{
+					
+				}
+				
+				List<PotionEffect> addqueue = handler.getAddQueue();
+				for (PotionEffect pe : addqueue)
+				{
+					event.entityLiving.addPotionEffect(pe);
+				}
+				handler.clearRemoveQueue();
+				List<Integer> removequeue = handler.getRemoveQueue();
+				for (int i : removequeue)
+				{
+					event.entityLiving.removePotionEffect(i);
+				}
+				handler.clearRemoveQueue();
 			}
-			List<PotionEffect> addqueue = handler.getAddQueue();
-			for (PotionEffect pe : addqueue)
-			{
-				event.entityLiving.addPotionEffect(pe);
-			}
-			handler.clearRemoveQueue();
-			List<Integer> removequeue = handler.getRemoveQueue();
-			for (int i : removequeue)
-			{
-				event.entityLiving.removePotionEffect(i);
-			}
-			handler.clearRemoveQueue();
 		}
 	}
 	

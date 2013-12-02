@@ -1,9 +1,6 @@
 package clashsoft.brewingapi.item;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.lwjgl.input.Keyboard;
 
@@ -15,7 +12,8 @@ import clashsoft.brewingapi.brewing.PotionUtils;
 import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.cslib.util.CSString;
 
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.TreeMultimap;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -46,10 +44,18 @@ import net.minecraft.world.World;
  */
 public class ItemPotion2 extends Item
 {
-	public static boolean	SHIFT				= false;
-	private Icon			bottle;
-	public Icon				splashbottle;
-	private Icon			liquid;
+	public static final Comparator<AttributeModifier>	MODIFIER_COMPARATOR	= new Comparator<AttributeModifier>()
+																			{
+																				public int compare(AttributeModifier o1, AttributeModifier o2)
+																				{
+																					return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
+																				};
+																			};
+	
+	public static boolean								SHIFT				= false;
+	private Icon										bottle;
+	public Icon											splashbottle;
+	private Icon										liquid;
 	
 	public ItemPotion2(int par1)
 	{
@@ -255,13 +261,9 @@ public class ItemPotion2 extends Item
 		return par1 == 0;
 	}
 	
-	public float	hue	= 0;
-	
 	@Override
 	public int getColorFromItemStack(ItemStack par1ItemStack, int par2)
 	{
-		// hue = (hue + 0.0005F);
-		// int color = Color.HSBtoRGB(hue, 1F, 1F);
 		if (par2 == 0 && par1ItemStack != null)
 		{
 			if (isWater(par1ItemStack.getItemDamage()))
@@ -373,84 +375,78 @@ public class ItemPotion2 extends Item
 		return super.getFontRenderer(stack);
 	}
 	
-	float	glowPos	= 0F;
+	private static int	glowPos	= 0;
 	
 	@Override
 	@SideOnly(Side.CLIENT)
 	/**
 	 * allows items to add custom lines of information to the mouseover description
 	 */
-	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
+	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List list, boolean par4)
 	{
 		if (!isWater(par1ItemStack.getItemDamage()))
 		{
-			List<Brewing> var5 = this.getEffects(par1ItemStack);
-			HashMultimap<String, AttributeModifier> hashmultimap = HashMultimap.create();
+			List<Brewing> brewings = this.getEffects(par1ItemStack);
+			Multimap<String, AttributeModifier> hashmultimap = TreeMultimap.create(String.CASE_INSENSITIVE_ORDER, MODIFIER_COMPARATOR);
 			
-			if (var5 != null && !var5.isEmpty())
+			if (brewings != null && !brewings.isEmpty())
 			{
-				int longestString = this.getItemDisplayName(par1ItemStack).length() + 10;
-				glowPos += 0.25F;
-				if (glowPos >= longestString)
+				int maxGlowPos = this.getItemDisplayName(par1ItemStack).length() + 10;
+				glowPos++;
+				if (glowPos > maxGlowPos * 4)
 					glowPos = 0;
-				for (int i = 0; i < var5.size(); i++)
+				for (int i = 0; i < brewings.size(); i++)
 				{
-					Brewing var7 = var5.get(i);
-					boolean isNormalEffect = var7.getEffect() != null && var7.getEffect().getPotionID() > 0;
-					String var8 = (isNormalEffect ? StatCollector.translateToLocal(var7.getEffect().getEffectName()) : "\u00a77" + StatCollector.translateToLocal("potion.empty")).trim();
-					StringBuilder builder = new StringBuilder(var8);
-					int randPos = 0;
+					Brewing brewing = brewings.get(i);
+					boolean isNormalEffect = brewing.getEffect() != null && brewing.getEffect().getPotionID() > 0;
+					String effectName = (isNormalEffect ? StatCollector.translateToLocal(brewing.getEffect().getEffectName()) : "\u00a77" + StatCollector.translateToLocal("potion.empty")).trim();
+					StringBuilder builder = new StringBuilder(effectName);
 					
-					/*
-					 * Fills the Attribute List Map
-					 */
-					if (var7.getEffect() != null)
+					if (brewing.getEffect() != null)
 					{
-						Potion potion = Potion.potionTypes[var7.getEffect().getPotionID()];
+						Potion potion = Potion.potionTypes[brewing.getEffect().getPotionID()];
 						Map map = potion.func_111186_k();
 						
 						if (map != null && map.size() > 0)
 						{
-							for (Object o : map.keySet())
+							for (Object object : map.keySet())
 							{
-								AttributeModifier attributemodifier = (AttributeModifier) map.get(o);
+								AttributeModifier attributemodifier = (AttributeModifier) map.get(object);
 								if (attributemodifier != null)
 								{
-									AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.func_111183_a(var7.getEffect().getAmplifier(), attributemodifier), attributemodifier.getOperation());
-									hashmultimap.put(((Attribute) o).getAttributeUnlocalizedName(), attributemodifier1);
+									AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.func_111183_a(brewing.getEffect().getAmplifier(), attributemodifier), attributemodifier.getOperation());
+									hashmultimap.put(((Attribute) object).getAttributeUnlocalizedName(), attributemodifier1);
 								}
 							}
 						}
 					}
 					
-					if (var7.getEffect() != null && var7.getEffect().getAmplifier() > 0)
-					{
-						builder.append(" ").append(CSString.convertToRoman(var7.getEffect().getAmplifier() + 1));
-					}
-					if (var7.getEffect() != null && var7.getEffect().getDuration() > 20)
-					{
-						builder.append(" (").append(var7.getEffect().getDuration() >= 1000000 ? StatCollector.translateToLocal("potion.infinite") : Potion.getDurationString(var7.getEffect())).append(")");
-					}
+					if (brewing.getEffect() != null && brewing.getEffect().getAmplifier() > 0)
+						builder.append(" ").append(CSString.convertToRoman(brewing.getEffect().getAmplifier() + 1));
+					if (brewing.getEffect() != null && brewing.getEffect().getDuration() > 20)
+						builder.append(" (").append(brewing.getEffect().getDuration() >= 1000000 ? StatCollector.translateToLocal("potion.infinite") : Potion.getDurationString(brewing.getEffect())).append(")");
 					
-					int glowPos2 = MathHelper.floor_float(glowPos) < var8.length() ? MathHelper.floor_float(glowPos) : var8.length();
+					int glowPosInt = glowPos / 4;
+					if (glowPosInt >= builder.length())
+						glowPosInt = builder.length();
 					
-					String var10 = builder.substring(0, glowPos2);
-					String var11 = glowPos2 < builder.length() ? String.valueOf(builder.charAt(glowPos2)) : "";
-					String var12 = glowPos2 + 1 < builder.length() ? builder.substring(glowPos2 + 1) : "";
+					String glowString1 = builder.substring(0, glowPosInt);
+					String glowString2 = glowPosInt < builder.length() ? String.valueOf(builder.charAt(glowPosInt)) : "";
+					String glowString3 = glowPosInt + 1 < builder.length() ? builder.substring(glowPosInt + 1) : "";
 					
 					if (isNormalEffect)
 					{
 						builder.delete(0, builder.length());
 						String colorLight = "";
 						String colorDark = "";
-						if (BrewingAPI.CLASHSOFT_API() && var7.getEffect() != null && Potion.potionTypes[var7.getEffect().getPotionID()] instanceof clashsoft.cslib.minecraft.CustomPotion && ((clashsoft.cslib.minecraft.CustomPotion) (Potion.potionTypes[var7.getEffect().getPotionID()])).getCustomColor() >= 0)
+						if (BrewingAPI.isClashsoftLibInstalled() && brewing.getEffect() != null && Potion.potionTypes[brewing.getEffect().getPotionID()] instanceof clashsoft.cslib.minecraft.CustomPotion && ((clashsoft.cslib.minecraft.CustomPotion) (Potion.potionTypes[brewing.getEffect().getPotionID()])).getCustomColor() >= 0)
 						{
-							int c = ((clashsoft.cslib.minecraft.CustomPotion) Potion.potionTypes[var7.getEffect().getPotionID()]).getCustomColor();
-							colorLight = "\u00a7" + Integer.toHexString(c >= 8 ? c : c + 8);
+							int c = ((clashsoft.cslib.minecraft.CustomPotion) Potion.potionTypes[brewing.getEffect().getPotionID()]).getCustomColor();
+							colorLight = "\u00a7" + Integer.toHexString((c + 8) & 15);
 							colorDark = "\u00a7" + Integer.toHexString(c);
 							
 						}
-						else if (var7.isBadEffect())
+						else if (brewing.isBadEffect())
 						{
 							colorLight = EnumChatFormatting.RED.toString();
 							colorDark = EnumChatFormatting.DARK_RED.toString();
@@ -460,9 +456,9 @@ public class ItemPotion2 extends Item
 							colorLight = EnumChatFormatting.GREEN.toString();
 							colorDark = EnumChatFormatting.DARK_GREEN.toString();
 						}
-						builder.append(colorDark).append(var10).append(colorLight).append(var11).append(colorDark).append(var12);
+						builder.append(colorDark).append(glowString1).append(colorLight).append(glowString2).append(colorDark).append(glowString3);
 					}
-					par3List.add(builder.toString());
+					list.add(builder.toString());
 				}
 				/*
 				 * Advanced Potion Info
@@ -472,14 +468,14 @@ public class ItemPotion2 extends Item
 					List<String> usedTo = PotionUtils.getUsedTo(par1ItemStack);
 					if (!usedTo.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 					{
-						par3List.add(StatCollector.translateToLocal("potion.useto") + ":");
-						par3List.addAll(usedTo);
+						list.add(StatCollector.translateToLocal("potion.useto") + ":");
+						list.addAll(usedTo);
 					}
 					else
 					{
-						if (var5.size() == 1 && BrewingAPI.CLASHSOFT_API() && BrewingAPI.MORE_POTIONS_MOD())
+						if (brewings.size() == 1 && BrewingAPI.isClashsoftLibInstalled() && BrewingAPI.isMorePotionsModInstalled())
 						{
-							for (Brewing b : var5)
+							for (Brewing b : brewings)
 							{
 								if (b.getEffect() != null)
 								{
@@ -490,44 +486,44 @@ public class ItemPotion2 extends Item
 										s = clashsoft.cslib.util.CSString.cutString(s, par1ItemStack.getDisplayName().length());
 										for (String s1 : clashsoft.cslib.util.CSString.makeLineList(s))
 										{
-											par3List.add(EnumChatFormatting.BLUE + "" + EnumChatFormatting.ITALIC + s1);
+											list.add(EnumChatFormatting.BLUE + "" + EnumChatFormatting.ITALIC + s1);
 										}
 									}
 									else
 									{
-										par3List.add(EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("potion.description.missing"));
+										list.add(EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + StatCollector.translateToLocal("potion.description.missing"));
 									}
 								}
 							}
 						}
-						if (var5.size() > 1)
+						if (brewings.size() > 1)
 						{
 							String green = (EnumChatFormatting.GREEN) + "\u00a7o";
 							String red = (EnumChatFormatting.RED) + "\u00a7o";
 							
-							int goodEffects = PotionUtils.getGoodEffects(var5);
-							float goodEffectsPercentage = (float) goodEffects / (float) var5.size() * 100;
-							int badEffects = PotionUtils.getBadEffects(var5);
-							float badEffectsPercentage = (float) badEffects / (float) var5.size() * 100;
-							int averageAmplifier = PotionUtils.getAverageAmplifier(var5);
-							int averageDuration = PotionUtils.getAverageDuration(var5);
-							int maxAmplifier = PotionUtils.getMaxAmplifier(var5);
-							int maxDuration = PotionUtils.getMaxDuration(var5);
+							int goodEffects = PotionUtils.getGoodEffects(brewings);
+							float goodEffectsPercentage = (float) goodEffects / (float) brewings.size() * 100;
+							int badEffects = PotionUtils.getBadEffects(brewings);
+							float badEffectsPercentage = (float) badEffects / (float) brewings.size() * 100;
+							int averageAmplifier = PotionUtils.getAverageAmplifier(brewings);
+							int averageDuration = PotionUtils.getAverageDuration(brewings);
+							int maxAmplifier = PotionUtils.getMaxAmplifier(brewings);
+							int maxDuration = PotionUtils.getMaxDuration(brewings);
 							
 							if (goodEffects > 1)
-								par3List.add((EnumChatFormatting.GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.goodeffects") + ": " + green + goodEffects + " (" + String.format("%.1f", goodEffectsPercentage) + "%)");
+								list.add((EnumChatFormatting.GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.goodeffects") + ": " + green + goodEffects + " (" + String.format("%.1f", goodEffectsPercentage) + "%)");
 							if (badEffects > 1)
-								par3List.add((EnumChatFormatting.GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.negativeEffects") + ": " + red + badEffects + " (" + String.format("%.1f", badEffectsPercentage) + "%)");
+								list.add((EnumChatFormatting.GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.negativeEffects") + ": " + red + badEffects + " (" + String.format("%.1f", badEffectsPercentage) + "%)");
 							if (averageAmplifier > 0)
-								par3List.add((EnumChatFormatting.GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.averageamplifier") + ": " + (EnumChatFormatting.DARK_GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.potency." + averageAmplifier));
-							par3List.add((EnumChatFormatting.GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.averageduration") + ": " + (EnumChatFormatting.DARK_GRAY) + "\u00a7o" + Potion.getDurationString(new PotionEffect(0, averageDuration, 0)));
+								list.add((EnumChatFormatting.GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.averageamplifier") + ": " + (EnumChatFormatting.DARK_GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.potency." + averageAmplifier));
+							list.add((EnumChatFormatting.GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.averageduration") + ": " + (EnumChatFormatting.DARK_GRAY) + "\u00a7o" + Potion.getDurationString(new PotionEffect(0, averageDuration, 0)));
 							if (maxAmplifier > 0)
-								par3List.add((EnumChatFormatting.GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.highestamplifier") + ": " + (EnumChatFormatting.DARK_GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.potency." + maxAmplifier));
-							par3List.add((EnumChatFormatting.GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.highestduration") + ": " + (EnumChatFormatting.DARK_GRAY) + "\u00a7o" + Potion.getDurationString(new PotionEffect(0, maxDuration, 0)));
+								list.add((EnumChatFormatting.GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.highestamplifier") + ": " + (EnumChatFormatting.DARK_GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.potency." + maxAmplifier));
+							list.add((EnumChatFormatting.GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.highestduration") + ": " + (EnumChatFormatting.DARK_GRAY) + "\u00a7o" + Potion.getDurationString(new PotionEffect(0, maxDuration, 0)));
 						}
 						if (Brewing.getExperience(par1ItemStack) > 0.3F)
 						{
-							par3List.add((EnumChatFormatting.GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.value") + ": " + (EnumChatFormatting.YELLOW) + "\u00a7o" + String.format("%.2f", (Brewing.getExperience(par1ItemStack) * 100F) / 270.870F));
+							list.add((EnumChatFormatting.GRAY) + "\u00a7o" + StatCollector.translateToLocal("potion.value") + ": " + (EnumChatFormatting.YELLOW) + "\u00a7o" + String.format("%.2f", (Brewing.getExperience(par1ItemStack) * 100F) / 270.870F));
 						}
 					}
 				}
@@ -536,34 +532,27 @@ public class ItemPotion2 extends Item
 				 */
 				if (!hashmultimap.isEmpty())
 				{
-					par3List.add("");
-					par3List.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("potion.effects.whenDrank"));
+					list.add("");
+					list.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("potion.effects.whenDrank"));
 					
 					for (String key : hashmultimap.keys())
 					{
-						for (AttributeModifier attributemodifier2 : hashmultimap.get(key))
+						for (AttributeModifier modifier : hashmultimap.get(key))
 						{
-							int op = attributemodifier2.getOperation();
-							double d0 = attributemodifier2.getAmount();
-							double d1;
+							int operation = modifier.getOperation();
+							double amount = modifier.getAmount();
 							
-							if (op != 1 && op != 2)
+							if (operation == 1 || operation == 2)
 							{
-								d1 = d0;
-							}
-							else
-							{
-								d1 = d0 * 100.0D;
+								amount *= 100.0D;
 							}
 							
-							if (d0 > 0.0D)
+							if (amount > 0.0D)
+								list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocalFormatted("attribute.modifier.plus." + operation, new Object[] { ItemStack.field_111284_a.format(amount), StatCollector.translateToLocal("attribute.name." + key) }));
+							else if (amount < 0.0D)
 							{
-								par3List.add(EnumChatFormatting.BLUE + StatCollector.translateToLocalFormatted("attribute.modifier.plus." + op, new Object[] { ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + key) }));
-							}
-							else if (d0 < 0.0D)
-							{
-								d1 *= -1.0D;
-								par3List.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + op, new Object[] { ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal("attribute.name." + key) }));
+								amount *= -1.0D;
+								list.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + operation, new Object[] { ItemStack.field_111284_a.format(amount), StatCollector.translateToLocal("attribute.name." + key) }));
 							}
 						}
 					}
@@ -572,7 +561,7 @@ public class ItemPotion2 extends Item
 			else
 			{
 				String var6 = StatCollector.translateToLocal("potion.empty").trim();
-				par3List.add("\u00a77" + var6);
+				list.add("\u00a77" + var6);
 			}
 		}
 	}
@@ -625,7 +614,7 @@ public class ItemPotion2 extends Item
 				}
 			}
 			
-			if (BrewingAPI.MORE_POTIONS_MOD())
+			if (BrewingAPI.isMorePotionsModInstalled())
 			{
 				for (Brewing brewing : Brewing.goodEffects)
 				{
@@ -657,7 +646,7 @@ public class ItemPotion2 extends Item
 				par3List.add(bad2);
 			}
 		}
-		if (BrewingAPI.MORE_POTIONS_MOD() && BrewingAPI.multiPotions && (par2CreativeTabs == BrewingAPI.potions || par2CreativeTabs == CreativeTabs.tabAllSearch))
+		if (BrewingAPI.isMorePotionsModInstalled() && BrewingAPI.multiPotions && (par2CreativeTabs == BrewingAPI.potions || par2CreativeTabs == CreativeTabs.tabAllSearch))
 		{
 			for (int i = 1; i <= 2; i++)
 			{

@@ -1,6 +1,5 @@
 package clashsoft.brewingapi.brewing;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -157,22 +156,22 @@ public class PotionUtils
 		return usedTo;
 	}
 	
-	public static int combineColors(int... par1)
+	public static int combineColors(int... colors)
 	{
 		int r = 0;
 		int g = 0;
 		int b = 0;
-		for (int i : par1)
-		{
-			Color c = new Color(i);
-			r += c.getRed();
-			g += c.getGreen();
-			b += c.getBlue();
-		}
-		r /= par1.length;
-		g /= par1.length;
-		b /= par1.length;
 		
-		return (b + (g * 256) + (r * 65536));
+		for (int i : colors)
+		{
+			r += (i >> 16) & 255;
+			g += (i >> 8) & 255;
+			b += (i >> 0) & 255;
+		}
+		r /= colors.length;
+		g /= colors.length;
+		b /= colors.length;
+		
+		return ((r & 255) << 16) | ((g & 255) << 8) | ((b & 255) << 0);
 	}
 }

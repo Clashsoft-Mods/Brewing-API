@@ -88,7 +88,7 @@ public class BrewingList
 	
 	public static void initializeBrewings()
 	{
-		if (!BrewingAPI.MORE_POTIONS_MOD())
+		if (!BrewingAPI.isMorePotionsModInstalled())
 		{
 			System.out.println("Initializing BrewingAPI Brewings");
 			initializeBaseBrewings_BrewingAPI();
@@ -102,7 +102,7 @@ public class BrewingList
 	
 	public static void registerBrewings()
 	{
-		if (!BrewingAPI.MORE_POTIONS_MOD())
+		if (!BrewingAPI.isMorePotionsModInstalled())
 		{
 			System.out.println("Registering BrewingAPI Brewings");
 			registerBaseBrewings_BrewingAPI();
