@@ -1,6 +1,6 @@
 package clashsoft.brewingapi.inventory.slot;
 
-import clashsoft.brewingapi.brewing.Brewing;
+import clashsoft.brewingapi.brewing.PotionType;
 import clashsoft.brewingapi.inventory.ContainerBrewingStand2;
 
 import net.minecraft.inventory.IInventory;
@@ -28,7 +28,7 @@ public class SlotBrewingStandIngredient2 extends Slot
 	{
 		if (par1ItemStack != null)
 		{
-			if (Item.itemsList[par1ItemStack.itemID].isPotionIngredient() || Brewing.isPotionIngredient(par1ItemStack))
+			if (Item.itemsList[par1ItemStack.itemID].isPotionIngredient() || PotionType.isPotionIngredient(par1ItemStack))
 			{
 				return true;
 			}

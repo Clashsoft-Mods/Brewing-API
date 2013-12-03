@@ -1,8 +1,8 @@
 package clashsoft.brewingapi.tileentity;
 
-import clashsoft.brewingapi.brewing.Brewing;
-import clashsoft.brewingapi.brewing.BrewingBase;
-import clashsoft.brewingapi.brewing.BrewingList;
+import clashsoft.brewingapi.brewing.PotionType;
+import clashsoft.brewingapi.brewing.PotionBase;
+import clashsoft.brewingapi.brewing.PotionList;
 import clashsoft.brewingapi.item.ItemPotion2;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -109,7 +109,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 			{
 				if (is != null && is.getItem() instanceof ItemPotion2)
 				{
-					f += Brewing.getExperience(is);
+					f += PotionType.getExperience(is);
 				}
 			}
 			
@@ -173,7 +173,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 		{
 			ItemStack var1 = ingredient = this.brewingItemStacks[3];
 			
-			if (!Item.itemsList[var1.itemID].isPotionIngredient() && !Brewing.isPotionIngredient(var1))
+			if (!Item.itemsList[var1.itemID].isPotionIngredient() && !PotionType.isPotionIngredient(var1))
 			{
 				return false;
 			}
@@ -211,7 +211,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 							}
 							for (Object o : ((ItemPotion2) brewingItemStacks[var3].getItem()).getEffects(brewingItemStacks[var3]))
 							{
-								if (((Brewing) o).isImprovable())
+								if (((PotionType) o).isImprovable())
 								{
 									var2 = true;
 									break;
@@ -232,7 +232,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 							}
 							for (Object o : ((ItemPotion2) brewingItemStacks[var3].getItem()).getEffects(brewingItemStacks[var3]))
 							{
-								if (((Brewing) o).isExtendable())
+								if (((PotionType) o).isExtendable())
 								{
 									var2 = true;
 									break;
@@ -253,7 +253,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 							}
 							for (Object o : ((ItemPotion2) brewingItemStacks[var3].getItem()).getEffects(brewingItemStacks[var3]))
 							{
-								Brewing b = (Brewing) o;
+								PotionType b = (PotionType) o;
 								
 								if (b.getInverted() != null)
 								{
@@ -264,7 +264,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 						}
 					}
 				}
-				else if (!Brewing.hasIngredientHandler(ingredient))
+				else if (!PotionType.hasIngredientHandler(ingredient))
 				{
 					for (int var3 = 0; var3 < 3; var3++)
 					{
@@ -272,17 +272,17 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 						{
 							if (((ItemPotion2) brewingItemStacks[var3].getItem()).isWater(brewingItemStacks[var3].getItemDamage()))
 							{
-								if (BrewingBase.getBrewingBaseFromIngredient(var1) != null)
+								if (PotionBase.getBrewingBaseFromIngredient(var1) != null)
 								{
 									var2 = true;
 									break;
 								}
 							}
-							else if (Brewing.getFirstBrewing(var1) != null)
+							else if (PotionType.getFirstBrewing(var1) != null)
 							{
-								Brewing stackBase = Brewing.getFirstBrewing(brewingItemStacks[var3]);
-								Brewing requiredBase = Brewing.getBrewingFromIngredient(var1).getBase();
-								if (stackBase instanceof BrewingBase && requiredBase instanceof BrewingBase && ((BrewingBase) stackBase).basename.equals(((BrewingBase) requiredBase).basename))
+								PotionType stackBase = PotionType.getFirstBrewing(brewingItemStacks[var3]);
+								PotionType requiredBase = PotionType.getBrewingFromIngredient(var1).getBase();
+								if (stackBase instanceof PotionBase && requiredBase instanceof PotionBase && ((PotionBase) stackBase).basename.equals(((PotionBase) requiredBase).basename))
 								{
 									var2 = true;
 								}
@@ -301,7 +301,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 					{
 						if (brewingItemStacks[var3] != null)
 						{
-							if (Brewing.getHandlerForIngredient(var1) != null && !Brewing.getHandlerForIngredient(var1).canApplyIngredient(var1, brewingItemStacks[var3]))
+							if (PotionType.getHandlerForIngredient(var1) != null && !PotionType.getHandlerForIngredient(var1).canApplyIngredient(var1, brewingItemStacks[var3]))
 							{
 								var2 = false;
 								break;
@@ -338,24 +338,24 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 						this.brewingItemStacks[potionIndex].setTagCompound(new NBTTagCompound());
 					NBTTagCompound compound = this.brewingItemStacks[potionIndex].stackTagCompound;
 					
-					NBTTagList tagList = compound != null ? compound.getTagList("Brewing") : null;
-					Brewing[] brewings = new Brewing[tagList != null && tagList.tagCount() != 0 ? tagList.tagCount() : 1];
+					NBTTagList tagList = compound != null ? compound.getTagList("PotionType") : null;
+					PotionType[] brewings = new PotionType[tagList != null && tagList.tagCount() != 0 ? tagList.tagCount() : 1];
 					if (tagList != null)
 						if (ingredient.getItem() == Item.glowstone)
 						{
 							if (brewingItemStacks[potionIndex].getItemDamage() == 0)
 							{
-								brewings[0] = BrewingList.thick;
+								brewings[0] = PotionList.thick;
 							}
 							else
 							{
 								for (int var3 = 0; var3 < tagList.tagCount(); var3++)
 								{
-									Brewing brewing = new Brewing();
-									brewing.readFromNBT((NBTTagCompound) tagList.tagAt(var3));
+									PotionType potionType = new PotionType();
+									potionType.readFromNBT((NBTTagCompound) tagList.tagAt(var3));
 									
-									if (brewing != BrewingList.awkward)
-										brewings[var3] = brewing.onImproved();
+									if (potionType != PotionList.awkward)
+										brewings[var3] = potionType.onImproved();
 								}
 							}
 						}
@@ -363,18 +363,18 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 						{
 							if (brewingItemStacks[potionIndex].getItemDamage() == 0)
 							{
-								brewings[0] = BrewingList.thin;
+								brewings[0] = PotionList.thin;
 							}
 							else
 							{
 								for (int index = 0; index < tagList.tagCount(); index++)
 								{
 									
-									Brewing brewing = new Brewing();
-									brewing.readFromNBT((NBTTagCompound) tagList.tagAt(index));
+									PotionType potionType = new PotionType();
+									potionType.readFromNBT((NBTTagCompound) tagList.tagAt(index));
 									
-									if (brewing != BrewingList.awkward)
-										brewings[index] = brewing.onExtended();
+									if (potionType != PotionList.awkward)
+										brewings[index] = potionType.onExtended();
 								}
 							}
 						}
@@ -382,29 +382,29 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 						{
 							if (brewingItemStacks[potionIndex].getItemDamage() == 0)
 							{
-								brewings[0] = Brewing.getBrewingFromIngredient(ingredient);
+								brewings[0] = PotionType.getBrewingFromIngredient(ingredient);
 							}
 							else
 							{
 								for (int index = 0; index < tagList.tagCount(); index++)
 								{
-									Brewing brewing = new Brewing();
-									brewing.readFromNBT((NBTTagCompound) tagList.tagAt(index));
+									PotionType potionType = new PotionType();
+									potionType.readFromNBT((NBTTagCompound) tagList.tagAt(index));
 									
-									brewings[index] = brewing.getInverted();
+									brewings[index] = potionType.getInverted();
 								}
 							}
 						}
 						else if (ingredient.getItem() == Item.netherStalkSeeds)
 						{
-							brewings[0] = BrewingList.awkward;
+							brewings[0] = PotionList.awkward;
 						}
 						else if (ingredient.getItem() == Item.gunpowder)
 						{
 							for (int index = 0; index < tagList.tagCount(); index++)
 							{
-								Brewing brewing = new Brewing();
-								brewing.readFromNBT((NBTTagCompound) tagList.tagAt(index));
+								PotionType potionType = new PotionType();
+								potionType.readFromNBT((NBTTagCompound) tagList.tagAt(index));
 								
 								if (brewings[index] != null && brewings[index].getEffect() != null && brewings[index].getEffect().getPotionID() > 0)
 								{
@@ -414,51 +414,51 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 						}
 						else if (((ItemPotion2) brewingItemStacks[potionIndex].getItem()).isWater(brewingItemStacks[potionIndex].getItemDamage()))
 						{
-							if (BrewingBase.getBrewingBaseFromIngredient(ingredient) != null)
+							if (PotionBase.getBrewingBaseFromIngredient(ingredient) != null)
 							{
-								brewings[0] = BrewingBase.getBrewingBaseFromIngredient(ingredient);
+								brewings[0] = PotionBase.getBrewingBaseFromIngredient(ingredient);
 							}
 						}
-						else if (!Brewing.hasIngredientHandler(ingredient))
+						else if (!PotionType.hasIngredientHandler(ingredient))
 						{
-							Brewing stackBase = Brewing.getFirstBrewing(brewingItemStacks[potionIndex]);
-							Brewing requiredBase = Brewing.getBrewingFromIngredient(ingredient).getBase();
-							if (((BrewingBase) stackBase).basename.equals(((BrewingBase) requiredBase).basename))
+							PotionType stackBase = PotionType.getFirstBrewing(brewingItemStacks[potionIndex]);
+							PotionType requiredBase = PotionType.getBrewingFromIngredient(ingredient).getBase();
+							if (((PotionBase) stackBase).basename.equals(((PotionBase) requiredBase).basename))
 							{
-								brewings[0] = Brewing.getBrewingFromIngredient(ingredient);
+								brewings[0] = PotionType.getBrewingFromIngredient(ingredient);
 							}
 						}
 						else
 						{
-							brewingItemStacks[potionIndex] = Brewing.getHandlerForIngredient(ingredient).applyIngredient(ingredient, brewingItemStacks[potionIndex]);
+							brewingItemStacks[potionIndex] = PotionType.getHandlerForIngredient(ingredient).applyIngredient(ingredient, brewingItemStacks[potionIndex]);
 							return;
 						}
 					
 					if (compound != null)
 					{
-						compound.removeTag("Brewing");
+						compound.removeTag("PotionType");
 					}
 					if (ingredient.getItem() == Item.fermentedSpiderEye)
 					{
-						for (Brewing brewing : Brewing.removeDuplicates(brewings))
+						for (PotionType potionType : PotionType.removeDuplicates(brewings))
 						{
-							if (brewing != null)
+							if (potionType != null)
 							{
 								int damage = (ingredient.getItem() == Item.gunpowder || this.brewingItemStacks[potionIndex].getItemDamage() == 2) ? 2 : 1;
 								this.brewingItemStacks[potionIndex].setItemDamage(damage);
-								brewing.addBrewingToItemStack(this.brewingItemStacks[potionIndex]);
+								potionType.addBrewingToItemStack(this.brewingItemStacks[potionIndex]);
 							}
 						}
 					}
 					else
 					{
-						for (Brewing brewing : brewings)
+						for (PotionType potionType : brewings)
 						{
-							if (brewing != null)
+							if (potionType != null)
 							{
 								int damage = (ingredient.getItem() == Item.gunpowder || this.brewingItemStacks[potionIndex].getItemDamage() == 2) ? 2 : 1;
 								this.brewingItemStacks[potionIndex].setItemDamage(damage);
-								brewing.addBrewingToItemStack(this.brewingItemStacks[potionIndex]);
+								potionType.addBrewingToItemStack(this.brewingItemStacks[potionIndex]);
 							}
 						}
 					}

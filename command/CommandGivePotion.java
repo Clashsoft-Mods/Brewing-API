@@ -3,7 +3,7 @@ package clashsoft.brewingapi.command;
 import java.util.List;
 
 import clashsoft.brewingapi.BrewingAPI;
-import clashsoft.brewingapi.brewing.Brewing;
+import clashsoft.brewingapi.brewing.PotionType;
 
 import net.minecraft.command.*;
 import net.minecraft.entity.item.EntityItem;
@@ -90,7 +90,7 @@ public class CommandGivePotion extends CommandBase implements ICommand
 				{
 					PotionEffect potioneffect = new PotionEffect(i, j, l);
 					ItemStack stack = new ItemStack(BrewingAPI.potion2, 1, m ? 2 : 1);
-					Brewing b = new Brewing(potioneffect, l, j);
+					PotionType b = new PotionType(potioneffect, l, j);
 					b.addBrewingToItemStack(stack);
 					
 					EntityItem entityitem = entityplayermp.dropPlayerItem(stack);

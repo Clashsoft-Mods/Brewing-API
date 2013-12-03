@@ -10,8 +10,8 @@ import clashsoft.brewingapi.api.IIngredientHandler;
 import clashsoft.brewingapi.api.IPotionEffectHandler;
 import clashsoft.brewingapi.api.IPotionEffectHandler.PotionQueue;
 import clashsoft.brewingapi.block.BlockBrewingStand2;
-import clashsoft.brewingapi.brewing.Brewing;
-import clashsoft.brewingapi.brewing.BrewingList;
+import clashsoft.brewingapi.brewing.PotionType;
+import clashsoft.brewingapi.brewing.PotionList;
 import clashsoft.brewingapi.command.CommandGivePotion;
 import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.item.ItemBrewingStand2;
@@ -139,7 +139,7 @@ public class BrewingAPI
 		LanguageRegistry.instance().addStringLocalization("commands.givepotion.success.splash", "Given Splash Potion (%1\u0024s (ID %2\u0024d) level %3\u0024d for %5\u0024d seconds) to %4\u0024s.");
 		
 		if (multiPotions)
-			potions.setIconItemStack(BrewingList.damageBoost.addBrewingToItemStack(new ItemStack(BrewingAPI.potion2, 0, 1)));
+			potions.setIconItemStack(PotionList.damageBoost.addBrewingToItemStack(new ItemStack(BrewingAPI.potion2, 0, 1)));
 	}
 	
 	@EventHandler
@@ -164,8 +164,8 @@ public class BrewingAPI
 		if (!hasLoaded)
 		{
 			expandPotionList();
-			BrewingList.initializeBrewings();
-			BrewingList.registerBrewings();
+			PotionList.initializeBrewings();
+			PotionList.registerBrewings();
 			hasLoaded = true;
 		}
 	}
@@ -213,9 +213,9 @@ public class BrewingAPI
 	public static List<IPotionEffectHandler>	effectHandlers		= new LinkedList<IPotionEffectHandler>();
 	public static List<IIngredientHandler>		ingredientHandlers	= new LinkedList<IIngredientHandler>();
 	
-	public static Brewing addBrewing(Brewing brewing)
+	public static PotionType addBrewing(PotionType potionType)
 	{
-		return brewing.register();
+		return potionType.register();
 	}
 	
 	public static void registerIngredientHandler(IIngredientHandler par1iIngredientHandler)

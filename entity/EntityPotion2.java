@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import clashsoft.brewingapi.BrewingAPI;
-import clashsoft.brewingapi.brewing.Brewing;
+import clashsoft.brewingapi.brewing.PotionType;
 import clashsoft.brewingapi.item.ItemPotion2;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -116,7 +116,7 @@ public class EntityPotion2 extends EntityPotion
 							
 							while (iterator1.hasNext())
 							{
-								PotionEffect potioneffect = ((Brewing) iterator1.next()).getEffect();
+								PotionEffect potioneffect = ((PotionType) iterator1.next()).getEffect();
 								if (potioneffect != null)
 								{
 									int i = potioneffect.getPotionID();

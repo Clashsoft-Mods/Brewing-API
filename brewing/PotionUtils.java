@@ -11,12 +11,12 @@ import net.minecraft.util.StatCollector;
 
 public class PotionUtils
 {
-	public static int getGoodEffects(List<Brewing> potion)
+	public static int getGoodEffects(List<PotionType> potion)
 	{
-		List<Brewing> var5 = potion;
+		List<PotionType> var5 = potion;
 		int badEffects = 0;
 		
-		for (Brewing b : var5)
+		for (PotionType b : var5)
 		{
 			if (b.isBadEffect())
 			{
@@ -32,12 +32,12 @@ public class PotionUtils
 		return 0;
 	}
 	
-	public static int getBadEffects(List<Brewing> potion)
+	public static int getBadEffects(List<PotionType> potion)
 	{
-		List<Brewing> var5 = potion;
+		List<PotionType> var5 = potion;
 		int badEffects = 0;
 		
-		for (Brewing b : var5)
+		for (PotionType b : var5)
 		{
 			if (b.isBadEffect())
 			{
@@ -52,9 +52,9 @@ public class PotionUtils
 		return 0;
 	}
 	
-	public static int getAverageAmplifier(List<Brewing> potion)
+	public static int getAverageAmplifier(List<PotionType> potion)
 	{
-		List<Brewing> var5 = potion;
+		List<PotionType> var5 = potion;
 		int averageAmplifier = 0;
 		for (int i = 0; i < var5.size(); i++)
 		{
@@ -69,9 +69,9 @@ public class PotionUtils
 		return averageAmplifier;
 	}
 	
-	public static int getAverageDuration(List<Brewing> potion)
+	public static int getAverageDuration(List<PotionType> potion)
 	{
-		List<Brewing> var5 = potion;
+		List<PotionType> var5 = potion;
 		int averageDuration = 0;
 		for (int i = 0; i < var5.size(); i++)
 		{
@@ -84,9 +84,9 @@ public class PotionUtils
 		return averageDuration;
 	}
 	
-	public static int getMaxAmplifier(List<Brewing> potion)
+	public static int getMaxAmplifier(List<PotionType> potion)
 	{
-		List<Brewing> var5 = potion;
+		List<PotionType> var5 = potion;
 		int maxAmplifier = 0;
 		for (int i = 0; i < var5.size(); i++)
 		{
@@ -99,9 +99,9 @@ public class PotionUtils
 		return maxAmplifier;
 	}
 	
-	public static int getMaxDuration(List<Brewing> potion)
+	public static int getMaxDuration(List<PotionType> potion)
 	{
-		List<Brewing> var5 = potion;
+		List<PotionType> var5 = potion;
 		int maxDuration = 0;
 		for (int i = 0; i < var5.size(); i++)
 		{
@@ -115,18 +115,18 @@ public class PotionUtils
 	
 	public float getValue(ItemStack potion)
 	{
-		return Brewing.getExperience(potion) * 100 / 223.9F;
+		return PotionType.getExperience(potion) * 100 / 223.9F;
 	}
 	
 	public static List<String> getUsedTo(ItemStack potion)
 	{
 		List<String> usedTo = new ArrayList<String>();
-		List<Brewing> var5 = ((ItemPotion2) potion.getItem()).getEffects(potion);
-		for (Brewing b1 : Brewing.brewingList)
+		List<PotionType> var5 = ((ItemPotion2) potion.getItem()).getEffects(potion);
+		for (PotionType b1 : PotionType.potionTypeList)
 		{
-			if (b1 != null && var5.get(0) instanceof BrewingBase)
+			if (b1 != null && var5.get(0) instanceof PotionBase)
 			{
-				if (((BrewingBase) var5.get(0)).basename.equals(b1.getBase() != null ? b1.getBase().basename : ""))
+				if (((PotionBase) var5.get(0)).basename.equals(b1.getBase() != null ? b1.getBase().basename : ""))
 				{
 					usedTo.add(" - " + b1.addBrewingToItemStack(new ItemStack(potion.getItem(), 1, 1)).getDisplayName());
 				}
@@ -134,7 +134,7 @@ public class PotionUtils
 		}
 		boolean improvable = true;
 		boolean extendable = true;
-		for (Brewing b2 : var5)
+		for (PotionType b2 : var5)
 		{
 			if (!b2.isImprovable())
 			{

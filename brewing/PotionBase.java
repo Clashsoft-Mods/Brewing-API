@@ -9,32 +9,32 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class BrewingBase extends Brewing implements Comparable<Brewing>
+public class PotionBase extends PotionType implements Comparable<PotionType>
 {
-	public static List<BrewingBase>			baseList	= new ArrayList();
-	public static Map<String, BrewingBase>	baseMap		= new HashMap();
+	public static List<PotionBase>			baseList	= new ArrayList();
+	public static Map<String, PotionBase>	baseMap		= new HashMap();
 	
 	public String							basename;
 	
-	public BrewingBase()
+	public PotionBase()
 	{
 		super();
 	}
 	
-	public BrewingBase(String par1, ItemStack par2ItemStack)
+	public PotionBase(String par1, ItemStack par2ItemStack)
 	{
 		super(null, 0, 0, par2ItemStack, null);
 		basename = par1;
 	}
 	
-	public BrewingBase(String par1)
+	public PotionBase(String par1)
 	{
 		this(par1, null);
 	}
 	
-	public static BrewingBase getBrewingBaseFromIngredient(ItemStack par1ItemStack)
+	public static PotionBase getBrewingBaseFromIngredient(ItemStack par1ItemStack)
 	{
-		for (BrewingBase b : baseList)
+		for (PotionBase b : baseList)
 		{
 			if (OreDictionary.itemMatches(b.getIngredient(), par1ItemStack, true))
 				return b;
@@ -45,7 +45,7 @@ public class BrewingBase extends Brewing implements Comparable<Brewing>
 	}
 	
 	@Override
-	public BrewingBase register()
+	public PotionBase register()
 	{
 		super.register();
 		
@@ -61,7 +61,7 @@ public class BrewingBase extends Brewing implements Comparable<Brewing>
 		String nbtVersion = par1NBTTagCompound.getString("VERSION");
 		if ("1.1".equals(nbtVersion))
 		{
-			BrewingBase base = baseMap.get(par1NBTTagCompound.getString("BaseName"));
+			PotionBase base = baseMap.get(par1NBTTagCompound.getString("BaseName"));
 			if (base != null)
 			{
 				this.basename = base.basename;
@@ -84,7 +84,7 @@ public class BrewingBase extends Brewing implements Comparable<Brewing>
 	@Override
 	public String toString()
 	{
-		String s = "BrewingBase{";
+		String s = "PotionBase{";
 		if (basename != null)
 			s += "Name<" + basename + ">";
 		if (this.getIngredient() != null)
@@ -94,10 +94,10 @@ public class BrewingBase extends Brewing implements Comparable<Brewing>
 	}
 	
 	@Override
-	public int compareTo(Brewing o)
+	public int compareTo(PotionType o)
 	{
-		if (o instanceof BrewingBase)
-			return (basename != null && ((BrewingBase) o).basename != null) ? basename.compareTo(((BrewingBase) o).basename) : 0;
+		if (o instanceof PotionBase)
+			return (basename != null && ((PotionBase) o).basename != null) ? basename.compareTo(((PotionBase) o).basename) : 0;
 		else
 			return super.compareTo(o);
 	}
