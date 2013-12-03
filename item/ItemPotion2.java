@@ -75,38 +75,39 @@ public class ItemPotion2 extends Item
 	/**
 	 * Returns a list of potion effects for the specified itemstack.
 	 */
-	public List<Brewing> getEffects(ItemStack par1ItemStack)
+	public List<Brewing> getEffects(ItemStack stack)
 	{
-		if (par1ItemStack != null && !isWater(par1ItemStack.getItemDamage()))
+		if (stack != null && !isWater(stack.getItemDamage()))
 		{
-			if (par1ItemStack.hasTagCompound() && par1ItemStack.getTagCompound().hasKey("Brewing"))
+			if (stack.hasTagCompound() && stack.getTagCompound().hasKey("Brewing"))
 			{
-				List var6 = new ArrayList();
-				NBTTagList var3 = par1ItemStack.getTagCompound().getTagList("Brewing");
+				List<Brewing> result = new ArrayList();
+				NBTTagList tagList = stack.getTagCompound().getTagList("Brewing");
 				boolean var2 = true;
 				
-				for (int var4 = 0; var4 < var3.tagCount(); ++var4)
+				for (int var4 = 0; var4 < tagList.tagCount(); ++var4)
 				{
-					NBTTagCompound var5 = (NBTTagCompound) var3.tagAt(var4);
-					Brewing b = Brewing.readFromNBT(var5);
-					var6.add(b);
+					NBTTagCompound brewingNBT = (NBTTagCompound) tagList.tagAt(var4);
+					Brewing brewing = new Brewing();
+					brewing.readFromNBT(brewingNBT);
+					result.add(brewing);
 				}
-				return var6;
+				return result;
 			}
 			else
 			{
-				return brewingTransform(par1ItemStack.getItemDamage(), Item.potion.getEffects(par1ItemStack));
+				return brewingTransform(stack.getItemDamage(), Item.potion.getEffects(stack));
 			}
 		}
 		return new ArrayList();
 	}
 	
-	private static List brewingTransform(int par1, List<PotionEffect> par2List)
+	private static List brewingTransform(int metadata, List<PotionEffect> effectList)
 	{
-		if (par2List != null && par2List.size() > 0)
+		if (effectList != null && effectList.size() > 0)
 		{
-			List<Brewing> ret = new ArrayList<Brewing>(par2List.size());
-			for (PotionEffect effect : par2List)
+			List<Brewing> ret = new ArrayList<Brewing>(effectList.size());
+			for (PotionEffect effect : effectList)
 			{
 				ret.add(new Brewing(effect, 0, effect.getDuration(), BrewingList.awkward));
 			}
@@ -604,7 +605,7 @@ public class ItemPotion2 extends Item
 				{
 					for (Brewing brewing2 : brewing.getSubTypes())
 					{
-						Brewing var1 = new Brewing(brewing2.getEffect(), brewing2.getMaxAmplifier(), brewing2.getMaxDuration(), brewing2.getOpposite(), brewing2.getIngredient(), brewing2.getBase());
+						Brewing var1 = new Brewing(brewing2.getEffect(), brewing2.getMaxAmplifier(), brewing2.getMaxDuration(), brewing2.getInverted(), brewing2.getIngredient(), brewing2.getBase());
 						if (i == 2 && var1 != null && var1.getEffect() != null && var1.getEffect().getPotionID() > 0)
 						{
 							var1.setEffect(new PotionEffect(var1.getEffect().getPotionID(), MathHelper.ceiling_double_int(var1.getEffect().getDuration() * 0.75D), var1.getEffect().getAmplifier()));
@@ -656,8 +657,8 @@ public class ItemPotion2 extends Item
 					{
 						if (brewing1 != brewing2)
 						{
-							Brewing var1 = new Brewing(brewing1.getEffect(), brewing1.getMaxAmplifier(), brewing1.getMaxDuration(), brewing1.getOpposite(), brewing1.getIngredient(), brewing1.getBase());
-							Brewing var2 = new Brewing(brewing2.getEffect(), brewing2.getMaxAmplifier(), brewing2.getMaxDuration(), brewing2.getOpposite(), brewing2.getIngredient(), brewing2.getBase());
+							Brewing var1 = new Brewing(brewing1.getEffect(), brewing1.getMaxAmplifier(), brewing1.getMaxDuration(), brewing1.getInverted(), brewing1.getIngredient(), brewing1.getBase());
+							Brewing var2 = new Brewing(brewing2.getEffect(), brewing2.getMaxAmplifier(), brewing2.getMaxDuration(), brewing2.getInverted(), brewing2.getIngredient(), brewing2.getBase());
 							if (i == 2 && var1 != null && var1.getEffect() != null && var1.getEffect().getPotionID() > 0)
 							{
 								var1.setEffect(new PotionEffect(var1.getEffect().getPotionID(), MathHelper.ceiling_double_int(var1.getEffect().getDuration() * 0.75D), var1.getEffect().getAmplifier()));

@@ -1,12 +1,22 @@
 package clashsoft.brewingapi.brewing;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class BrewingBase extends Brewing implements Comparable<Brewing>
 {
-	public String	basename;
+	public static Map<String, BrewingBase>	baseMap	= new HashMap();
+	
+	public String							basename;
+	
+	public BrewingBase()
+	{
+		super();
+	}
 	
 	public BrewingBase(String par1, ItemStack par2ItemStack)
 	{
@@ -42,20 +52,35 @@ public class BrewingBase extends Brewing implements Comparable<Brewing>
 	}
 	
 	@Override
-	public NBTTagCompound createNBT()
+	public BrewingBase register()
 	{
-		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setString("BaseName", basename);
-		return nbt;
+		super.register();
+		baseMap.put(basename, this);
+		return this;
 	}
 	
-	public static Brewing readFromNBT(NBTTagCompound par1NBTTagCompound)
+	public void readFromNBT(NBTTagCompound par1NBTTagCompound)
 	{
-		String name = par1NBTTagCompound.hasKey("BaseName") ? par1NBTTagCompound.getString("BaseName") : "";
-		int ingredientID = par1NBTTagCompound.hasKey("IngredientID") ? par1NBTTagCompound.getInteger("IngredientID") : 0;
-		int ingredientAmount = par1NBTTagCompound.hasKey("IngredientAmount") ? par1NBTTagCompound.getInteger("IngredientAmount") : 0;
-		int ingredientDamage = par1NBTTagCompound.hasKey("IngredientDamage") ? par1NBTTagCompound.getInteger("IngredientDamage") : 0;
-		return new BrewingBase(name, new ItemStack(ingredientID, ingredientAmount, ingredientDamage));
+		String nbtVersion = par1NBTTagCompound.getString("VERSION");
+		if ("1.0.1".equals(nbtVersion))
+		{
+			this.basename = par1NBTTagCompound.hasKey("BaseName") ? par1NBTTagCompound.getString("BaseName") : "";
+			
+			int ingredientID = par1NBTTagCompound.hasKey("IngredientID") ? par1NBTTagCompound.getInteger("IngredientID") : 0;
+			int ingredientAmount = par1NBTTagCompound.hasKey("IngredientAmount") ? par1NBTTagCompound.getInteger("IngredientAmount") : 0;
+			int ingredientDamage = par1NBTTagCompound.hasKey("IngredientDamage") ? par1NBTTagCompound.getInteger("IngredientDamage") : 0;
+			
+			this.setIngredient(new ItemStack(ingredientID, ingredientAmount, ingredientDamage));
+		}
+		else
+		{
+			BrewingBase base = baseMap.get(par1NBTTagCompound.getString("BaseName"));
+			if (base != null)
+			{
+				this.basename = base.basename;
+				this.setIngredient(base.getIngredient());
+			}
+		}
 	}
 	
 	@Override

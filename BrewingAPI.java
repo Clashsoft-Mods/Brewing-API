@@ -3,12 +3,12 @@ package clashsoft.brewingapi;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
-import java.util.ConcurrentModificationException;
 import java.util.LinkedList;
 import java.util.List;
 
 import clashsoft.brewingapi.api.IIngredientHandler;
 import clashsoft.brewingapi.api.IPotionEffectHandler;
+import clashsoft.brewingapi.api.IPotionEffectHandler.PotionQueue;
 import clashsoft.brewingapi.block.BlockBrewingStand2;
 import clashsoft.brewingapi.brewing.Brewing;
 import clashsoft.brewingapi.brewing.BrewingList;
@@ -236,42 +236,25 @@ public class BrewingAPI
 		}
 	}
 	
+	private static PotionQueue	queue	= new PotionQueue();
+	
 	@ForgeSubscribe
 	public void onEntityUpdate(LivingUpdateEvent event)
 	{
 		if (event.entityLiving != null && !event.entityLiving.worldObj.isRemote)
 		{
 			Collection<PotionEffect> c = event.entityLiving.getActivePotionEffects();
-			for (IPotionEffectHandler handler : effectHandlers)
+			
+			for (PotionEffect effect : c)
 			{
-				try
+				for (IPotionEffectHandler handler : effectHandlers)
 				{
-					for (PotionEffect effect : c)
-					{
-						if (handler.canHandle(effect))
-						{
-							handler.onPotionUpdate(event.entityLiving, effect);
-						}
-					}
+					if (handler.canHandle(effect))
+						handler.onPotionUpdate(queue, event.entityLiving, effect);
 				}
-				catch (ConcurrentModificationException ex)
-				{
-					
-				}
-				
-				List<PotionEffect> addqueue = handler.getAddQueue();
-				for (PotionEffect pe : addqueue)
-				{
-					event.entityLiving.addPotionEffect(pe);
-				}
-				handler.clearRemoveQueue();
-				List<Integer> removequeue = handler.getRemoveQueue();
-				for (int i : removequeue)
-				{
-					event.entityLiving.removePotionEffect(i);
-				}
-				handler.clearRemoveQueue();
 			}
+			
+			queue.updateEntity(event.entityLiving);
 		}
 	}
 	
