@@ -24,19 +24,9 @@ public class Brewing implements Comparable<Brewing>
 {
 	/** List that stores ALL brewings **/
 	public static List<Brewing>						brewingList					= new ArrayList<Brewing>();
-	/** List that stores all brewings with good effects **/
-	public static List<Brewing>						goodEffects					= new ArrayList<Brewing>();
-	/** List that stores all brewings with bad effects **/
-	public static List<Brewing>						badEffects					= new ArrayList<Brewing>();
-	/**
-	 * List that stores brewings that can be used together with other brewings
-	 * (e.g. Effect Remover potion is not inside)
-	 **/
+	public static Map<PotionEffect, Brewing>		effectMap					= new HashMap();
+	
 	public static List<Brewing>						combinableEffects			= new ArrayList<Brewing>();
-	/** List that stores all base brewing (e.g. awkward, mundane, ...) **/
-	public static List<BrewingBase>					baseBrewings				= new ArrayList<BrewingBase>();
-	/** List that stores all brewings with effects **/
-	public static List<Brewing>						effectBrewings				= new ArrayList<Brewing>();
 	
 	/** Version identifier for NBTs. **/
 	public static String							NBTVersion					= "1.1";
@@ -50,11 +40,9 @@ public class Brewing implements Comparable<Brewing>
 	/** Max effect duration **/
 	private int										maxDuration;
 	/** Fermented Spider Eye **/
-	private Brewing									opposite					= null;
+	private Brewing									inverted					= null;
 	/** The ingredient to brew the potion **/
 	private ItemStack								ingredient					= new ItemStack(0, 0, 0);
-	/** Used by the random potion **/
-	private boolean									isRandom					= false;
 	/** Determines the base that is needed to brew the potion **/
 	private BrewingBase								base;
 	
@@ -64,7 +52,8 @@ public class Brewing implements Comparable<Brewing>
 	 * Empty constructor for use with serialization
 	 */
 	public Brewing()
-	{}
+	{
+	}
 	
 	/**
 	 * Creates a new Brewing
@@ -136,16 +125,30 @@ public class Brewing implements Comparable<Brewing>
 		this.effect = effect;
 		this.maxAmplifier = maxAmplifier;
 		this.maxDuration = maxDuration;
-		this.opposite = inverted;
+		this.inverted = inverted.copy();
 		this.ingredient = ingredient;
 		this.base = base;
 	}
 	
 	public Brewing copy()
 	{
-		Brewing brewing = new Brewing(this.getEffect(), this.maxAmplifier, this.maxDuration, this.ingredient, this.base);
+		Brewing brewing = new Brewing(this.getEffect(), this.getMaxAmplifier(), this.getMaxDuration(), this.getIngredient(), this.getBase());
 		brewing.extendedAttributes = new HashMap(this.extendedAttributes);
 		return brewing;
+	}
+	
+	/**
+	 * Sorts the Brewing in the lists
+	 * 
+	 * @return Brewing
+	 */
+	public Brewing register()
+	{
+		brewingList.add(this);
+		if (this.hasEffect())
+			effectMap.put(this.getEffect(), this);
+		
+		return this;
 	}
 	
 	/**
@@ -153,9 +156,9 @@ public class Brewing implements Comparable<Brewing>
 	 */
 	public boolean isBadEffect()
 	{
-		if (this.getEffect() != null)
+		if (this.hasEffect())
 		{
-			switch (this.getEffect().getPotionID())
+			switch (this.getPotionID())
 			{
 			case 2:
 			case 4:
@@ -170,9 +173,9 @@ public class Brewing implements Comparable<Brewing>
 			}
 			if (BrewingAPI.isClashsoftLibInstalled())
 			{
-				if (Potion.potionTypes[this.getEffect().getPotionID()] instanceof clashsoft.cslib.minecraft.CustomPotion)
+				if (this.getPotion() instanceof clashsoft.cslib.minecraft.CustomPotion)
 				{
-					return ((clashsoft.cslib.minecraft.CustomPotion) Potion.potionTypes[this.getEffect().getPotionID()]).isBadEffect();
+					return ((clashsoft.cslib.minecraft.CustomPotion) this.getPotion()).isBadEffect();
 				}
 			}
 		}
@@ -182,6 +185,35 @@ public class Brewing implements Comparable<Brewing>
 	public PotionEffect getEffect()
 	{
 		return this.effect;
+	}
+	
+	public boolean hasEffect()
+	{
+		return this.hasEffect();
+	}
+	
+	public Potion getPotion()
+	{
+		PotionEffect pe = this.getEffect();
+		return pe != null ? Potion.potionTypes[pe.getPotionID()] : null;
+	}
+	
+	public int getPotionID()
+	{
+		PotionEffect pe = this.getEffect();
+		return pe != null ? pe.getPotionID() : -1;
+	}
+	
+	public int getDuration()
+	{
+		PotionEffect pe = this.getEffect();
+		return pe != null ? pe.getDuration() : -1;
+	}
+	
+	public int getAmplifier()
+	{
+		PotionEffect pe = this.getEffect();
+		return pe != null ? pe.getAmplifier() : -1;
 	}
 	
 	public int getMaxAmplifier()
@@ -206,22 +238,12 @@ public class Brewing implements Comparable<Brewing>
 	
 	public Brewing getInverted()
 	{
-		if (this.opposite != null && this.opposite.getEffect() != null)
-		{
-			PotionEffect pe = new PotionEffect(this.opposite.getEffect().getPotionID(), this.getEffect().getDuration() / 2, this.isImprovable() ? this.getEffect().getAmplifier() : 0);
-			return this.opposite.copy().setEffect(pe);
-		}
-		return this.opposite;
+		return this.inverted;
 	}
 	
 	public ItemStack getIngredient()
 	{
 		return this.ingredient;
-	}
-	
-	public boolean isRandom()
-	{
-		return this.isRandom;
 	}
 	
 	public BrewingBase getBase()
@@ -236,7 +258,7 @@ public class Brewing implements Comparable<Brewing>
 	
 	public int getLiquidColor()
 	{
-		if (this.getEffect() != null)
+		if (this.hasEffect())
 		{
 			if (this.getEffect().getPotionID() < Potion.potionTypes.length && Potion.potionTypes[this.getEffect().getPotionID()] != null)
 			{
@@ -250,7 +272,7 @@ public class Brewing implements Comparable<Brewing>
 	{
 		for (Brewing b : Brewing.brewingList)
 		{
-			if (this.getEffect() != null && b.getEffect() != null && b.getEffect().getPotionID() == this.getEffect().getPotionID())
+			if (this.hasEffect() && b.hasEffect() && b.getEffect().getPotionID() == this.getEffect().getPotionID())
 			{
 				return b.getEffect().getDuration();
 			}
@@ -288,19 +310,13 @@ public class Brewing implements Comparable<Brewing>
 	
 	public Brewing setOpposite(Brewing opposite)
 	{
-		this.opposite = opposite;
+		this.inverted = opposite;
 		return this;
 	}
 	
 	public Brewing setIngredient(ItemStack ingredient)
 	{
 		this.ingredient = ingredient;
-		return this;
-	}
-	
-	public Brewing setIsRandom(boolean random)
-	{
-		this.isRandom = random;
 		return this;
 	}
 	
@@ -329,7 +345,7 @@ public class Brewing implements Comparable<Brewing>
 	
 	public Brewing onImproved()
 	{
-		if (this.isImprovable() && this.getEffect() != null)
+		if (this.isImprovable() && this.hasEffect())
 		{
 			PotionEffect pe = new PotionEffect(this.getEffect().getPotionID(), this.getEffect().getDuration(), this.getEffect().getAmplifier() + 1);
 			return this.copy().setEffect(pe).setMaxDuration(pe.getDuration());
@@ -339,46 +355,11 @@ public class Brewing implements Comparable<Brewing>
 	
 	public Brewing onExtended()
 	{
-		if (this.isExtendable() && this.getEffect() != null)
+		if (this.isExtendable() && this.hasEffect())
 		{
 			PotionEffect pe = new PotionEffect(this.getEffect().getPotionID(), this.getEffect().getDuration() * 2, this.getEffect().getAmplifier());
 			return this.copy().setEffect(pe).setMaxAmplifier(pe.getAmplifier());
 		}
-		return this;
-	}
-	
-	/**
-	 * Sorts the Brewing in the lists
-	 * 
-	 * @return Brewing
-	 */
-	public Brewing register()
-	{
-		brewingList.add(this);
-		if (this.getEffect() != null && this.getEffect().getPotionID() > 0)
-		{
-			if (this.isBadEffect())
-			{
-				badEffects.add(this);
-			}
-			else
-			{
-				goodEffects.add(this);
-			}
-		}
-		if (!this.isBase() && !(this instanceof BrewingBase))
-		{
-			effectBrewings.add(this);
-		}
-		if (!(this instanceof BrewingBase) && this != BrewingList.effectRemove && this != BrewingList.random)
-		{
-			combinableEffects.add(this);
-		}
-		if (this instanceof BrewingBase)
-		{
-			baseBrewings.add((BrewingBase) this);
-		}
-		
 		return this;
 	}
 	
@@ -448,34 +429,30 @@ public class Brewing implements Comparable<Brewing>
 	}
 	
 	/**
-	 * Checks if the ingredient has any effect on a potion
+	 * Checks if the stack has any effect on a potion
 	 * 
-	 * @param ingredient
-	 * @return
+	 * @param stack
+	 * the stack
+	 * @return true, if the stack is a valid potion ingredient
 	 */
-	public static boolean isPotionIngredient(ItemStack ingredient)
+	public static boolean isPotionIngredient(ItemStack stack)
 	{
-		if (isSpecialIngredient(ingredient))
-			return true;
-		return getBrewingFromIngredient(ingredient) != null;
+		return getBrewingFromIngredient(stack) != null || hasIngredientHandler(stack);
 	}
 	
 	/**
-	 * Finds the first registered IngredientHandler that can handle the
+	 * Finds the first registered {@link IIngredientHandler} that can handle the
 	 * ingredient
 	 * 
 	 * @param ingredient
-	 * @return
+	 * the ingredient
+	 * @return the corresponding {@link IIngredientHandler}
 	 */
 	public static IIngredientHandler getHandlerForIngredient(ItemStack ingredient)
 	{
 		for (IIngredientHandler handler : BrewingAPI.ingredientHandlers)
-		{
 			if (handler.canHandleIngredient(ingredient))
-			{
 				return handler;
-			}
-		}
 		return null;
 	}
 	
@@ -486,7 +463,7 @@ public class Brewing implements Comparable<Brewing>
 	 * @param ingredient
 	 * @return
 	 */
-	public static boolean isSpecialIngredient(ItemStack ingredient)
+	public static boolean hasIngredientHandler(ItemStack ingredient)
 	{
 		return getHandlerForIngredient(ingredient) != null;
 	}
@@ -502,17 +479,14 @@ public class Brewing implements Comparable<Brewing>
 	 */
 	public static ItemStack applyIngredient(ItemStack ingredient, ItemStack potion)
 	{
-		// The ingredient is a normal ingredient or a base ingredient
 		if (getBrewingFromIngredient(ingredient) != null)
-		{
+			// The ingredient is a normal ingredient or a base ingredient
 			return getBrewingFromIngredient(ingredient).addBrewingToItemStack(potion);
-		}
 		else
-		// The ingredient is a special one that must NOT only add a Brewing NBT
-		// to the ItemStack NBT
-		{
+			// The ingredient is a special one that must NOT only add a Brewing
+			// NBT
+			// to the ItemStack NBT
 			return getHandlerForIngredient(ingredient).applyIngredient(ingredient, potion);
-		}
 	}
 	
 	/**
@@ -559,10 +533,10 @@ public class Brewing implements Comparable<Brewing>
 				nbt.setInteger("MaxAmplifier", this.maxAmplifier);
 			if (this.effect == null || this.maxDuration > this.effect.getDuration())
 				nbt.setInteger("MaxDuration", this.maxDuration);
-			if (this.opposite != null)
+			if (this.inverted != null)
 			{
 				NBTTagCompound inverted = new NBTTagCompound();
-				this.opposite.writeToNBT(inverted);
+				this.inverted.writeToNBT(inverted);
 				nbt.setCompoundTag("Inverted", inverted);
 			}
 			if (this.extendedAttributes != null)
@@ -590,10 +564,10 @@ public class Brewing implements Comparable<Brewing>
 				nbt.setInteger("MaxAmplifier", this.maxAmplifier);
 			if (this.effect == null || this.maxDuration > this.effect.getDuration())
 				nbt.setInteger("MaxDuration", this.maxDuration);
-			if (this.opposite != null)
+			if (this.inverted != null)
 			{
 				NBTTagCompound inverted = new NBTTagCompound();
-				this.opposite.writeToNBT(inverted);
+				this.inverted.writeToNBT(inverted);
 				nbt.setCompoundTag("Opposite", inverted);
 			}
 			if (this.extendedAttributes != null)
@@ -625,7 +599,7 @@ public class Brewing implements Comparable<Brewing>
 			PotionEffect effect = PotionEffect.readCustomPotionEffectFromNBT(nbt.getCompoundTag("Effect"));
 			
 			if (effect.getPotionID() == 0 || nbt.hasKey("BaseName"))
-				((BrewingBase)this).readFromNBT(nbt);
+				((BrewingBase) this).readFromNBT(nbt);
 			
 			int maxAmplifier = nbt.getInteger("MaxAmplifier");
 			int maxDuration = nbt.getInteger("MaxDuration");
@@ -667,7 +641,7 @@ public class Brewing implements Comparable<Brewing>
 			this.setEffect(new PotionEffect(potionID, potionDuration, potionAmplifier));
 			
 			if (potionID == 0 || nbt.hasKey("BaseName"))
-				((BrewingBase)this).readFromNBT(nbt);
+				((BrewingBase) this).readFromNBT(nbt);
 			
 			this.maxAmplifier = nbt.hasKey("MaxAmplifier") ? nbt.getInteger("MaxAmplifier") : (nbt.hasKey("Improvable") ? (nbt.getBoolean("Improvable") ? 1 : 0) : 0);
 			this.maxDuration = nbt.hasKey("MaxDuration") ? nbt.getInteger("MaxDuration") : (nbt.hasKey("Extendable") ? (nbt.getBoolean("Extendable") ? potionDuration * 2 : potionDuration) : potionDuration);
@@ -713,22 +687,16 @@ public class Brewing implements Comparable<Brewing>
 		if (stack != null && stack.getItem() instanceof ItemPotion2)
 		{
 			List<Brewing> effects = ((ItemPotion2) stack.getItem()).getEffects(stack);
-			float f = ((ItemPotion2) stack.getItem()).isSplash(stack.getItemDamage()) ? 0.3F : 0.2F;
+			float value = ((ItemPotion2) stack.getItem()).isSplash(stack.getItemDamage()) ? 0.3F : 0.2F;
 			for (Brewing b : effects)
 			{
-				if (b.getEffect() != null)
+				if (b.hasEffect())
 				{
-					if (b.isBadEffect())
-					{
-						f += 0.4F + b.getEffect().getAmplifier() * 0.1F + (b.getEffect().getDuration() / (600));
-					}
-					else
-					{
-						f += 0.5F + b.getEffect().getAmplifier() * 0.1F + (b.getEffect().getDuration() / (600));
-					}
+					float f1 = b.isBadEffect() ? 0.4F : 0.5F;
+					value += f1 + (b.getAmplifier() * 0.1F) + (b.getEffect().getDuration() / 600);
 				}
 			}
-			return f;
+			return value;
 		}
 		return 0F;
 	}
@@ -744,9 +712,7 @@ public class Brewing implements Comparable<Brewing>
 	public static BrewingBase getBaseBrewing(BrewingBase base)
 	{
 		if (BrewingList.DEFAULT_AWKWARD_BREWING)
-		{
 			return BrewingList.awkward;
-		}
 		return base;
 	}
 	
@@ -754,7 +720,7 @@ public class Brewing implements Comparable<Brewing>
 	public String toString()
 	{
 		StringBuilder s = new StringBuilder("Brewing{");
-		if (this.getEffect() != null)
+		if (this.hasEffect())
 			s.append("PotionEffect<").append(this.getEffect().getPotionID()).append(" [").append(this.getEffect().getDuration()).append("] x ").append(this.getEffect().getAmplifier()).append(">");
 		s.append("MaxValues<[").append(this.getMaxDuration()).append("] x ").append(this.getMaxAmplifier()).append(">");
 		if (this.getInverted() != null)
@@ -763,7 +729,7 @@ public class Brewing implements Comparable<Brewing>
 			s.append("Ingredient<").append(this.getIngredient().itemID).append(":").append(this.getIngredient().getItemDamage()).append(">");
 		if (this.getBase() != null)
 			s.append("Base<").append(this.getBase().toString()).append(">");
-		if (this.getEffect() != null)
+		if (this.hasEffect())
 			s.append("Name<").append(this.getEffect().getEffectName()).append(">");
 		s.append("}");
 		return s.toString();
@@ -779,7 +745,7 @@ public class Brewing implements Comparable<Brewing>
 				boolean duplicate = false;
 				for (Brewing b2 : result)
 				{
-					if (b.getEffect() != null && b2.getEffect() != null && b.getEffect().getPotionID() == b2.getEffect().getPotionID())
+					if (b.hasEffect() && b2.hasEffect() && b.getPotionID() == b2.getPotionID())
 					{
 						duplicate = true;
 						break;
@@ -803,7 +769,7 @@ public class Brewing implements Comparable<Brewing>
 				boolean duplicate = false;
 				for (Brewing b2 : result)
 				{
-					if (b.getEffect().getPotionID() == b2.getEffect().getPotionID())
+					if (b.getPotionID() == b2.getPotionID())
 					{
 						duplicate = true;
 						break;
@@ -820,6 +786,6 @@ public class Brewing implements Comparable<Brewing>
 	@Override
 	public int compareTo(Brewing o)
 	{
-		return (this.getEffect() != null && o.getEffect() != null) ? Integer.compare(this.getEffect().getPotionID(), o.getEffect().getPotionID()) : 0;
+		return (this.hasEffect() && o.hasEffect()) ? Integer.compare(this.getPotionID(), o.getPotionID()) : 0;
 	}
 }

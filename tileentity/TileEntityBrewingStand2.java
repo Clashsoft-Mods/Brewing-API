@@ -264,7 +264,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 						}
 					}
 				}
-				else if (!Brewing.isSpecialIngredient(ingredient))
+				else if (!Brewing.hasIngredientHandler(ingredient))
 				{
 					for (int var3 = 0; var3 < 3; var3++)
 					{
@@ -419,7 +419,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 								brewings[0] = BrewingBase.getBrewingBaseFromIngredient(ingredient);
 							}
 						}
-						else if (!Brewing.isSpecialIngredient(ingredient))
+						else if (!Brewing.hasIngredientHandler(ingredient))
 						{
 							Brewing stackBase = Brewing.getFirstBrewing(brewingItemStacks[potionIndex]);
 							Brewing requiredBase = Brewing.getBrewingFromIngredient(ingredient).getBase();

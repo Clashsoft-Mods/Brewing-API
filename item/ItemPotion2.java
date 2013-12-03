@@ -592,14 +592,14 @@ public class ItemPotion2 extends Item
 			ItemStack bad1 = new ItemStack(this, 1, 1);
 			ItemStack bad2 = new ItemStack(this, 1, 2);
 			
-			for (BrewingBase brewing : Brewing.baseBrewings)
+			for (BrewingBase brewing : BrewingBase.baseList)
 			{
 				for (int i = 1; i <= 2; i++)
 				{
 					par3List.add(brewing.addBrewingToItemStack(new ItemStack(this, 1, i)));
 				}
 			}
-			for (Brewing brewing : Brewing.effectBrewings)
+			for (Brewing brewing : Brewing.effectMap.values())
 			{
 				for (int i = 1; i <= 2; i++)
 				{
@@ -617,26 +617,21 @@ public class ItemPotion2 extends Item
 			
 			if (BrewingAPI.isMorePotionsModInstalled())
 			{
-				for (Brewing brewing : Brewing.goodEffects)
-				{
-					if (brewing != BrewingList.effectRemove)
-					{
-						good1 = brewing.addBrewingToItemStack(good1);
-						good2 = brewing.addBrewingToItemStack(good2);
-					}
-				}
-				for (Brewing brewing : Brewing.badEffects)
-				{
-					if (brewing != BrewingList.effectRemove)
-					{
-						bad1 = brewing.addBrewingToItemStack(bad1);
-						bad2 = brewing.addBrewingToItemStack(bad2);
-					}
-				}
 				for (Brewing brewing : Brewing.combinableEffects)
 				{
-					allEffects1 = brewing.addBrewingToItemStack(allEffects1);
-					allEffects2 = brewing.addBrewingToItemStack(allEffects2);
+					if (!brewing.isBadEffect())
+					{
+						brewing.addBrewingToItemStack(good1);
+						brewing.addBrewingToItemStack(good2);
+					}
+					else
+					{
+						brewing.addBrewingToItemStack(bad1);
+						brewing.addBrewingToItemStack(bad2);
+					}
+					
+					brewing.addBrewingToItemStack(allEffects1);
+					brewing.addBrewingToItemStack(allEffects2);
 				}
 				
 				par3List.add(allEffects1);

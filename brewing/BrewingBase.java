@@ -1,6 +1,8 @@
 package clashsoft.brewingapi.brewing;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.minecraft.item.ItemStack;
@@ -9,7 +11,8 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class BrewingBase extends Brewing implements Comparable<Brewing>
 {
-	public static Map<String, BrewingBase>	baseMap	= new HashMap();
+	public static List<BrewingBase>			baseList	= new ArrayList();
+	public static Map<String, BrewingBase>	baseMap		= new HashMap();
 	
 	public String							basename;
 	
@@ -26,27 +29,17 @@ public class BrewingBase extends Brewing implements Comparable<Brewing>
 	
 	public BrewingBase(String par1)
 	{
-		this(par1, new ItemStack(0, 0, 0));
+		this(par1, null);
 	}
 	
 	public static BrewingBase getBrewingBaseFromIngredient(ItemStack par1ItemStack)
 	{
-		try
+		for (BrewingBase b : baseList)
 		{
-			for (BrewingBase b : baseBrewings)
-			{
-				if (OreDictionary.itemMatches(b.getIngredient(), par1ItemStack, true))
-				{
-					return b;
-				}
-				if (b.getIngredient().getItem() == par1ItemStack.getItem() && b.getIngredient().getItemDamage() == par1ItemStack.getItemDamage())
-				{
-					return b;
-				}
-			}
-		}
-		catch (Exception ex)
-		{
+			if (OreDictionary.itemMatches(b.getIngredient(), par1ItemStack, true))
+				return b;
+			if (b.getIngredient().getItem() == par1ItemStack.getItem() && b.getIngredient().getItemDamage() == par1ItemStack.getItemDamage())
+				return b;
 		}
 		return null;
 	}
@@ -55,14 +48,27 @@ public class BrewingBase extends Brewing implements Comparable<Brewing>
 	public BrewingBase register()
 	{
 		super.register();
-		baseMap.put(basename, this);
+		
+		baseList.add(this);
+		if (this.basename != null)
+			baseMap.put(this.basename, this);
+		
 		return this;
 	}
 	
 	public void readFromNBT(NBTTagCompound par1NBTTagCompound)
 	{
 		String nbtVersion = par1NBTTagCompound.getString("VERSION");
-		if ("1.0.1".equals(nbtVersion))
+		if ("1.1".equals(nbtVersion))
+		{
+			BrewingBase base = baseMap.get(par1NBTTagCompound.getString("BaseName"));
+			if (base != null)
+			{
+				this.basename = base.basename;
+				this.setIngredient(base.getIngredient());
+			}
+		}
+		else
 		{
 			this.basename = par1NBTTagCompound.hasKey("BaseName") ? par1NBTTagCompound.getString("BaseName") : "";
 			
@@ -72,15 +78,7 @@ public class BrewingBase extends Brewing implements Comparable<Brewing>
 			
 			this.setIngredient(new ItemStack(ingredientID, ingredientAmount, ingredientDamage));
 		}
-		else
-		{
-			BrewingBase base = baseMap.get(par1NBTTagCompound.getString("BaseName"));
-			if (base != null)
-			{
-				this.basename = base.basename;
-				this.setIngredient(base.getIngredient());
-			}
-		}
+		
 	}
 	
 	@Override
