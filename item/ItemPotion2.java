@@ -321,6 +321,8 @@ public class ItemPotion2 extends Item
 					}
 					if (effects.isEmpty())
 						result.append(super.getItemDisplayName(stack));
+					else if (effects.size() > 4)
+						result.append(I18n.getString("potion.potionof")).append(" ").append(effects.size()).append(" ").append(I18n.getString("potion.effects"));
 					else
 					{
 						for (int i = 0; i < effects.size(); i++)
@@ -377,6 +379,9 @@ public class ItemPotion2 extends Item
 				glowPos++;
 				if (glowPos > maxGlowPos * 4)
 					glowPos = 0;
+				
+				if (potionTypes.size() > 5)
+					glowPos = -1;
 				
 				for (int i = 0; i < potionTypes.size(); i++)
 				{
@@ -447,14 +452,19 @@ public class ItemPotion2 extends Item
 						}
 						
 						builder.insert(0, colorDark);
-						glowPosInt += colorDark.length();
 						
-						if (glowPosInt < builder.length())
-							builder.insert(glowPosInt, colorLight);
+						if (glowPos >= 0)
+						{
+							glowPosInt += colorDark.length();
+							
+							if (glowPosInt < builder.length())
+								builder.insert(glowPosInt, colorLight);
+							
+							glowPosInt += colorLight.length() + 1;
+							if (glowPosInt < builder.length())
+								builder.insert(glowPosInt, colorDark);
+						}
 						
-						glowPosInt += colorLight.length() + 1;
-						if (glowPosInt < builder.length())
-							builder.insert(glowPosInt, colorDark);
 					}
 					list.add(builder.toString());
 				}
