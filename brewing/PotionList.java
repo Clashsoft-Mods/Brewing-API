@@ -50,41 +50,41 @@ public class PotionList
 	public static PotionBase	gross;
 	public static PotionBase	stinky;
 	
-	public static PotionType		moveSlowdown;
-	public static PotionType		moveSpeed;
-	public static PotionType		digSlowdown;
-	public static PotionType		digSpeed;
-	public static PotionType		weakness;
-	public static PotionType		damageBoost;
-	public static PotionType		harm;
-	public static PotionType		heal;
-	public static PotionType		doubleLife;
+	public static PotionType	moveSlowdown;
+	public static PotionType	moveSpeed;
+	public static PotionType	digSlowdown;
+	public static PotionType	digSpeed;
+	public static PotionType	weakness;
+	public static PotionType	damageBoost;
+	public static PotionType	harm;
+	public static PotionType	heal;
+	public static PotionType	doubleLife;
 	/** Health Boost added in 1.6 **/
-	public static PotionType		healthBoost;
+	public static PotionType	healthBoost;
 	/** Absorption added in 1.6 **/
-	public static PotionType		absorption;
-	public static PotionType		jump;
-	public static PotionType		confusion;
-	public static PotionType		regeneration;
-	public static PotionType		resistance;
-	public static PotionType		ironSkin;
-	public static PotionType		obsidianSkin;
-	public static PotionType		fireResistance;
-	public static PotionType		waterWalking;
-	public static PotionType		waterBreathing;
-	public static PotionType		coldness;
-	public static PotionType		invisibility;
-	public static PotionType		blindness;
-	public static PotionType		nightVision;
-	public static PotionType		poison;
-	public static PotionType		hunger;
+	public static PotionType	absorption;
+	public static PotionType	jump;
+	public static PotionType	confusion;
+	public static PotionType	regeneration;
+	public static PotionType	resistance;
+	public static PotionType	ironSkin;
+	public static PotionType	obsidianSkin;
+	public static PotionType	fireResistance;
+	public static PotionType	waterWalking;
+	public static PotionType	waterBreathing;
+	public static PotionType	coldness;
+	public static PotionType	invisibility;
+	public static PotionType	blindness;
+	public static PotionType	nightVision;
+	public static PotionType	poison;
+	public static PotionType	hunger;
 	/** Hunger Bar restore added in 1.6 **/
-	public static PotionType		saturation;
-	public static PotionType		wither;
-	public static PotionType		explosiveness;
-	public static PotionType		fire;
-	public static PotionType		random;
-	public static PotionType		effectRemove;
+	public static PotionType	saturation;
+	public static PotionType	wither;
+	public static PotionType	explosiveness;
+	public static PotionType	fire;
+	public static PotionType	random;
+	public static PotionType	effectRemove;
 	
 	public static void initializeBrewings()
 	{

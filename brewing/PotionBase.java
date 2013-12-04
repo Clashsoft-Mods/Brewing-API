@@ -45,6 +45,12 @@ public class PotionBase extends PotionType implements Comparable<PotionType>
 	}
 	
 	@Override
+	public String getEffectName()
+	{
+		return "potion.prefix." + this.basename;
+	}
+	
+	@Override
 	public PotionBase register()
 	{
 		super.register();

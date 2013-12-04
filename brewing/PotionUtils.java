@@ -1,69 +1,35 @@
 package clashsoft.brewingapi.brewing;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import clashsoft.brewingapi.item.ItemPotion2;
-
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.util.StatCollector;
 
 public class PotionUtils
 {
 	public static int getGoodEffects(List<PotionType> potion)
 	{
-		List<PotionType> var5 = potion;
-		int badEffects = 0;
-		
-		for (PotionType b : var5)
-		{
-			if (b.isBadEffect())
-			{
-				badEffects++;
-			}
-		}
-		
-		if (var5.size() - badEffects > 1)
-		{
-			int goodEffects = var5.size() - badEffects;
-			return goodEffects;
-		}
-		return 0;
+		return potion.size() - getBadEffects(potion);
 	}
 	
 	public static int getBadEffects(List<PotionType> potion)
 	{
-		List<PotionType> var5 = potion;
 		int badEffects = 0;
 		
-		for (PotionType b : var5)
+		for (PotionType pt : potion)
 		{
-			if (b.isBadEffect())
-			{
+			if (pt.isBadEffect())
 				badEffects++;
-			}
 		}
 		
-		if (badEffects > 1)
-		{
-			return badEffects;
-		}
-		return 0;
+		return badEffects;
 	}
 	
 	public static int getAverageAmplifier(List<PotionType> potion)
 	{
-		List<PotionType> var5 = potion;
 		int averageAmplifier = 0;
-		for (int i = 0; i < var5.size(); i++)
-		{
-			if (var5.get(i).getEffect() != null)
-			{
-				averageAmplifier += var5.get(i).getEffect().getAmplifier() + 1;
-			}
-		}
-		averageAmplifier /= var5.size();
+		for (PotionType pt : potion)
+			averageAmplifier += pt.getAmplifier() + 1;
+		averageAmplifier /= potion.size();
 		averageAmplifier -= 1;
 		
 		return averageAmplifier;
@@ -71,16 +37,10 @@ public class PotionUtils
 	
 	public static int getAverageDuration(List<PotionType> potion)
 	{
-		List<PotionType> var5 = potion;
 		int averageDuration = 0;
-		for (int i = 0; i < var5.size(); i++)
-		{
-			if (var5.get(i).getEffect() != null)
-			{
-				averageDuration += var5.get(i).getEffect().getDuration();
-			}
-		}
-		averageDuration /= var5.size();
+		for (PotionType pt : potion)
+			averageDuration += pt.getDuration();
+		averageDuration /= potion.size();
 		return averageDuration;
 	}
 	
@@ -88,14 +48,9 @@ public class PotionUtils
 	{
 		List<PotionType> var5 = potion;
 		int maxAmplifier = 0;
-		for (int i = 0; i < var5.size(); i++)
-		{
-			if (var5.get(i).getEffect() != null && var5.get(i).getEffect().getAmplifier() > maxAmplifier)
-			{
-				maxAmplifier = var5.get(i).getEffect().getAmplifier();
-			}
-		}
-		
+		for (PotionType pt : potion)
+			if (maxAmplifier < pt.getAmplifier())
+				maxAmplifier = pt.getAmplifier();
 		return maxAmplifier;
 	}
 	
@@ -103,57 +58,15 @@ public class PotionUtils
 	{
 		List<PotionType> var5 = potion;
 		int maxDuration = 0;
-		for (int i = 0; i < var5.size(); i++)
-		{
-			if (var5.get(i).getEffect() != null && var5.get(i).getEffect().getDuration() > maxDuration)
-			{
-				maxDuration = var5.get(i).getEffect().getDuration();
-			}
-		}
+		for (PotionType pt : potion)
+			if (maxDuration < pt.getDuration())
+				maxDuration = pt.getDuration();
 		return maxDuration;
 	}
 	
-	public float getValue(ItemStack potion)
+	public static float getValue(ItemStack potion)
 	{
 		return PotionType.getExperience(potion) * 100 / 223.9F;
-	}
-	
-	public static List<String> getUsedTo(ItemStack potion)
-	{
-		List<String> usedTo = new ArrayList<String>();
-		List<PotionType> var5 = ((ItemPotion2) potion.getItem()).getEffects(potion);
-		for (PotionType b1 : PotionType.potionTypeList)
-		{
-			if (b1 != null && var5.get(0) instanceof PotionBase)
-			{
-				if (((PotionBase) var5.get(0)).basename.equals(b1.getBase() != null ? b1.getBase().basename : ""))
-				{
-					usedTo.add(" - " + b1.addBrewingToItemStack(new ItemStack(potion.getItem(), 1, 1)).getDisplayName());
-				}
-			}
-		}
-		boolean improvable = true;
-		boolean extendable = true;
-		for (PotionType b2 : var5)
-		{
-			if (!b2.isImprovable())
-			{
-				improvable = false;
-			}
-			if (!b2.isExtendable())
-			{
-				extendable = false;
-			}
-		}
-		if (improvable)
-		{
-			usedTo.add(" - " + potion.getDisplayName() + " (" + StatCollector.translateToLocal("potion.potency." + (var5.get(0).getEffect().getAmplifier() + 1)) + ")");
-		}
-		if (extendable)
-		{
-			usedTo.add(" - " + potion.getDisplayName() + " (" + (Potion.getDurationString(var5.get(0).onExtended().getEffect())) + ")");
-		}
-		return usedTo;
 	}
 	
 	public static int combineColors(int... colors)

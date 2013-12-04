@@ -143,6 +143,10 @@ public class PotionType implements Comparable<PotionType>
 	public PotionType register()
 	{
 		potionTypeList.add(this);
+		
+		if (!this.isBase() && this != PotionList.effectRemove)
+			combinableEffects.add(this);
+					
 		if (this.hasEffect())
 			effectMap.put(this.getEffect(), this);
 		
@@ -187,7 +191,7 @@ public class PotionType implements Comparable<PotionType>
 	
 	public boolean hasEffect()
 	{
-		return this.getEffect() != null;
+		return this.getEffect() != null && this.getEffect().getPotionID() > 0;
 	}
 	
 	public Potion getPotion()
@@ -212,6 +216,11 @@ public class PotionType implements Comparable<PotionType>
 	{
 		PotionEffect pe = this.getEffect();
 		return pe != null ? pe.getAmplifier() : -1;
+	}
+	
+	public String getEffectName()
+	{
+		return this.hasEffect() ? this.getEffect().getEffectName() : "";
 	}
 	
 	public int getMaxAmplifier()
@@ -763,6 +772,7 @@ public class PotionType implements Comparable<PotionType>
 				if (!duplicate)
 					result.add(b);
 			}
+			Collections.sort(result);
 			return result;
 		}
 		return list;

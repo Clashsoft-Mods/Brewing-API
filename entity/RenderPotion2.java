@@ -31,7 +31,7 @@ public class RenderPotion2 extends Render
 	public void renderPotion(EntityPotion2 potion, double x, double y, double z, float f, float g)
 	{
 		ItemStack stack = potion.potionDamage;
-		Icon icon = stack != null && stack.getItem() != null ? ((ItemPotion2) stack.getItem()).getSplashIcon(stack) : ItemPotion2.func_94589_d("bottle_splash");
+		Icon icon = stack != null && stack.getItem() != null ? ((ItemPotion2) stack.getItem()).getSplashIcon(stack) : ItemPotion2.getPotionIcon("bottle_splash");
 		
 		if (icon != null)
 		{
