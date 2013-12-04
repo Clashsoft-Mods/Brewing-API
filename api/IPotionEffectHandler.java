@@ -1,17 +1,18 @@
 package clashsoft.brewingapi.api;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.PotionEffect;
 
 public interface IPotionEffectHandler
-{	
+{
 	public static class PotionQueue
 	{
-		private List<PotionEffect> addQueue = new ArrayList();
-		private List<Integer> removeQueue = new ArrayList();
+		private List<PotionEffect>	addQueue	= new ArrayList();
+		private List<Integer>		removeQueue	= new ArrayList();
 		
 		public void add(PotionEffect effect)
 		{
@@ -31,9 +32,21 @@ public interface IPotionEffectHandler
 		public synchronized void updateEntity(EntityLivingBase entity)
 		{
 			for (PotionEffect effect : this.addQueue)
-				entity.addPotionEffect(effect);
+				try
+				{
+					entity.addPotionEffect(effect);
+				}
+				catch (ConcurrentModificationException ex)
+				{
+				}
 			for (Integer effect : this.removeQueue)
-				entity.removePotionEffect(effect.intValue());
+				try
+				{
+					entity.removePotionEffect(effect.intValue());
+				}
+				catch (ConcurrentModificationException ex)
+				{
+				}
 			
 			this.addQueue.clear();
 			this.removeQueue.clear();

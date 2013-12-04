@@ -23,7 +23,7 @@ import net.minecraftforge.oredict.OreDictionary;
 public class PotionType implements Comparable<PotionType>
 {
 	/** List that stores ALL potionTypes **/
-	public static List<PotionType>					potionTypeList					= new ArrayList<PotionType>();
+	public static List<PotionType>					potionTypeList				= new ArrayList<PotionType>();
 	public static Map<PotionEffect, PotionType>		effectMap					= new HashMap();
 	
 	public static List<PotionType>					combinableEffects			= new ArrayList<PotionType>();
@@ -48,11 +48,9 @@ public class PotionType implements Comparable<PotionType>
 	
 	private Map<String, IBrewingAttribute>			extendedAttributes			= new HashMap<String, IBrewingAttribute>();
 	
-	/**
-	 * Empty constructor for use with serialization
-	 */
-	public PotionType()
+	protected PotionType()
 	{
+		
 	}
 	
 	/**
@@ -125,7 +123,7 @@ public class PotionType implements Comparable<PotionType>
 		this.effect = effect;
 		this.maxAmplifier = maxAmplifier;
 		this.maxDuration = maxDuration;
-		this.inverted = inverted.copy();
+		this.inverted = inverted != null ? inverted.copy() : null;
 		this.ingredient = ingredient;
 		this.base = base;
 	}
@@ -189,7 +187,7 @@ public class PotionType implements Comparable<PotionType>
 	
 	public boolean hasEffect()
 	{
-		return this.hasEffect();
+		return this.getEffect() != null;
 	}
 	
 	public Potion getPotion()
@@ -253,7 +251,7 @@ public class PotionType implements Comparable<PotionType>
 	
 	public boolean isBase()
 	{
-		return this instanceof PotionBase || this.getEffect() == null;
+		return this instanceof PotionBase;
 	}
 	
 	public int getLiquidColor()
@@ -385,6 +383,16 @@ public class PotionType implements Comparable<PotionType>
 		return combinableEffects.get(rng.nextInt(combinableEffects.size()));
 	}
 	
+	public static PotionType getLegacyPotionType(PotionEffect potionEffect)
+	{
+		for (PotionType type : potionTypeList)
+		{
+			if (type.getPotionID() == potionEffect.getPotionID())
+				return type.copy().setEffect(potionEffect);
+		}
+		return new PotionType(potionEffect, potionEffect.getAmplifier(), potionEffect.getDuration()).register();
+	}
+	
 	/**
 	 * Writes the PotionType to the ItemStack NBT
 	 * 
@@ -426,8 +434,7 @@ public class PotionType implements Comparable<PotionType>
 			if (list != null && list.tagCount() > 0)
 			{
 				NBTTagCompound compound = (NBTTagCompound) list.tagAt(0);
-				PotionType potionType = new PotionType();
-				potionType.readFromNBT(compound);
+				PotionType potionType = getPotionTypeFromNBT(compound);
 				return potionType;
 			}
 		}
@@ -589,36 +596,36 @@ public class PotionType implements Comparable<PotionType>
 		}
 	}
 	
-	/**
-	 * Reads a PotionType from a NBTTagCompound
-	 * 
-	 * @param nbt
-	 *            NBTTagCompound to read PotionType from
-	 * @return PotionType read from NBTTagCompound
-	 */
+	public static PotionType getPotionTypeFromNBT(NBTTagCompound nbt)
+	{
+		if (nbt != null && !nbt.hasNoTags())
+		{
+			PotionType result;
+			if (nbt.hasKey("BaseName"))
+				result = new PotionBase();
+			else
+				result = new PotionType();
+			result.readFromNBT(nbt);
+			return result;
+		}
+		return null;
+	}
+	
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		String nbtVersion = nbt.getString("VERSION");
 		
 		if ("1.1".equals(nbtVersion))
 		{
-			PotionEffect effect = PotionEffect.readCustomPotionEffectFromNBT(nbt.getCompoundTag("Effect"));
+			this.effect = PotionEffect.readCustomPotionEffectFromNBT(nbt.getCompoundTag("Effect"));
 			
-			if (effect.getPotionID() == 0 || nbt.hasKey("BaseName"))
-				((PotionBase) this).readFromNBT(nbt);
+			this.maxAmplifier = nbt.getInteger("MaxAmplifier");
+			this.maxDuration = nbt.getInteger("MaxDuration");
 			
-			int maxAmplifier = nbt.getInteger("MaxAmplifier");
-			int maxDuration = nbt.getInteger("MaxDuration");
+			this.ingredient = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("Ingredient"));
 			
-			ItemStack ingredient = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("Ingredient"));
-			
-			PotionType inverted = new PotionType();
-			inverted.readFromNBT(nbt.getCompoundTag("Inverted"));
-			
-			PotionBase base = new PotionBase();
-			base.readFromNBT(nbt.getCompoundTag("Base"));
-			
-			PotionType potionType = new PotionType(effect, maxAmplifier, maxDuration, inverted, ingredient, base);
+			this.inverted = getPotionTypeFromNBT(nbt.getCompoundTag("Inverted"));
+			this.base = (PotionBase) getPotionTypeFromNBT(nbt.getCompoundTag("Base"));
 			
 			if (nbt.hasKey("ExtendedAttributes"))
 			{
@@ -632,7 +639,7 @@ public class PotionType implements Comparable<PotionType>
 						for (IBrewingAttribute attribute : defaultExtendedAttributes.values())
 						{
 							attribute = attribute.fromNBT(nbtbase);
-							potionType.setExtendedAttribute(attribute.getName(), attribute);
+							this.setExtendedAttribute(attribute.getName(), attribute);
 						}
 					}
 				}
@@ -646,9 +653,6 @@ public class PotionType implements Comparable<PotionType>
 			
 			this.setEffect(new PotionEffect(potionID, potionDuration, potionAmplifier));
 			
-			if (potionID == 0 || nbt.hasKey("BaseName"))
-				((PotionBase) this).readFromNBT(nbt);
-			
 			this.maxAmplifier = nbt.hasKey("MaxAmplifier") ? nbt.getInteger("MaxAmplifier") : (nbt.hasKey("Improvable") ? (nbt.getBoolean("Improvable") ? 1 : 0) : 0);
 			this.maxDuration = nbt.hasKey("MaxDuration") ? nbt.getInteger("MaxDuration") : (nbt.hasKey("Extendable") ? (nbt.getBoolean("Extendable") ? potionDuration * 2 : potionDuration) : potionDuration);
 			
@@ -656,10 +660,10 @@ public class PotionType implements Comparable<PotionType>
 			int ingredientAmount = nbt.getInteger("IngredientAmount");
 			int ingredientDamage = nbt.getInteger("IngredientDamage");
 			
-			PotionType inverted = new PotionType();
-			inverted.readFromNBT(nbt.getCompoundTag("Opposite"));
-			PotionBase base = new PotionBase();
-			base.readFromNBT(nbt.getCompoundTag("Base"));
+			this.ingredient = new ItemStack(ingredientID, ingredientAmount, ingredientDamage);
+			
+			this.inverted = getPotionTypeFromNBT(nbt.getCompoundTag("Opposite"));
+			this.base = (PotionBase) getPotionTypeFromNBT(nbt.getCompoundTag("Base"));
 			
 			if (nbt.hasKey("ExtendedAttributes"))
 			{
@@ -725,20 +729,19 @@ public class PotionType implements Comparable<PotionType>
 	@Override
 	public String toString()
 	{
-		StringBuilder s = new StringBuilder("PotionType{");
+		StringBuilder result = new StringBuilder("PotionType {");
 		if (this.hasEffect())
-			s.append("PotionEffect<").append(this.getEffect().getPotionID()).append(" [").append(this.getEffect().getDuration()).append("] x ").append(this.getEffect().getAmplifier()).append(">");
-		s.append("MaxValues<[").append(this.getMaxDuration()).append("] x ").append(this.getMaxAmplifier()).append(">");
+			result.append("PotionEffect=[").append(this.getPotionID()).append(":").append(this.getAmplifier()).append("*").append(this.getDuration() / 20F).append("s").append("]");
+		result.append("&MaxAmplifier=[").append(this.maxAmplifier).append("]");
+		result.append("&MaxDuration=[").append(this.maxDuration).append("]");
 		if (this.getInverted() != null)
-			s.append("Opposite<").append(this.getInverted().toString()).append(">");
+			result.append("&Inverted=[").append(this.getInverted().toString()).append("]");
 		if (this.getIngredient() != null)
-			s.append("Ingredient<").append(this.getIngredient().itemID).append(":").append(this.getIngredient().getItemDamage()).append(">");
+			result.append("&Ingredient=[").append(this.getIngredient().itemID).append(":").append(this.getIngredient().getItemDamage()).append("]");
 		if (this.getBase() != null)
-			s.append("Base<").append(this.getBase().toString()).append(">");
-		if (this.hasEffect())
-			s.append("Name<").append(this.getEffect().getEffectName()).append(">");
-		s.append("}");
-		return s.toString();
+			result.append("&Base=[").append(this.getBase().toString()).append("]");
+		result.append("}");
+		return result.toString();
 	}
 	
 	public static Collection<PotionType> removeDuplicates(Collection<PotionType> list)

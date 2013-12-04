@@ -10,16 +10,16 @@ import clashsoft.brewingapi.api.IIngredientHandler;
 import clashsoft.brewingapi.api.IPotionEffectHandler;
 import clashsoft.brewingapi.api.IPotionEffectHandler.PotionQueue;
 import clashsoft.brewingapi.block.BlockBrewingStand2;
-import clashsoft.brewingapi.brewing.PotionType;
 import clashsoft.brewingapi.brewing.PotionList;
+import clashsoft.brewingapi.brewing.PotionType;
 import clashsoft.brewingapi.command.CommandGivePotion;
 import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.item.ItemBrewingStand2;
 import clashsoft.brewingapi.item.ItemGlassBottle2;
 import clashsoft.brewingapi.item.ItemPotion2;
-import clashsoft.brewingapi.lib.BAPICreativeTabs;
 import clashsoft.brewingapi.lib.DispenserBehaviorPotion2;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
+import clashsoft.cslib.minecraft.CustomCreativeTab;
 import clashsoft.cslib.minecraft.update.CSUpdate;
 import clashsoft.cslib.minecraft.update.ModUpdate;
 import cpw.mods.fml.common.Mod;
@@ -75,7 +75,7 @@ public class BrewingAPI
 	
 	public static int				PotionsTab_ID			= CreativeTabs.getNextID();
 	
-	public static BAPICreativeTabs	potions;
+	public static CustomCreativeTab	potions;
 	
 	public static Block				brewingStand2;
 	public static Item				brewingStand2Item;
@@ -110,7 +110,7 @@ public class BrewingAPI
 		BrewingAPI.load();
 		
 		if (multiPotions)
-			potions = new BAPICreativeTabs("morepotions");
+			potions = new CustomCreativeTab("morepotions");
 		
 		GameRegistry.registerTileEntity(TileEntityBrewingStand2.class, "BrewingStand2");
 		EntityRegistry.registerGlobalEntityID(EntityPotion2.class, "SplashPotion2", SplashPotion2_ID);
@@ -254,7 +254,7 @@ public class BrewingAPI
 				}
 			}
 			
-			queue.updateEntity(event.entityLiving);
+			//queue.updateEntity(event.entityLiving);
 		}
 	}
 	

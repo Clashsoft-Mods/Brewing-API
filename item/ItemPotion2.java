@@ -5,11 +5,11 @@ import java.util.*;
 import org.lwjgl.input.Keyboard;
 
 import clashsoft.brewingapi.BrewingAPI;
-import clashsoft.brewingapi.brewing.PotionType;
 import clashsoft.brewingapi.brewing.PotionBase;
-import clashsoft.brewingapi.brewing.PotionList;
+import clashsoft.brewingapi.brewing.PotionType;
 import clashsoft.brewingapi.brewing.PotionUtils;
 import clashsoft.brewingapi.entity.EntityPotion2;
+import clashsoft.brewingapi.lib.AttributeModifierComparator;
 import clashsoft.cslib.util.CSString;
 
 import com.google.common.collect.Multimap;
@@ -44,18 +44,13 @@ import net.minecraft.world.World;
  */
 public class ItemPotion2 extends Item
 {
-	public static final Comparator<AttributeModifier>	MODIFIER_COMPARATOR	= new Comparator<AttributeModifier>()
-																			{
-																				public int compare(AttributeModifier o1, AttributeModifier o2)
-																				{
-																					return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
-																				};
-																			};
+	public static Comparator<AttributeModifier>		MODIFIER_COMPARATOR	= new AttributeModifierComparator();
 	
-	public static boolean								SHIFT				= false;
-	private Icon										bottle;
-	public Icon											splashbottle;
-	private Icon										liquid;
+	public Map<NBTTagCompound, List<PotionType>>	effectCache			= new HashMap();
+	
+	public Icon										bottle;
+	public Icon										splashbottle;
+	public Icon										liquid;
 	
 	public ItemPotion2(int par1)
 	{
@@ -72,48 +67,49 @@ public class ItemPotion2 extends Item
 		return new CreativeTabs[] { BrewingAPI.potions, CreativeTabs.tabBrewing, CreativeTabs.tabAllSearch };
 	}
 	
+	public List<PotionType> getLegacyEffects(ItemStack stack)
+	{
+		List<PotionEffect> effects = Item.potion.getEffects(stack);
+		List<PotionType> potionTypes = new ArrayList(effects.size());
+		for (PotionEffect effect : effects)
+		{
+			potionTypes.add(PotionType.getLegacyPotionType(effect));
+		}
+		return potionTypes;
+	}
+	
 	/**
 	 * Returns a list of potion effects for the specified itemstack.
 	 */
 	public List<PotionType> getEffects(ItemStack stack)
 	{
-		if (stack != null && !isWater(stack.getItemDamage()))
+		List<PotionType> result = new ArrayList();
+		if (stack != null && !this.isWater(stack.getItemDamage()))
 		{
-			if (stack.hasTagCompound() && stack.getTagCompound().hasKey("PotionType"))
-			{
-				List<PotionType> result = new ArrayList();
-				NBTTagList tagList = stack.getTagCompound().getTagList("PotionType");
-				boolean var2 = true;
-				
-				for (int var4 = 0; var4 < tagList.tagCount(); ++var4)
+			NBTTagCompound compound = stack.getTagCompound();
+			if (compound != null)
+			{	
+				if (this.effectCache.containsKey(compound))
+					return this.effectCache.get(compound);
+				else
 				{
-					NBTTagCompound brewingNBT = (NBTTagCompound) tagList.tagAt(var4);
-					PotionType potionType = new PotionType();
-					potionType.readFromNBT(brewingNBT);
-					result.add(potionType);
+					NBTTagList tagList = compound.getTagList("Brewing");
+					
+					for (int index = 0; index < tagList.tagCount(); ++index)
+					{
+						NBTTagCompound potionTypeNBT = (NBTTagCompound) tagList.tagAt(index);
+						PotionType potionType = PotionType.getPotionTypeFromNBT(potionTypeNBT);
+						result.add(potionType);
+					}
+					
+					this.effectCache.put(compound, result);
 				}
-				return result;
 			}
 			else
-			{
-				return brewingTransform(stack.getItemDamage(), Item.potion.getEffects(stack));
-			}
+				result = this.getLegacyEffects(stack);
 		}
-		return new ArrayList();
-	}
-	
-	private static List brewingTransform(int metadata, List<PotionEffect> effectList)
-	{
-		if (effectList != null && effectList.size() > 0)
-		{
-			List<PotionType> ret = new ArrayList<PotionType>(effectList.size());
-			for (PotionEffect effect : effectList)
-			{
-				ret.add(new PotionType(effect, 0, effect.getDuration(), PotionList.awkward));
-			}
-			return ret;
-		}
-		return new ArrayList();
+		
+		return result;
 	}
 	
 	@Override
@@ -182,7 +178,7 @@ public class ItemPotion2 extends Item
 	@Override
 	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
 	{
-		if (isSplash(par1ItemStack.getItemDamage()))
+		if (this.isSplash(par1ItemStack.getItemDamage()))
 		{
 			if (!par3EntityPlayer.capabilities.isCreativeMode)
 			{
@@ -223,14 +219,14 @@ public class ItemPotion2 extends Item
 	 */
 	public Icon getIconFromDamage(int par1)
 	{
-		return isSplash(par1) ? splashbottle : bottle;
+		return this.isSplash(par1) ? this.splashbottle : this.bottle;
 	}
 	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public Icon getIcon(ItemStack par1ItemStack, int par2)
 	{
-		return par2 == 0 ? this.liquid : (isSplash(par1ItemStack.getItemDamage()) ? splashbottle : bottle);
+		return par2 == 0 ? this.liquid : (this.isSplash(par1ItemStack.getItemDamage()) ? this.splashbottle : this.bottle);
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -267,11 +263,11 @@ public class ItemPotion2 extends Item
 	{
 		if (par2 == 0 && par1ItemStack != null)
 		{
-			if (isWater(par1ItemStack.getItemDamage()))
+			if (this.isWater(par1ItemStack.getItemDamage()))
 			{
 				return 0x0C0CFF;
 			}
-			List<PotionType> effects = getEffects(par1ItemStack);
+			List<PotionType> effects = this.getEffects(par1ItemStack);
 			if (effects != null && effects.size() > 0)
 			{
 				int[] i1 = new int[effects.size()];
@@ -311,8 +307,8 @@ public class ItemPotion2 extends Item
 	@Override
 	public String getItemDisplayName(ItemStack par1ItemStack)
 	{
-		List effects = getEffects(par1ItemStack);
-		if (isWater(par1ItemStack.getItemDamage()))
+		List effects = this.getEffects(par1ItemStack);
+		if (this.isWater(par1ItemStack.getItemDamage()))
 		{
 			return StatCollector.translateToLocal("item.emptyPotion.name").trim();
 		}
@@ -320,7 +316,7 @@ public class ItemPotion2 extends Item
 		{
 			String var2 = "";
 			
-			if (isSplash(par1ItemStack.getItemDamage()))
+			if (this.isSplash(par1ItemStack.getItemDamage()))
 			{
 				var2 = StatCollector.translateToLocal("potion.prefix.grenade").trim() + " ";
 			}
@@ -385,7 +381,7 @@ public class ItemPotion2 extends Item
 	 */
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List list, boolean par4)
 	{
-		if (!isWater(par1ItemStack.getItemDamage()))
+		if (!this.isWater(par1ItemStack.getItemDamage()))
 		{
 			List<PotionType> potionTypes = this.getEffects(par1ItemStack);
 			Multimap<String, AttributeModifier> hashmultimap = TreeMultimap.create(String.CASE_INSENSITIVE_ORDER, MODIFIER_COMPARATOR);
@@ -580,11 +576,11 @@ public class ItemPotion2 extends Item
 	/**
 	 * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
 	 */
-	public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List par3List)
+	public void getSubItems(int itemID, CreativeTabs tab, List list)
 	{
-		if (par2CreativeTabs == CreativeTabs.tabBrewing || par2CreativeTabs == CreativeTabs.tabAllSearch)
+		if (tab == CreativeTabs.tabBrewing || tab == CreativeTabs.tabAllSearch)
 		{
-			par3List.add(new ItemStack(this, 1, 0));
+			list.add(new ItemStack(this, 1, 0));
 			ItemStack allEffects1 = new ItemStack(this, 1, 1);
 			ItemStack allEffects2 = new ItemStack(this, 1, 2);
 			ItemStack good1 = new ItemStack(this, 1, 1);
@@ -596,7 +592,7 @@ public class ItemPotion2 extends Item
 			{
 				for (int i = 1; i <= 2; i++)
 				{
-					par3List.add(brewing.addBrewingToItemStack(new ItemStack(this, 1, i)));
+					list.add(brewing.addBrewingToItemStack(new ItemStack(this, 1, i)));
 				}
 			}
 			for (PotionType potionType : PotionType.effectMap.values())
@@ -610,7 +606,7 @@ public class ItemPotion2 extends Item
 						{
 							var1.setEffect(new PotionEffect(var1.getEffect().getPotionID(), MathHelper.ceiling_double_int(var1.getEffect().getDuration() * 0.75D), var1.getEffect().getAmplifier()));
 						}
-						par3List.add(var1.addBrewingToItemStack(new ItemStack(this, 1, i)));
+						list.add(var1.addBrewingToItemStack(new ItemStack(this, 1, i)));
 					}
 				}
 			}
@@ -634,15 +630,15 @@ public class ItemPotion2 extends Item
 					potionType.addBrewingToItemStack(allEffects2);
 				}
 				
-				par3List.add(allEffects1);
-				par3List.add(allEffects2);
-				par3List.add(good1);
-				par3List.add(good2);
-				par3List.add(bad1);
-				par3List.add(bad2);
+				list.add(allEffects1);
+				list.add(allEffects2);
+				list.add(good1);
+				list.add(good2);
+				list.add(bad1);
+				list.add(bad2);
 			}
 		}
-		if (BrewingAPI.isMorePotionsModInstalled() && BrewingAPI.multiPotions && (par2CreativeTabs == BrewingAPI.potions || par2CreativeTabs == CreativeTabs.tabAllSearch))
+		else if (BrewingAPI.multiPotions && BrewingAPI.isMorePotionsModInstalled() && tab == BrewingAPI.potions)
 		{
 			for (int i = 1; i <= 2; i++)
 			{
@@ -662,24 +658,17 @@ public class ItemPotion2 extends Item
 							{
 								var2.setEffect(new PotionEffect(var2.getEffect().getPotionID(), MathHelper.ceiling_double_int(var2.getEffect().getDuration() * 0.75D), var2.getEffect().getAmplifier()));
 							}
-							par3List.add(var2.addBrewingToItemStack(var1.addBrewingToItemStack(new ItemStack(this, 1, i))));
+							list.add(var2.addBrewingToItemStack(var1.addBrewingToItemStack(new ItemStack(this, 1, i))));
 						}
 					}
 				}
 			}
 		}
-		/*
-		 * ItemStack skyPotion =
-		 * PotionType.digSpeed.addBrewingToItemStack(PotionType.heal
-		 * .addBrewingToItemStack(new ItemStack(this, 1, i)));
-		 * skyPotion.setItemName("\u00a7eSky's Butter Potion"); //6, e
-		 * par3List.add(skyPotion);
-		 */
 	}
 	
-	public boolean isEffectInstant(ItemStack par1ItemStack)
+	public boolean isEffectInstant(ItemStack stack)
 	{
-		List<PotionType> effects = getEffects(par1ItemStack);
+		List<PotionType> effects = this.getEffects(stack);
 		if (effects.size() == 0)
 			return false;
 		boolean flag = true;
@@ -691,7 +680,7 @@ public class ItemPotion2 extends Item
 	@Override
 	public Entity createEntity(World world, Entity entity, ItemStack itemstack)
 	{
-		if (entity instanceof EntityPlayer && isSplash(itemstack.getItemDamage()))
+		if (entity instanceof EntityPlayer && this.isSplash(itemstack.getItemDamage()))
 		{
 			if (!((EntityPlayer) entity).capabilities.isCreativeMode)
 			{
@@ -713,6 +702,6 @@ public class ItemPotion2 extends Item
 	
 	public Icon getSplashIcon(ItemStack stack)
 	{
-		return splashbottle;
+		return this.splashbottle;
 	}
 }

@@ -21,25 +21,25 @@ public class PotionBase extends PotionType implements Comparable<PotionType>
 		super();
 	}
 	
-	public PotionBase(String par1, ItemStack par2ItemStack)
+	public PotionBase(String name, ItemStack ingredient)
 	{
-		super(null, 0, 0, par2ItemStack, null);
-		basename = par1;
+		super(null, 0, 0, ingredient, null);
+		basename = name;
 	}
 	
-	public PotionBase(String par1)
+	public PotionBase(String name)
 	{
-		this(par1, null);
+		this(name, null);
 	}
 	
-	public static PotionBase getBrewingBaseFromIngredient(ItemStack par1ItemStack)
+	public static PotionBase getBrewingBaseFromIngredient(ItemStack ingredient)
 	{
-		for (PotionBase b : baseList)
+		for (PotionBase pb : baseList)
 		{
-			if (OreDictionary.itemMatches(b.getIngredient(), par1ItemStack, true))
-				return b;
-			if (b.getIngredient().getItem() == par1ItemStack.getItem() && b.getIngredient().getItemDamage() == par1ItemStack.getItemDamage())
-				return b;
+			if (OreDictionary.itemMatches(pb.getIngredient(), ingredient, true))
+				return pb;
+			if (pb.getIngredient().getItem() == ingredient.getItem() && pb.getIngredient().getItemDamage() == ingredient.getItemDamage())
+				return pb;
 		}
 		return null;
 	}
@@ -56,12 +56,12 @@ public class PotionBase extends PotionType implements Comparable<PotionType>
 		return this;
 	}
 	
-	public void readFromNBT(NBTTagCompound par1NBTTagCompound)
+	public void readFromNBT(NBTTagCompound nbt)
 	{
-		String nbtVersion = par1NBTTagCompound.getString("VERSION");
+		String nbtVersion = nbt.getString("VERSION");
 		if ("1.1".equals(nbtVersion))
 		{
-			PotionBase base = baseMap.get(par1NBTTagCompound.getString("BaseName"));
+			PotionBase base = baseMap.get(nbt.getString("BaseName"));
 			if (base != null)
 			{
 				this.basename = base.basename;
@@ -70,27 +70,41 @@ public class PotionBase extends PotionType implements Comparable<PotionType>
 		}
 		else
 		{
-			this.basename = par1NBTTagCompound.hasKey("BaseName") ? par1NBTTagCompound.getString("BaseName") : "";
+			this.basename = nbt.getString("BaseName");
 			
-			int ingredientID = par1NBTTagCompound.hasKey("IngredientID") ? par1NBTTagCompound.getInteger("IngredientID") : 0;
-			int ingredientAmount = par1NBTTagCompound.hasKey("IngredientAmount") ? par1NBTTagCompound.getInteger("IngredientAmount") : 0;
-			int ingredientDamage = par1NBTTagCompound.hasKey("IngredientDamage") ? par1NBTTagCompound.getInteger("IngredientDamage") : 0;
+			int ingredientID = nbt.getInteger("IngredientID");
+			int ingredientAmount = nbt.getInteger("IngredientAmount");
+			int ingredientDamage = nbt.getInteger("IngredientDamage");
 			
 			this.setIngredient(new ItemStack(ingredientID, ingredientAmount, ingredientDamage));
 		}
-		
+	}
+	
+	@Override
+	public void writeToNBT(NBTTagCompound nbt)
+	{
+		String nbtVersion = NBTVersion;
+		if ("1.1".equals(nbtVersion))
+		{
+			nbt.setString("BaseName", this.basename);
+		}
+		else
+		{
+			nbt.setString("BaseName", this.basename);
+			super.writeToNBT(nbt);
+		}
 	}
 	
 	@Override
 	public String toString()
 	{
-		String s = "PotionBase{";
+		StringBuilder result = new StringBuilder("PotionBase {");
 		if (basename != null)
-			s += "Name<" + basename + ">";
+			result.append("Name=[\"").append(basename).append("\"]");
 		if (this.getIngredient() != null)
-			s += "Ingredient<" + this.getIngredient().itemID + ":" + this.getIngredient().getItemDamage() + ">";
-		s += "}";
-		return s;
+			result.append("&Ingredient=[").append(this.getIngredient().itemID).append(":").append(this.getIngredient().getItemDamage()).append("]");
+		result.append("}");
+		return result.toString();
 	}
 	
 	@Override

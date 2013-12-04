@@ -349,13 +349,12 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 							}
 							else
 							{
-								for (int var3 = 0; var3 < tagList.tagCount(); var3++)
+								for (int index = 0; index < tagList.tagCount(); index++)
 								{
-									PotionType potionType = new PotionType();
-									potionType.readFromNBT((NBTTagCompound) tagList.tagAt(var3));
+									PotionType potionType = PotionType.getPotionTypeFromNBT((NBTTagCompound) tagList.tagAt(index));
 									
 									if (potionType != PotionList.awkward)
-										brewings[var3] = potionType.onImproved();
+										brewings[index] = potionType.onImproved();
 								}
 							}
 						}
@@ -370,8 +369,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 								for (int index = 0; index < tagList.tagCount(); index++)
 								{
 									
-									PotionType potionType = new PotionType();
-									potionType.readFromNBT((NBTTagCompound) tagList.tagAt(index));
+									PotionType potionType = PotionType.getPotionTypeFromNBT((NBTTagCompound) tagList.tagAt(index));
 									
 									if (potionType != PotionList.awkward)
 										brewings[index] = potionType.onExtended();
@@ -388,8 +386,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 							{
 								for (int index = 0; index < tagList.tagCount(); index++)
 								{
-									PotionType potionType = new PotionType();
-									potionType.readFromNBT((NBTTagCompound) tagList.tagAt(index));
+									PotionType potionType = PotionType.getPotionTypeFromNBT((NBTTagCompound) tagList.tagAt(index));
 									
 									brewings[index] = potionType.getInverted();
 								}
@@ -403,8 +400,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 						{
 							for (int index = 0; index < tagList.tagCount(); index++)
 							{
-								PotionType potionType = new PotionType();
-								potionType.readFromNBT((NBTTagCompound) tagList.tagAt(index));
+								PotionType potionType = PotionType.getPotionTypeFromNBT((NBTTagCompound) tagList.tagAt(index));
 								
 								if (brewings[index] != null && brewings[index].getEffect() != null && brewings[index].getEffect().getPotionID() > 0)
 								{
