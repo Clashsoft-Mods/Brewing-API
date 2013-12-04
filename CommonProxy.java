@@ -24,7 +24,7 @@ public class CommonProxy implements IGuiHandler
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
-		if (ID == BrewingAPI.BrewingStand2_TEID)
+		if (ID == BrewingAPI.brewingStand2ID)
 		{
 			return new GuiBrewingStand2(player.inventory, (TileEntityBrewingStand2) world.getBlockTileEntity(x, y, z));
 		}

@@ -120,7 +120,7 @@ public class BlockBrewingStand2 extends BlockBrewingStand
 		{
 			if (par1World.getBlockTileEntity(par2, par3, par4) != null)
 			{
-				FMLNetworkHandler.openGui(par5EntityPlayer, BrewingAPI.instance, BrewingAPI.BrewingStand2_TEID, par1World, par2, par3, par4);
+				FMLNetworkHandler.openGui(par5EntityPlayer, BrewingAPI.instance, BrewingAPI.brewingStand2ID, par1World, par2, par3, par4);
 			}
 			
 			return true;

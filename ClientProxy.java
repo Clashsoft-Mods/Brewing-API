@@ -20,7 +20,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerRenderers()
 	{
-		RenderingRegistry.registerEntityRenderingHandler(EntityPotion2.class, new RenderPotion2(BrewingAPI.potion2, 154));
+		RenderingRegistry.registerEntityRenderingHandler(EntityPotion2.class, new RenderPotion2());
 		setCustomRenderers();
 	}
 	

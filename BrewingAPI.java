@@ -70,10 +70,8 @@ public class BrewingAPI
 	public static boolean			defaultAwkwardBrewing	= false;
 	public static int				potionStackSize			= 1;
 	
-	public static int				BrewingStand2_TEID		= 11;
-	public static int				SplashPotion2_ID		= EntityRegistry.findGlobalUniqueEntityId();
-	
-	public static int				PotionsTab_ID			= CreativeTabs.getNextID();
+	public static int				brewingStand2ID		= 11;
+	public static int				splashPotion2ID		= EntityRegistry.findGlobalUniqueEntityId();
 	
 	public static CustomCreativeTab	potions;
 	
@@ -91,7 +89,7 @@ public class BrewingAPI
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		config.load();
 		
-		BrewingStand2_TEID = config.get("TileEntityIDs", "BrewingStand2TEID", 11).getInt();
+		brewingStand2ID = config.get("TileEntityIDs", "BrewingStand2TEID", 11).getInt();
 		
 		multiPotions = config.get("Potions", "MultiPotions", false, "If true, potions with 2 different effects are shown in the creative inventory.").getBoolean(false);
 		advancedPotionInfo = config.get("Potions", "AdvancedPotionInfo", true).getBoolean(true);
@@ -113,8 +111,8 @@ public class BrewingAPI
 			potions = new CustomCreativeTab("morepotions");
 		
 		GameRegistry.registerTileEntity(TileEntityBrewingStand2.class, "BrewingStand2");
-		EntityRegistry.registerGlobalEntityID(EntityPotion2.class, "SplashPotion2", SplashPotion2_ID);
-		EntityRegistry.registerModEntity(EntityPotion2.class, "SplashPotion2", SplashPotion2_ID, this, 100, 20, true);
+		EntityRegistry.registerGlobalEntityID(EntityPotion2.class, "SplashPotion2", splashPotion2ID);
+		EntityRegistry.registerModEntity(EntityPotion2.class, "SplashPotion2", splashPotion2ID, this, 100, 20, true);
 		
 		Block.blocksList[Block.brewingStand.blockID] = null;
 		brewingStand2 = (new BlockBrewingStand2(Block.brewingStand.blockID)).setHardness(0.5F).setLightValue(0.125F).setUnlocalizedName("brewingStand");
