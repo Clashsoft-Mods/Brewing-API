@@ -13,6 +13,8 @@ import clashsoft.brewingapi.block.BlockBrewingStand2;
 import clashsoft.brewingapi.brewing.PotionList;
 import clashsoft.brewingapi.brewing.PotionType;
 import clashsoft.brewingapi.command.CommandGivePotion;
+import clashsoft.brewingapi.common.BAPICommonProxy;
+import clashsoft.brewingapi.common.BAPIPacketHandler;
 import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.item.ItemBrewingStand2;
 import clashsoft.brewingapi.item.ItemGlassBottle2;
@@ -51,7 +53,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
 @Mod(modid = "BrewingAPI", name = "Brewing API", version = BrewingAPI.VERSION)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false)
+@NetworkMod(channels = { "BrewingAPI" }, packetHandler = BAPIPacketHandler.class, clientSideRequired = true, serverSideRequired = false)
 public class BrewingAPI
 {
 	public static final int			REVISION				= 4;
@@ -60,8 +62,8 @@ public class BrewingAPI
 	@Instance("BrewingAPI")
 	public static BrewingAPI		instance;
 	
-	@SidedProxy(modId = "BrewingAPI", clientSide = "clashsoft.brewingapi.ClientProxy", serverSide = "clashsoft.brewingapi.CommonProxy")
-	public static CommonProxy		proxy;
+	@SidedProxy(modId = "BrewingAPI", clientSide = "clashsoft.brewingapi.client.BAPIClientProxy", serverSide = "clashsoft.brewingapi.common.BAPICommonProxy")
+	public static BAPICommonProxy		proxy;
 	
 	public static boolean			multiPotions			= false;
 	public static boolean			advancedPotionInfo		= false;

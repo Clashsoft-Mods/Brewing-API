@@ -1,4 +1,4 @@
-package clashsoft.brewingapi.gui;
+package clashsoft.brewingapi.client.gui;
 
 import org.lwjgl.opengl.GL11;
 

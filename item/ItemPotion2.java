@@ -241,32 +241,30 @@ public class ItemPotion2 extends Item
 	@Override
 	public int getColorFromItemStack(ItemStack stack, int pass)
 	{
-		if (stack != null && pass == 0)
-		{
-			if (this.isWater(stack.getItemDamage()))
-				return 0x0C0CFF;
-			
-			List<PotionType> effects = this.getEffects(stack);
-			if (effects != null && effects.size() > 0)
-			{
-				int[] i1 = new int[effects.size()];
-				
-				for (int j = 0; j < effects.size(); j++)
-				{
-					PotionType b = effects.get(j);
-					i1[j] = b instanceof PotionBase ? 0x0C0CFF : b.getLiquidColor();
-				}
-				return PotionUtils.combineColors(i1);
-			}
-			else
-			{
-				return 0x0C0CFF;
-			}
-		}
+		if (pass == 0)
+			return getLiquidColor(stack);
 		else
+			return super.getColorFromItemStack(stack, pass);
+	}
+	
+	public int getLiquidColor(ItemStack stack)
+	{
+		if (this.isWater(stack.getItemDamage()))
+			return 0x0C0CFF;
+		
+		List<PotionType> effects = this.getEffects(stack);
+		
+		if (effects.isEmpty())
+			return 0x0C0CFF;
+		
+		int[] colors = new int[effects.size()];
+		
+		for (int j = 0; j < effects.size(); j++)
 		{
-			return 16777215;
+			PotionType b = effects.get(j);
+			colors[j] = b instanceof PotionBase ? 0x0C0CFF : b.getLiquidColor();
 		}
+		return PotionUtils.combineColors(colors);
 	}
 	
 	@Override
@@ -375,9 +373,8 @@ public class ItemPotion2 extends Item
 			
 			if (!potionTypes.isEmpty())
 			{
-				int maxGlowPos = this.getItemDisplayName(stack).length() + 10;
 				glowPos++;
-				if (glowPos > maxGlowPos * 4)
+				if (glowPos > 100)
 					glowPos = 0;
 				
 				if (potionTypes.size() > 5)
@@ -426,7 +423,7 @@ public class ItemPotion2 extends Item
 					if (potionType.getDuration() > 20)
 						builder.append(" (").append(potionType.getDuration() >= 1000000 ? I18n.getString("potion.infinite") : Potion.getDurationString(potionType.getEffect())).append(")");
 					
-					int glowPosInt = (glowPos / 4);
+					int glowPosInt = glowPos / 2;
 					
 					if (isNormalEffect)
 					{

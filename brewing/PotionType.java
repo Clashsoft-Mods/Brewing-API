@@ -177,7 +177,7 @@ public class PotionType implements Comparable<PotionType>
 			{
 				if (this.getPotion() instanceof clashsoft.cslib.minecraft.CustomPotion)
 				{
-					return ((clashsoft.cslib.minecraft.CustomPotion) this.getPotion()).isBadEffect();
+					return ((clashsoft.cslib.minecraft.CustomPotion) this.getPotion()).getIsBadEffect();
 				}
 			}
 		}

@@ -131,18 +131,13 @@ public class EntityPotion2 extends EntityPotion
 				}
 			}
 			
-			this.playSplashEffect((int) Math.round(this.posX), (int) Math.round(this.posY), (int) Math.round(this.posZ), this.getPotion());
-			this.worldObj.playSoundEffect(this.posX, this.posY, this.posZ, "random.glass", 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F);
+			BrewingAPI.proxy.playSplashEffect(this.worldObj, this.posX, this.posY, this.posZ, potion);
+			this.worldObj.playSoundEffect(this.posX, this.posY, this.posZ, "random.glass", 1.0F, this.worldObj.rand.nextFloat() * 0.1F + 0.9F);
 			this.setDead();
 		}
 	}
 	
-	private void playSplashEffect(int par1, int par2, int par3, ItemStack par4ItemStack)
-	{
-		BrewingAPI.proxy.playSplashEffect(this.worldObj, par1, par2, par3, par4ItemStack);
-		this.worldObj.playSound(par1 + 0.5D, par2 + 0.5D, par3 + 0.5D, "random.glass", 1.0F, this.worldObj.rand.nextFloat() * 0.1F + 0.9F, false);
-	}
-	
+	@Override
 	protected void entityInit()
 	{
 		this.getDataWatcher().addObjectByDataType(10, 5);
@@ -165,7 +160,7 @@ public class EntityPotion2 extends EntityPotion
 		NBTTagCompound nbttagcompound1 = nbt.getCompoundTag("Item");
 		this.setPotion(ItemStack.loadItemStackFromNBT(nbttagcompound1));
 		
-		ItemStack item = getDataWatcher().getWatchableObjectItemStack(10);
+		ItemStack item = this.getDataWatcher().getWatchableObjectItemStack(10);
 		
 		if (item == null || item.stackSize <= 0)
 			this.setDead();
