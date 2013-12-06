@@ -10,6 +10,7 @@ import clashsoft.brewingapi.brewing.PotionType;
 import clashsoft.brewingapi.brewing.PotionUtils;
 import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.lib.AttributeModifierComparator;
+import clashsoft.cslib.minecraft.util.CSFontRenderer;
 import clashsoft.cslib.util.CSString;
 
 import com.google.common.collect.Multimap;
@@ -292,12 +293,10 @@ public class ItemPotion2 extends Item
 			List<PotionBase> baseEffects = new ArrayList(3);
 			List<PotionType> effects = new ArrayList(potionTypes.size());
 			
-			StringBuilder result = new StringBuilder(potionTypes.size() * 10);
+			StringBuilder result = new StringBuilder(potionTypes.size() * 20);
 			
 			if (this.isSplash(stack.getItemDamage()))
-			{
 				result.append(I18n.getString("potion.prefix.grenade")).append(" ");
-			}
 			
 			if (!potionTypes.isEmpty())
 			{
@@ -354,7 +353,7 @@ public class ItemPotion2 extends Item
 	@Override
 	public FontRenderer getFontRenderer(ItemStack stack)
 	{
-		return super.getFontRenderer(stack);
+		return BrewingAPI.isClashsoftLibInstalled() ? CSFontRenderer.instance : super.getFontRenderer(stack);
 	}
 	
 	private static int	glowPos	= 0;
