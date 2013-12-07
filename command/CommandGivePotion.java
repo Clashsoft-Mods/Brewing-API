@@ -19,6 +19,7 @@ public class CommandGivePotion extends CommandBase implements ICommand
 	/**
 	 * Return the required permission level for this command.
 	 */
+	@Override
 	public int getRequiredPermissionLevel()
 	{
 		return 2;
@@ -48,7 +49,7 @@ public class CommandGivePotion extends CommandBase implements ICommand
 			EntityPlayerMP entityplayermp = getPlayer(par1ICommandSender, par2ArrayOfStr[0]);
 			
 			{
-				int i = getPotionID(par2ArrayOfStr[1]);
+				int i = this.getPotionID(par2ArrayOfStr[1]);
 				int j = 600;
 				int k = 30;
 				int l = 0;
@@ -91,7 +92,7 @@ public class CommandGivePotion extends CommandBase implements ICommand
 					PotionEffect potioneffect = new PotionEffect(i, j, l);
 					ItemStack stack = new ItemStack(BrewingAPI.potion2, 1, m ? 2 : 1);
 					PotionType b = new PotionType(potioneffect, l, j);
-					b.addBrewingToItemStack(stack);
+					b.addPotionTypeToItemStack(stack);
 					
 					EntityItem entityitem = entityplayermp.dropPlayerItem(stack);
 					entityitem.delayBeforeCanPickup = 0;

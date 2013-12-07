@@ -131,9 +131,9 @@ public class ItemPotion2 extends Item
 			--stack.stackSize;
 			
 			if (stack.stackSize <= 0)
-				return getGlassBottle();
+				return this.getGlassBottle();
 			else
-				player.inventory.addItemStackToInventory(getGlassBottle());
+				player.inventory.addItemStackToInventory(this.getGlassBottle());
 		}
 		
 		return stack;
@@ -154,8 +154,7 @@ public class ItemPotion2 extends Item
 	}
 	
 	/**
-	 * returns the action that specifies what animation to play when the items
-	 * is being used
+	 * returns the action that specifies what animation to play when the items is being used
 	 */
 	@Override
 	public EnumAction getItemUseAction(ItemStack stack)
@@ -164,8 +163,7 @@ public class ItemPotion2 extends Item
 	}
 	
 	/**
-	 * Called whenever this item is equipped and the right mouse button is
-	 * pressed. Args: itemStack, world, entityPlayer
+	 * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
 	 */
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
@@ -226,12 +224,16 @@ public class ItemPotion2 extends Item
 	}
 	
 	/**
-	 * returns wether or not a potion is a throwable splash potion based on
-	 * damage value
+	 * returns wether or not a potion is a throwable splash potion based on damage value
 	 */
 	public boolean isSplash(int metadata)
 	{
-		return metadata == 2 ? true : metadata == 1 ? false : ItemPotion.isSplash(metadata);
+		return (metadata & 2) != 0 ? true : ItemPotion.isSplash(metadata);
+	}
+	
+	public int setSplash(int metadata, boolean splash)
+	{
+		return splash ? metadata | 2 : metadata & ~2;
 	}
 	
 	public boolean isWater(int metadata)
@@ -243,7 +245,7 @@ public class ItemPotion2 extends Item
 	public int getColorFromItemStack(ItemStack stack, int pass)
 	{
 		if (pass == 0)
-			return getLiquidColor(stack);
+			return this.getLiquidColor(stack);
 		else
 			return super.getColorFromItemStack(stack, pass);
 	}
@@ -606,7 +608,7 @@ public class ItemPotion2 extends Item
 			{
 				for (int i = 1; i <= 2; i++)
 				{
-					list.add(brewing.addBrewingToItemStack(new ItemStack(this, 1, i)));
+					list.add(brewing.addPotionTypeToItemStack(new ItemStack(this, 1, i)));
 				}
 			}
 			for (PotionType potionType : PotionType.effectMap.values())
@@ -620,7 +622,7 @@ public class ItemPotion2 extends Item
 						{
 							var1.setEffect(new PotionEffect(var1.getEffect().getPotionID(), MathHelper.ceiling_double_int(var1.getEffect().getDuration() * 0.75D), var1.getEffect().getAmplifier()));
 						}
-						list.add(var1.addBrewingToItemStack(new ItemStack(this, 1, i)));
+						list.add(var1.addPotionTypeToItemStack(new ItemStack(this, 1, i)));
 					}
 				}
 			}
@@ -631,17 +633,17 @@ public class ItemPotion2 extends Item
 				{
 					if (!potionType.isBadEffect())
 					{
-						potionType.addBrewingToItemStack(good1);
-						potionType.addBrewingToItemStack(good2);
+						potionType.addPotionTypeToItemStack(good1);
+						potionType.addPotionTypeToItemStack(good2);
 					}
 					else
 					{
-						potionType.addBrewingToItemStack(bad1);
-						potionType.addBrewingToItemStack(bad2);
+						potionType.addPotionTypeToItemStack(bad1);
+						potionType.addPotionTypeToItemStack(bad2);
 					}
 					
-					potionType.addBrewingToItemStack(allEffects1);
-					potionType.addBrewingToItemStack(allEffects2);
+					potionType.addPotionTypeToItemStack(allEffects1);
+					potionType.addPotionTypeToItemStack(allEffects2);
 				}
 				
 				list.add(allEffects1);
@@ -672,7 +674,7 @@ public class ItemPotion2 extends Item
 							{
 								copy2.setEffect(new PotionEffect(copy2.getEffect().getPotionID(), MathHelper.ceiling_double_int(copy2.getEffect().getDuration() * 0.75D), copy2.getEffect().getAmplifier()));
 							}
-							list.add(copy2.addBrewingToItemStack(copy1.addBrewingToItemStack(new ItemStack(this, 1, i))));
+							list.add(copy2.addPotionTypeToItemStack(copy1.addPotionTypeToItemStack(new ItemStack(this, 1, i))));
 						}
 					}
 				}

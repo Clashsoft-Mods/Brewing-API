@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTBase;
  * @param <T>
  *            the generic type
  */
-public interface IBrewingAttribute<T>
+public interface IPotionAttribute<T>
 {
 	/**
 	 * Gets the name.
@@ -45,5 +45,5 @@ public interface IBrewingAttribute<T>
 	 *            the nbtbase
 	 * @return the i brewing attribute
 	 */
-	public IBrewingAttribute fromNBT(NBTBase nbtbase);
+	public IPotionAttribute fromNBT(NBTBase nbtbase);
 }

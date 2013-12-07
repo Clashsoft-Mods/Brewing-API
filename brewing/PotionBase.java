@@ -24,7 +24,7 @@ public class PotionBase extends PotionType implements Comparable<PotionType>
 	public PotionBase(String name, ItemStack ingredient)
 	{
 		super(null, 0, 0, ingredient, null);
-		basename = name;
+		this.basename = name;
 	}
 	
 	public PotionBase(String name)
@@ -62,6 +62,7 @@ public class PotionBase extends PotionType implements Comparable<PotionType>
 		return this;
 	}
 	
+	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		String nbtVersion = nbt.getString("VERSION");
@@ -89,7 +90,7 @@ public class PotionBase extends PotionType implements Comparable<PotionType>
 	@Override
 	public void writeToNBT(NBTTagCompound nbt)
 	{
-		String nbtVersion = NBTVersion;
+		String nbtVersion = NBT_VERSION;
 		if ("1.1".equals(nbtVersion))
 		{
 			nbt.setString("BaseName", this.basename);
@@ -105,8 +106,8 @@ public class PotionBase extends PotionType implements Comparable<PotionType>
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder("PotionBase {");
-		if (basename != null)
-			result.append("Name=[\"").append(basename).append("\"]");
+		if (this.basename != null)
+			result.append("Name=[\"").append(this.basename).append("\"]");
 		if (this.getIngredient() != null)
 			result.append("&Ingredient=[").append(this.getIngredient().itemID).append(":").append(this.getIngredient().getItemDamage()).append("]");
 		result.append("}");
@@ -117,7 +118,7 @@ public class PotionBase extends PotionType implements Comparable<PotionType>
 	public int compareTo(PotionType o)
 	{
 		if (o instanceof PotionBase)
-			return (basename != null && ((PotionBase) o).basename != null) ? basename.compareTo(((PotionBase) o).basename) : 0;
+			return (this.basename != null && ((PotionBase) o).basename != null) ? this.basename.compareTo(((PotionBase) o).basename) : 0;
 		else
 			return super.compareTo(o);
 	}

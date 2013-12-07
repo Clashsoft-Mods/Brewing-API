@@ -1,7 +1,7 @@
 package clashsoft.brewingapi.inventory;
 
 import clashsoft.brewingapi.inventory.slot.SlotBrewingStandIngredient2;
-import clashsoft.brewingapi.inventory.slot.SlotBrewingStandPotion2;
+import clashsoft.brewingapi.inventory.slot.SlotPotion;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -24,9 +24,9 @@ public class ContainerBrewingStand2 extends Container
 	public ContainerBrewingStand2(InventoryPlayer par1InventoryPlayer, TileEntityBrewingStand2 par2TileEntityBrewingStand)
 	{
 		this.tileBrewingStand = par2TileEntityBrewingStand;
-		this.addSlotToContainer(new SlotBrewingStandPotion2(par1InventoryPlayer.player, par2TileEntityBrewingStand, 0, 56, 46));
-		this.addSlotToContainer(new SlotBrewingStandPotion2(par1InventoryPlayer.player, par2TileEntityBrewingStand, 1, 79, 53));
-		this.addSlotToContainer(new SlotBrewingStandPotion2(par1InventoryPlayer.player, par2TileEntityBrewingStand, 2, 102, 46));
+		this.addSlotToContainer(new SlotPotion(par1InventoryPlayer.player, par2TileEntityBrewingStand, 0, 56, 46));
+		this.addSlotToContainer(new SlotPotion(par1InventoryPlayer.player, par2TileEntityBrewingStand, 1, 79, 53));
+		this.addSlotToContainer(new SlotPotion(par1InventoryPlayer.player, par2TileEntityBrewingStand, 2, 102, 46));
 		this.theSlot = this.addSlotToContainer(new SlotBrewingStandIngredient2(this, par2TileEntityBrewingStand, 3, 79, 17));
 		int var3;
 		
@@ -89,8 +89,7 @@ public class ContainerBrewingStand2 extends Container
 	}
 	
 	/**
-	 * Called when a player shift-clicks on a slot. You must override this or
-	 * you will crash when someone does that.
+	 * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
 	 */
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
@@ -112,7 +111,7 @@ public class ContainerBrewingStand2 extends Container
 						return null;
 					}
 				}
-				else if (SlotBrewingStandPotion2.canHoldPotion(var3))
+				else if (SlotPotion.canHoldPotion(var3))
 				{
 					if (!this.mergeItemStack(var5, 0, 3, false))
 					{

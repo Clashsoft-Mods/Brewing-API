@@ -36,9 +36,7 @@ public class BlockBrewingStand2 extends BlockBrewingStand
 	}
 	
 	/**
-	 * Is this block (a) opaque and (b) a full 1m cube? This determines whether
-	 * or not to render the shared face of two adjacent blocks and also whether
-	 * the player can attach torches, redstone wire, etc to this block.
+	 * Is this block (a) opaque and (b) a full 1m cube? This determines whether or not to render the shared face of two adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
 	 */
 	@Override
 	public boolean isOpaqueCube()
@@ -66,8 +64,7 @@ public class BlockBrewingStand2 extends BlockBrewingStand
 	}
 	
 	/**
-	 * Returns a new instance of a block's tile entity class. Called on placing
-	 * the block.
+	 * Returns a new instance of a block's tile entity class. Called on placing the block.
 	 */
 	@Override
 	public TileEntity createNewTileEntity(World par1World)
@@ -76,8 +73,7 @@ public class BlockBrewingStand2 extends BlockBrewingStand
 	}
 	
 	/**
-	 * If this block doesn't render as an ordinary block it will return False
-	 * (examples: signs, buttons, stairs, etc)
+	 * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
 	 */
 	@Override
 	public boolean renderAsNormalBlock()
@@ -86,8 +82,7 @@ public class BlockBrewingStand2 extends BlockBrewingStand
 	}
 	
 	/**
-	 * if the specified block is in the given AABB, add its collision bounding
-	 * box to the given list
+	 * if the specified block is in the given AABB, add its collision bounding box to the given list
 	 */
 	public void addCollidingBlockToList(World par1World, int par2, int par3, int par4, AxisAlignedBB par5AxisAlignedBB, List par6List, Entity par7Entity)
 	{
@@ -141,8 +136,7 @@ public class BlockBrewingStand2 extends BlockBrewingStand
 	}
 	
 	/**
-	 * ejects contained items into the world, and notifies neighbours of an
-	 * update, as appropriate
+	 * ejects contained items into the world, and notifies neighbours of an update, as appropriate
 	 */
 	@Override
 	public void breakBlock(World par1World, int par2, int par3, int par4, int par5, int par6)

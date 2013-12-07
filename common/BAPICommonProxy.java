@@ -48,7 +48,7 @@ public class BAPICommonProxy implements IGuiHandler
 	{
 		if (stack != null && stack.getItem() instanceof ItemPotion2)
 		{
-			ItemPotion2 item = (ItemPotion2)stack.getItem();
+			ItemPotion2 item = (ItemPotion2) stack.getItem();
 			int color = item.getLiquidColor(stack);
 			boolean isInstant = item.isEffectInstant(stack);
 			this.playSplashEffect(world, x, y, z, color, isInstant);

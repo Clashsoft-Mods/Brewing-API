@@ -63,7 +63,7 @@ public class BrewingAPI
 	public static BrewingAPI		instance;
 	
 	@SidedProxy(modId = "BrewingAPI", clientSide = "clashsoft.brewingapi.client.BAPIClientProxy", serverSide = "clashsoft.brewingapi.common.BAPICommonProxy")
-	public static BAPICommonProxy		proxy;
+	public static BAPICommonProxy	proxy;
 	
 	public static boolean			multiPotions			= false;
 	public static boolean			advancedPotionInfo		= false;
@@ -72,8 +72,8 @@ public class BrewingAPI
 	public static boolean			defaultAwkwardBrewing	= false;
 	public static int				potionStackSize			= 1;
 	
-	public static int				brewingStand2ID		= 11;
-	public static int				splashPotion2ID		= EntityRegistry.findGlobalUniqueEntityId();
+	public static int				brewingStand2ID			= 11;
+	public static int				splashPotion2ID			= EntityRegistry.findGlobalUniqueEntityId();
 	
 	public static CustomCreativeTab	potions;
 	
@@ -139,7 +139,7 @@ public class BrewingAPI
 		LanguageRegistry.instance().addStringLocalization("commands.givepotion.success.splash", "Given Splash Potion (%1\u0024s (ID %2\u0024d) level %3\u0024d for %5\u0024d seconds) to %4\u0024s.");
 		
 		if (multiPotions)
-			potions.setIconItemStack(PotionList.damageBoost.addBrewingToItemStack(new ItemStack(BrewingAPI.potion2, 0, 1)));
+			potions.setIconItemStack(PotionList.damageBoost.addPotionTypeToItemStack(new ItemStack(BrewingAPI.potion2, 0, 1)));
 	}
 	
 	@EventHandler
@@ -254,7 +254,7 @@ public class BrewingAPI
 				}
 			}
 			
-			//queue.updateEntity(event.entityLiving);
+			// queue.updateEntity(event.entityLiving);
 		}
 	}
 	

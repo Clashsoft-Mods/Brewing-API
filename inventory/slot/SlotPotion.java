@@ -1,5 +1,7 @@
 package clashsoft.brewingapi.inventory.slot;
 
+import clashsoft.brewingapi.item.ItemPotion2;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -7,15 +9,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.AchievementList;
 
-public class SlotBrewingStandPotion2 extends Slot
+public class SlotPotion extends Slot
 {
 	/** The player that has this container open. */
 	private EntityPlayer	player;
 	
-	public SlotBrewingStandPotion2(EntityPlayer par1EntityPlayer, IInventory par2IInventory, int par3, int par4, int par5)
+	public SlotPotion(EntityPlayer player, IInventory inventory, int slotIndex, int x, int y)
 	{
-		super(par2IInventory, par3, par4, par5);
-		this.player = par1EntityPlayer;
+		super(inventory, slotIndex, x, y);
+		this.player = player;
 	}
 	
 	/**
@@ -23,9 +25,9 @@ public class SlotBrewingStandPotion2 extends Slot
 	 * the armor slots.
 	 */
 	@Override
-	public boolean isItemValid(ItemStack par1ItemStack)
+	public boolean isItemValid(ItemStack stack)
 	{
-		return canHoldPotion(par1ItemStack);
+		return canHoldPotion(stack);
 	}
 	
 	/**
@@ -39,21 +41,21 @@ public class SlotBrewingStandPotion2 extends Slot
 	}
 	
 	@Override
-	public void onPickupFromSlot(EntityPlayer par1EntityPlayer, ItemStack par2ItemStack)
+	public void onPickupFromSlot(EntityPlayer player, ItemStack stack)
 	{
-		if (par2ItemStack.itemID == Item.potion.itemID && par2ItemStack.getItemDamage() > 0)
+		if (stack.itemID == Item.potion.itemID && stack.getItemDamage() > 0)
 		{
 			this.player.addStat(AchievementList.potion, 1);
 		}
 		
-		super.onPickupFromSlot(par1EntityPlayer, par2ItemStack);
+		super.onPickupFromSlot(player, stack);
 	}
 	
 	/**
 	 * Returns true if this itemstack can be filled with a potion
 	 */
-	public static boolean canHoldPotion(ItemStack par0ItemStack)
+	public static boolean canHoldPotion(ItemStack stack)
 	{
-		return par0ItemStack != null && par0ItemStack.itemID == Item.potion.itemID;
+		return stack != null && stack.getItem() instanceof ItemPotion2;
 	}
 }
