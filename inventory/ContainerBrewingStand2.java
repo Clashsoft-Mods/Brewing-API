@@ -15,40 +15,40 @@ import net.minecraft.item.ItemStack;
 
 public class ContainerBrewingStand2 extends Container
 {
-	private TileEntityBrewingStand2	tileBrewingStand;
+	private TileEntityBrewingStand2	brewingStand;
 	
 	/** Instance of Slot. */
 	private final Slot				theSlot;
 	private int						brewTime	= 0;
 	
-	public ContainerBrewingStand2(InventoryPlayer par1InventoryPlayer, TileEntityBrewingStand2 par2TileEntityBrewingStand)
+	public ContainerBrewingStand2(InventoryPlayer inventory, TileEntityBrewingStand2 brewingStand)
 	{
-		this.tileBrewingStand = par2TileEntityBrewingStand;
-		this.addSlotToContainer(new SlotPotion(par1InventoryPlayer.player, par2TileEntityBrewingStand, 0, 56, 46));
-		this.addSlotToContainer(new SlotPotion(par1InventoryPlayer.player, par2TileEntityBrewingStand, 1, 79, 53));
-		this.addSlotToContainer(new SlotPotion(par1InventoryPlayer.player, par2TileEntityBrewingStand, 2, 102, 46));
-		this.theSlot = this.addSlotToContainer(new SlotBrewingStandIngredient2(this, par2TileEntityBrewingStand, 3, 79, 17));
+		this.brewingStand = brewingStand;
+		this.addSlotToContainer(new SlotPotion(inventory.player, brewingStand, 0, 56, 46));
+		this.addSlotToContainer(new SlotPotion(inventory.player, brewingStand, 1, 79, 53));
+		this.addSlotToContainer(new SlotPotion(inventory.player, brewingStand, 2, 102, 46));
+		this.theSlot = this.addSlotToContainer(new SlotBrewingStandIngredient2(this, brewingStand, 3, 79, 17));
 		int var3;
 		
 		for (var3 = 0; var3 < 3; ++var3)
 		{
 			for (int var4 = 0; var4 < 9; ++var4)
 			{
-				this.addSlotToContainer(new Slot(par1InventoryPlayer, var4 + var3 * 9 + 9, 8 + var4 * 18, 84 + var3 * 18));
+				this.addSlotToContainer(new Slot(inventory, var4 + var3 * 9 + 9, 8 + var4 * 18, 84 + var3 * 18));
 			}
 		}
 		
 		for (var3 = 0; var3 < 9; ++var3)
 		{
-			this.addSlotToContainer(new Slot(par1InventoryPlayer, var3, 8 + var3 * 18, 142));
+			this.addSlotToContainer(new Slot(inventory, var3, 8 + var3 * 18, 142));
 		}
 	}
 	
 	@Override
-	public void addCraftingToCrafters(ICrafting par1ICrafting)
+	public void addCraftingToCrafters(ICrafting icrafting)
 	{
-		super.addCraftingToCrafters(par1ICrafting);
-		par1ICrafting.sendProgressBarUpdate(this, 0, this.tileBrewingStand.getBrewTime());
+		super.addCraftingToCrafters(icrafting);
+		icrafting.sendProgressBarUpdate(this, 0, this.brewingStand.getBrewTime());
 	}
 	
 	/**
@@ -59,111 +59,111 @@ public class ContainerBrewingStand2 extends Container
 	{
 		super.detectAndSendChanges();
 		
-		for (int var1 = 0; var1 < this.crafters.size(); ++var1)
+		for (int i = 0; i < this.crafters.size(); ++i)
 		{
-			ICrafting var2 = (ICrafting) this.crafters.get(var1);
+			ICrafting var2 = (ICrafting) this.crafters.get(i);
 			
-			if (this.brewTime != this.tileBrewingStand.getBrewTime())
+			if (this.brewTime != this.brewingStand.getBrewTime())
 			{
-				var2.sendProgressBarUpdate(this, 0, this.tileBrewingStand.getBrewTime());
+				var2.sendProgressBarUpdate(this, 0, this.brewingStand.getBrewTime());
 			}
 		}
 		
-		this.brewTime = this.tileBrewingStand.getBrewTime();
+		this.brewTime = this.brewingStand.getBrewTime();
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void updateProgressBar(int par1, int par2)
+	public void updateProgressBar(int slotID, int value)
 	{
-		if (par1 == 0)
+		if (slotID == 0)
 		{
-			this.tileBrewingStand.setBrewTime(par2);
+			this.brewingStand.setBrewTime(value);
 		}
 	}
 	
 	@Override
-	public boolean canInteractWith(EntityPlayer par1EntityPlayer)
+	public boolean canInteractWith(EntityPlayer player)
 	{
-		return this.tileBrewingStand.isUseableByPlayer(par1EntityPlayer);
+		return this.brewingStand.isUseableByPlayer(player);
 	}
 	
 	/**
 	 * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
 	 */
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
+	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
-		ItemStack var3 = null;
-		Slot var4 = (Slot) this.inventorySlots.get(par2);
+		ItemStack itemstack = null;
+		Slot slot = (Slot) this.inventorySlots.get(slotID);
 		
-		if (var4 != null && var4.getHasStack())
+		if (slot != null && slot.getHasStack())
 		{
-			ItemStack var5 = var4.getStack();
-			var3 = var5.copy();
+			ItemStack itemstack1 = slot.getStack();
+			itemstack = itemstack1.copy();
 			
-			if ((par2 < 0 || par2 > 2) && par2 != 3)
+			if (slotID > 3)
 			{
-				if (!this.theSlot.getHasStack() && this.theSlot.isItemValid(var5))
+				if (!this.theSlot.getHasStack() && this.theSlot.isItemValid(itemstack1))
 				{
-					if (!this.mergeItemStack(var5, 3, 4, false))
+					if (!this.mergeItemStack(itemstack1, 3, 4, false))
 					{
 						return null;
 					}
 				}
-				else if (SlotPotion.canHoldPotion(var3))
+				else if (SlotPotion.canHoldPotion(itemstack))
 				{
-					if (!this.mergeItemStack(var5, 0, 3, false))
+					if (!this.mergeItemStack(itemstack1, 0, 3, false))
 					{
 						return null;
 					}
 				}
-				else if (par2 >= 4 && par2 < 31)
+				else if (slotID >= 4 && slotID < 31)
 				{
-					if (!this.mergeItemStack(var5, 31, 40, false))
+					if (!this.mergeItemStack(itemstack1, 31, 40, false))
 					{
 						return null;
 					}
 				}
-				else if (par2 >= 31 && par2 < 40)
+				else if (slotID >= 31 && slotID < 40)
 				{
-					if (!this.mergeItemStack(var5, 4, 31, false))
+					if (!this.mergeItemStack(itemstack1, 4, 31, false))
 					{
 						return null;
 					}
 				}
-				else if (!this.mergeItemStack(var5, 4, 40, false))
+				else if (!this.mergeItemStack(itemstack1, 4, 40, false))
 				{
 					return null;
 				}
 			}
 			else
 			{
-				if (!this.mergeItemStack(var5, 4, 40, true))
+				if (!this.mergeItemStack(itemstack1, 4, 40, true))
 				{
 					return null;
 				}
 				
-				var4.onSlotChange(var5, var3);
+				slot.onSlotChange(itemstack1, itemstack);
 			}
 			
-			if (var5.stackSize == 0)
+			if (itemstack1.stackSize == 0)
 			{
-				var4.putStack((ItemStack) null);
+				slot.putStack((ItemStack) null);
 			}
 			else
 			{
-				var4.onSlotChanged();
+				slot.onSlotChanged();
 			}
 			
-			if (var5.stackSize == var3.stackSize)
+			if (itemstack1.stackSize == itemstack.stackSize)
 			{
 				return null;
 			}
 			
-			var4.onPickupFromSlot(par1EntityPlayer, var5);
+			slot.onPickupFromSlot(player, itemstack1);
 		}
 		
-		return var3;
+		return itemstack;
 	}
 }
