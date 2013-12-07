@@ -42,9 +42,9 @@ public class PotionType implements Comparable<PotionType>
 	/** Maximum effect duration **/
 	private int									maxDuration;
 	/** Fermented Spider Eye effect **/
-	private PotionType							inverted					= null;
+	private PotionType							inverted;
 	/** The ingredient to brew the potion **/
-	private ItemStack							ingredient					= new ItemStack(0, 0, 0);
+	private ItemStack							ingredient;
 	/** Determines the base that is needed to brew the potion **/
 	private PotionBase							base;
 	/** Was this PotionType read from a NBT? **/
@@ -275,7 +275,7 @@ public class PotionType implements Comparable<PotionType>
 	
 	public ItemStack getIngredient()
 	{
-		if (this.ingredient == null && this.isDummy())
+		if ((this.ingredient == null || this.ingredient.getItem() == null) && this.isDummy())
 		{
 			PotionType potionType = getPotionTypeFromPotionID(this.getPotionID());
 			this.setIngredient(potionType.getIngredient());
