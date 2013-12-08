@@ -12,7 +12,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,12 +20,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntityBrewingStand;
 import net.minecraft.util.MathHelper;
 
-public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements IInventory
+public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements ISidedInventory
 {
 	public EntityPlayer			thePlayer			= null;
-	
-	private static final int[]	field_102017_a		= new int[] { 3 };
-	private static final int[]	field_102016_b		= new int[] { 0, 1, 2 };
 	
 	/** The itemstacks currently placed in the slots of the brewing stand */
 	private ItemStack[]			brewingItemStacks	= new ItemStack[4];
@@ -216,7 +213,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	}
 	
 	private void brewPotions()
-	{
+	{	
 		this.ingredient = this.brewingItemStacks[3];
 		
 		for (int potionIndex = 0; potionIndex < 3; ++potionIndex)
@@ -228,7 +225,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 				int damage = potion.getItemDamage();
 				boolean water = item.isWater(damage);
 				List<PotionType> potionTypes = item.getEffects(potion);
-				List<PotionType> newPotionTypes = new ArrayList<>(potionTypes.size());
+				List<PotionType> newPotionTypes = new ArrayList(potionTypes.size());
 				
 				boolean flag = false;
 				
@@ -511,13 +508,5 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 		}
 		
 		return i;
-	}
-	
-	/**
-	 * Get the size of the side inventory.
-	 */
-	public int[] getSizeInventorySide(int par1)
-	{
-		return par1 == 1 ? field_102017_a : field_102016_b;
 	}
 }

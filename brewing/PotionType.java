@@ -277,7 +277,7 @@ public class PotionType implements Comparable<PotionType>
 	{
 		if ((this.ingredient == null || this.ingredient.getItem() == null) && this.isDummy())
 		{
-			PotionType potionType = getPotionTypeFromPotionID(this.getPotionID());
+			PotionType potionType = this.getEqualPotionType();
 			this.setIngredient(potionType.getIngredient());
 		}
 		return this.ingredient;
@@ -308,14 +308,7 @@ public class PotionType implements Comparable<PotionType>
 	
 	public int getDefaultDuration()
 	{
-		for (PotionType b : PotionType.potionTypeList)
-		{
-			if (b.getPotionID() == this.getPotionID())
-			{
-				return b.getDuration();
-			}
-		}
-		return this.getDuration();
+		return this.getEqualPotionType().getDuration();
 	}
 	
 	public Map<String, IPotionAttribute> getExtendedAttributes()
@@ -461,6 +454,20 @@ public class PotionType implements Comparable<PotionType>
 		}
 		
 		return new PotionType(potionEffect, potionEffect.getAmplifier(), potionEffect.getDuration()).register();
+	}
+	
+	public PotionType getEqualPotionType()
+	{
+		int potionID = this.getPotionID();
+		if (this.hasEffect())
+		{
+			for (PotionType potionType : potionTypeList)
+			{
+				if (!potionType.isDummy() && potionID == potionType.getPotionID())
+					return potionType;
+			}
+		}
+		return this;
 	}
 	
 	public static PotionType getPotionTypeFromPotionID(int potionID)

@@ -63,6 +63,12 @@ public class PotionBase extends PotionType implements Comparable<PotionType>
 	}
 	
 	@Override
+	public PotionType getEqualPotionType()
+	{
+		return baseMap.get(this.basename);
+	}
+	
+	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		String nbtVersion = nbt.getString("VERSION");
