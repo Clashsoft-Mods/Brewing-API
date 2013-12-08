@@ -228,8 +228,14 @@ public class PotionType implements Comparable<PotionType>
 		int duration = this.getDuration();
 		int defaultDuration = this.getDefaultDuration();
 		int redstoneAmount = 0;
-		while (duration > 0 && (defaultDuration /= 2) > duration)
-			redstoneAmount++;
+		if (duration > 0)
+		{
+			while (duration > defaultDuration)
+			{
+				redstoneAmount++;
+				duration /= 2;
+			}
+		}
 		return redstoneAmount;
 	}
 	
@@ -309,7 +315,10 @@ public class PotionType implements Comparable<PotionType>
 	
 	public int getDefaultDuration()
 	{
-		return this.getEqualPotionType().getDuration();
+		PotionType potionType = this.getEqualPotionType();
+		if (potionType != this)
+			return potionType.getDuration();
+		return this.getDuration();
 	}
 	
 	public Map<String, IPotionAttribute> getExtendedAttributes()
