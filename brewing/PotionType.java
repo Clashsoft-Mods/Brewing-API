@@ -278,7 +278,8 @@ public class PotionType implements Comparable<PotionType>
 		if ((this.ingredient == null || this.ingredient.getItem() == null) && this.isDummy())
 		{
 			PotionType potionType = this.getEqualPotionType();
-			this.setIngredient(potionType.getIngredient());
+			if (potionType != this)
+				this.setIngredient(potionType.getIngredient());
 		}
 		return this.ingredient;
 	}
