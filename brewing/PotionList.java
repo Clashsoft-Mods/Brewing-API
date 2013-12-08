@@ -123,11 +123,11 @@ public class PotionList
 	
 	public static void initializeBrewings_BrewingAPI()
 	{
-		moveSlowdown = new PotionType(new PotionEffect(Potion.moveSlowdown.id, 20 * 90, 0), 4, 20 * 240, PotionType.getBaseBrewing(dashing));
+		moveSlowdown = new PotionType(new PotionEffect(Potion.moveSlowdown.id, 20 * 90, 0), 4, 20 * 240);
 		moveSpeed = new PotionType(new PotionEffect(Potion.moveSpeed.id, 20 * 180, 0), 7, 20 * 360, moveSlowdown, new ItemStack(Item.sugar), PotionType.getBaseBrewing(dashing));
 		weakness = new PotionType(new PotionEffect(Potion.weakness.id, 20 * 90, 0), 2, 20 * 240, new ItemStack(Item.fermentedSpiderEye), awkward);
 		damageBoost = new PotionType(new PotionEffect(Potion.damageBoost.id, 20 * 180, 0), 4, 20 * 300, weakness, new ItemStack(Item.blazePowder), awkward);
-		harm = new PotionType(new PotionEffect(Potion.harm.id, 1, 0), 1, 0, PotionType.getBaseBrewing(thick));
+		harm = new PotionType(new PotionEffect(Potion.harm.id, 1, 0), 1, 0);
 		heal = new PotionType(new PotionEffect(Potion.heal.id, 1, 0), 1, 0, harm, new ItemStack(Item.speckledMelon), PotionType.getBaseBrewing(thick));
 		regeneration = new PotionType(new PotionEffect(Potion.regeneration.id, 20 * 45, 0), 2, 20 * 180, moveSlowdown, new ItemStack(Item.ghastTear), awkward);
 		fireResistance = new PotionType(new PotionEffect(Potion.fireResistance.id, 20 * 180, 0), 0, 20 * 360, moveSlowdown, new ItemStack(Item.magmaCream), awkward);
