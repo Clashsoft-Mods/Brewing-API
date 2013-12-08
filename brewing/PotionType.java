@@ -69,7 +69,7 @@ public class PotionType implements Comparable<PotionType>
 	 */
 	public PotionType(PotionEffect effect, int maxAmplifier, int maxDuration)
 	{
-		this(effect, maxAmplifier, maxDuration, (PotionType) null);
+		this(effect, maxAmplifier, maxDuration, (PotionBase) null);
 	}
 	
 	/**
@@ -84,9 +84,9 @@ public class PotionType implements Comparable<PotionType>
 	 * @param inverted
 	 *            the inverted brewing
 	 */
-	public PotionType(PotionEffect effect, int maxAmplifier, int maxDuration, PotionType inverted)
+	public PotionType(PotionEffect effect, int maxAmplifier, int maxDuration, PotionBase base)
 	{
-		this(effect, maxAmplifier, maxDuration, inverted, (ItemStack) null, (PotionBase) null);
+		this(effect, maxAmplifier, maxDuration, (PotionBase) null, (ItemStack) null, base);
 	}
 	
 	/**
