@@ -349,7 +349,7 @@ public class PotionType implements Comparable<PotionType>
 		return this;
 	}
 	
-	public PotionType setOpposite(PotionType opposite)
+	public PotionType setInverted(PotionType opposite)
 	{
 		this.inverted = opposite;
 		return this;
