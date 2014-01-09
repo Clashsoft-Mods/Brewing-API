@@ -10,7 +10,7 @@ import net.minecraft.potion.PotionEffect;
 public class PotionList
 {
 	public static boolean		DEFAULT_AWKWARD_BREWING	= false;
-	public static boolean		SHOW_ALL_BASEBREWINGS	= false;
+	public static boolean		SHOW_ALL_BASES	= false;
 	
 	/** Base needed for all potions **/
 	public static PotionBase	awkward;
@@ -58,7 +58,6 @@ public class PotionList
 	public static PotionType	damageBoost;
 	public static PotionType	harm;
 	public static PotionType	heal;
-	public static PotionType	doubleLife;
 	/** Health Boost added in 1.6 **/
 	public static PotionType	healthBoost;
 	/** Absorption added in 1.6 **/
@@ -67,10 +66,7 @@ public class PotionList
 	public static PotionType	confusion;
 	public static PotionType	regeneration;
 	public static PotionType	resistance;
-	public static PotionType	ironSkin;
-	public static PotionType	obsidianSkin;
 	public static PotionType	fireResistance;
-	public static PotionType	waterWalking;
 	public static PotionType	waterBreathing;
 	public static PotionType	coldness;
 	public static PotionType	invisibility;
@@ -81,10 +77,6 @@ public class PotionList
 	/** Hunger Bar restore added in 1.6 **/
 	public static PotionType	saturation;
 	public static PotionType	wither;
-	public static PotionType	explosiveness;
-	public static PotionType	fire;
-	public static PotionType	random;
-	public static PotionType	effectRemove;
 	
 	public static void initializeBrewings()
 	{
@@ -116,7 +108,7 @@ public class PotionList
 	
 	public static void initializeBaseBrewings_BrewingAPI()
 	{
-		SHOW_ALL_BASEBREWINGS = false;
+		SHOW_ALL_BASES = false;
 		DEFAULT_AWKWARD_BREWING = true;
 		awkward = new PotionBase("awkward", new ItemStack(Item.netherStalkSeeds));
 	}

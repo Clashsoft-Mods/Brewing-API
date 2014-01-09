@@ -149,7 +149,7 @@ public class PotionType implements Comparable<PotionType>
 	{
 		potionTypeList.add(this);
 		
-		if (!this.isBase() && this != PotionList.effectRemove)
+		if (this.isCombinable())
 			combinableEffects.add(this);
 		
 		if (this.hasEffect())
@@ -182,11 +182,16 @@ public class PotionType implements Comparable<PotionType>
 			{
 				if (this.getPotion() instanceof clashsoft.cslib.minecraft.CustomPotion)
 				{
-					return ((clashsoft.cslib.minecraft.CustomPotion) this.getPotion()).getIsBadEffect();
+					return ((clashsoft.cslib.minecraft.CustomPotion) this.getPotion()).isBadEffect();
 				}
 			}
 		}
 		return false;
+	}
+	
+	public boolean isCombinable()
+	{
+		return !this.isBase();
 	}
 	
 	public PotionEffect getEffect()

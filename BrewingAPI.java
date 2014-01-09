@@ -2,13 +2,13 @@ package clashsoft.brewingapi;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 import clashsoft.brewingapi.api.IIngredientHandler;
 import clashsoft.brewingapi.api.IPotionEffectHandler;
-import clashsoft.brewingapi.api.IPotionEffectHandler.PotionQueue;
 import clashsoft.brewingapi.block.BlockBrewingStand2;
 import clashsoft.brewingapi.brewing.PotionList;
 import clashsoft.brewingapi.brewing.PotionType;
@@ -21,7 +21,6 @@ import clashsoft.brewingapi.item.ItemGlassBottle2;
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.lib.DispenserBehaviorPotion2;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
-import clashsoft.cslib.minecraft.CustomCreativeTab;
 import clashsoft.cslib.minecraft.update.CSUpdate;
 import clashsoft.cslib.minecraft.update.ModUpdate;
 import cpw.mods.fml.common.Mod;
@@ -56,7 +55,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 @NetworkMod(channels = { "BrewingAPI" }, packetHandler = BAPIPacketHandler.class, clientSideRequired = true, serverSideRequired = false)
 public class BrewingAPI
 {
-	public static final int			REVISION				= 4;
+	public static final int			REVISION				= 5;
 	public static final String		VERSION					= CSUpdate.CURRENT_VERSION + "-" + REVISION;
 	
 	@Instance("BrewingAPI")
@@ -75,7 +74,7 @@ public class BrewingAPI
 	public static int				brewingStand2ID			= 11;
 	public static int				splashPotion2ID			= EntityRegistry.findGlobalUniqueEntityId();
 	
-	public static CustomCreativeTab	potions;
+	public static CreativeTabs		potions;
 	
 	public static Block				brewingStand2;
 	public static Item				brewingStand2Item;
@@ -110,7 +109,18 @@ public class BrewingAPI
 		BrewingAPI.load();
 		
 		if (multiPotions)
-			potions = new CustomCreativeTab("morepotions");
+		{
+			potions = new CreativeTabs("morepotions")
+			{
+				ItemStack	stack	= null;
+				
+				@Override
+				public ItemStack getIconItemStack()
+				{
+					return stack == null ? stack = PotionList.damageBoost.addPotionTypeToItemStack(new ItemStack(BrewingAPI.potion2, 0, 1)) : stack;
+				}
+			};
+		}
 		
 		GameRegistry.registerTileEntity(TileEntityBrewingStand2.class, "BrewingStand2");
 		EntityRegistry.registerGlobalEntityID(EntityPotion2.class, "SplashPotion2", splashPotion2ID);
@@ -137,9 +147,6 @@ public class BrewingAPI
 		LanguageRegistry.instance().addStringLocalization("commands.givepotion.usage", "/givepotion <player> <effect> [seconds] [amplifier] [splash]");
 		LanguageRegistry.instance().addStringLocalization("commands.givepotion.success", "Given Potion (%1\u0024s (ID %2\u0024d) level %3\u0024d for %5\u0024d seconds) to %4\u0024s.");
 		LanguageRegistry.instance().addStringLocalization("commands.givepotion.success.splash", "Given Splash Potion (%1\u0024s (ID %2\u0024d) level %3\u0024d for %5\u0024d seconds) to %4\u0024s.");
-		
-		if (multiPotions)
-			potions.setIconItemStack(PotionList.damageBoost.addPotionTypeToItemStack(new ItemStack(BrewingAPI.potion2, 0, 1)));
 	}
 	
 	@EventHandler
@@ -236,7 +243,7 @@ public class BrewingAPI
 		}
 	}
 	
-	private static PotionQueue	queue	= new PotionQueue();
+	private int	tick	= 0;
 	
 	@ForgeSubscribe
 	public void onEntityUpdate(LivingUpdateEvent event)
@@ -244,17 +251,24 @@ public class BrewingAPI
 		if (event.entityLiving != null && !event.entityLiving.worldObj.isRemote)
 		{
 			Collection<PotionEffect> c = event.entityLiving.getActivePotionEffects();
+			List<PotionEffect> potionEffects = new ArrayList(c);
 			
-			for (PotionEffect effect : c)
+			for (int i = 0; i < potionEffects.size(); i++)
 			{
+				PotionEffect effect = potionEffects.get(i);
 				for (IPotionEffectHandler handler : effectHandlers)
 				{
 					if (handler.canHandle(effect))
-						handler.onPotionUpdate(queue, event.entityLiving, effect);
+						handler.onPotionUpdate(this.tick, event.entityLiving, effect);
 				}
 			}
 			
-			// queue.updateEntity(event.entityLiving);
+			this.tick++;
+			
+			if (this.tick > 1023)
+			{
+				this.tick = 0;
+			}
 		}
 	}
 	
