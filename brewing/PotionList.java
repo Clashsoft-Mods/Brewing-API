@@ -1,6 +1,7 @@
 package clashsoft.brewingapi.brewing;
 
 import clashsoft.brewingapi.BrewingAPI;
+import clashsoft.cslib.util.CSLog;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -82,13 +83,13 @@ public class PotionList
 	{
 		if (!BrewingAPI.isMorePotionsModInstalled())
 		{
-			System.out.println("Initializing BrewingAPI Brewings");
+			CSLog.info("Initializing BrewingAPI Potion Types");
 			initializeBaseBrewings_BrewingAPI();
 			initializeBrewings_BrewingAPI();
 		}
 		else
 		{
-			System.out.println("Skipping initialization of BrewingAPI Brewings ... More Potions Mod will do that.");
+			CSLog.info("Skipping initialization of BrewingAPI Potion Types ... More Potions Mod will do that.");
 		}
 	}
 	
@@ -96,13 +97,13 @@ public class PotionList
 	{
 		if (!BrewingAPI.isMorePotionsModInstalled())
 		{
-			System.out.println("Registering BrewingAPI Brewings");
+			CSLog.info("Registering BrewingAPI Brewings");
 			registerBaseBrewings_BrewingAPI();
 			registerBrewings_BrewingAPI();
 		}
 		else
 		{
-			System.out.println("Skipping registration of BrewingAPI Brewings ... More Potions Mod will do that.");
+			CSLog.info("Skipping registration of BrewingAPI Brewings ... More Potions Mod will do that.");
 		}
 	}
 	

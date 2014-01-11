@@ -23,6 +23,7 @@ import clashsoft.brewingapi.lib.DispenserBehaviorPotion2;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
 import clashsoft.cslib.minecraft.update.CSUpdate;
 import clashsoft.cslib.minecraft.update.ModUpdate;
+import clashsoft.cslib.util.CSLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -225,21 +226,21 @@ public class BrewingAPI
 		return potionType.register();
 	}
 	
-	public static void registerIngredientHandler(IIngredientHandler par1iIngredientHandler)
+	public static void registerIngredientHandler(IIngredientHandler handler)
 	{
-		if (ingredientHandlers.contains(par1iIngredientHandler))
+		if (ingredientHandlers.contains(handler))
 		{
-			System.out.println("Ingredient handler \"" + par1iIngredientHandler + "\" registered");
-			ingredientHandlers.add(par1iIngredientHandler);
+			CSLog.info("Ingredient handler \"" + handler + "\" registered");
+			ingredientHandlers.add(handler);
 		}
 	}
 	
-	public static void registerEffectHandler(IPotionEffectHandler par1iPotionEffectHandler)
+	public static void registerEffectHandler(IPotionEffectHandler handler)
 	{
-		if (!effectHandlers.contains(par1iPotionEffectHandler))
+		if (!effectHandlers.contains(handler))
 		{
-			System.out.println("Effect handler \"" + par1iPotionEffectHandler + "\" registered");
-			effectHandlers.add(par1iPotionEffectHandler);
+			CSLog.info("Effect handler \"" + handler + "\" registered");
+			effectHandlers.add(handler);
 		}
 	}
 	
@@ -303,8 +304,7 @@ public class BrewingAPI
 				}
 				catch (Exception e)
 				{
-					System.err.println("Severe error, please report this to the mod author:");
-					System.err.println(e);
+					CSLog.error(e);
 				}
 			}
 		}
