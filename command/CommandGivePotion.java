@@ -11,14 +11,13 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
 
 public class CommandGivePotion extends CommandBase implements ICommand
 {
-	/**
-	 * Return the required permission level for this command.
-	 */
+	public static String[]	potionNames;
+	
 	@Override
 	public int getRequiredPermissionLevel()
 	{
@@ -32,24 +31,24 @@ public class CommandGivePotion extends CommandBase implements ICommand
 	}
 	
 	@Override
-	public String getCommandUsage(ICommandSender icommandsender)
+	public String getCommandUsage(ICommandSender sender)
 	{
 		return "commands.givepotion.usage";
 	}
 	
 	@Override
-	public void processCommand(ICommandSender par1ICommandSender, String[] par2ArrayOfStr)
+	public void processCommand(ICommandSender sender, String[] args)
 	{
-		if (par2ArrayOfStr.length < 2)
+		if (args.length < 2)
 		{
 			throw new WrongUsageException("commands.givepotion.usage", new Object[0]);
 		}
 		else
 		{
-			EntityPlayerMP entityplayermp = getPlayer(par1ICommandSender, par2ArrayOfStr[0]);
+			EntityPlayerMP entityplayermp = getPlayer(sender, args[0]);
 			
 			{
-				int i = this.getPotionID(par2ArrayOfStr[1]);
+				int i = this.getPotionID(args[1]);
 				int j = 600;
 				int k = 30;
 				int l = 0;
@@ -60,9 +59,9 @@ public class CommandGivePotion extends CommandBase implements ICommand
 					throw new NumberInvalidException("commands.effect.notFound", new Object[] { Integer.valueOf(i) });
 				}
 				
-				if (par2ArrayOfStr.length >= 3)
+				if (args.length >= 3)
 				{
-					k = parseIntBounded(par1ICommandSender, par2ArrayOfStr[2], 0, 1000000);
+					k = parseIntBounded(sender, args[2], 0, 1000000);
 					
 					if (Potion.potionTypes[i].isInstant())
 					{
@@ -78,14 +77,14 @@ public class CommandGivePotion extends CommandBase implements ICommand
 					j = 1;
 				}
 				
-				if (par2ArrayOfStr.length >= 4)
+				if (args.length >= 4)
 				{
-					l = parseIntBounded(par1ICommandSender, par2ArrayOfStr[3], 0, 255);
+					l = parseIntBounded(sender, args[3], 0, 255);
 				}
 				
-				if (par2ArrayOfStr.length >= 5)
+				if (args.length >= 5)
 				{
-					m = Boolean.parseBoolean(par2ArrayOfStr[4]);
+					m = Boolean.parseBoolean(args[4]);
 				}
 				
 				{
@@ -94,13 +93,14 @@ public class CommandGivePotion extends CommandBase implements ICommand
 					PotionType b = new PotionType(potioneffect, l, j);
 					b.addPotionTypeToItemStack(stack);
 					
-					EntityItem entityitem = entityplayermp.dropPlayerItem(stack);
+					EntityItem entityitem = entityplayermp.dropPlayerItemWithRandomChoice(stack, false);
 					entityitem.delayBeforeCanPickup = 0;
+					String name = entityplayermp.getDisplayName();
 					
 					if (m)
-						notifyAdmins(par1ICommandSender, "commands.givepotion.success.splash", new Object[] { ChatMessageComponent.createFromTranslationKey(potioneffect.getEffectName()), Integer.valueOf(i), Integer.valueOf(l), entityplayermp.getEntityName(), Integer.valueOf(k) });
+						notifyAdmins(sender, "commands.givepotion.success.splash", new Object[] { new ChatComponentText(potioneffect.getEffectName()), Integer.valueOf(i), Integer.valueOf(l), name, Integer.valueOf(k) });
 					else
-						notifyAdmins(par1ICommandSender, "commands.givepotion.success", new Object[] { ChatMessageComponent.createFromTranslationKey(potioneffect.getEffectName()), Integer.valueOf(i), Integer.valueOf(l), entityplayermp.getEntityName(), Integer.valueOf(k) });
+						notifyAdmins(sender, "commands.givepotion.success", new Object[] { new ChatComponentText(potioneffect.getEffectName()), Integer.valueOf(i), Integer.valueOf(l), name, Integer.valueOf(k) });
 				}
 			}
 		}
@@ -115,12 +115,11 @@ public class CommandGivePotion extends CommandBase implements ICommand
 		}
 		catch (Exception ex)
 		{
-			for (int j = 0; j < Potion.potionTypes.length; j++)
+			for (int j = 0; j < potionNames.length; j++)
 			{
-				if (Potion.potionTypes[j] != null && StatCollector.translateToLocal(Potion.potionTypes[j].getName()).replace(" ", "").equalsIgnoreCase(string))
+				if (string.equals(potionNames[j]))
 				{
-					i = j;
-					break;
+					return j;
 				}
 			}
 		}
@@ -134,22 +133,36 @@ public class CommandGivePotion extends CommandBase implements ICommand
 	}
 	
 	@Override
-	public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr)
+	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
-		if (par2ArrayOfStr.length == 2)
+		if (args.length == 2)
 		{
-			String[] potionNames = new String[Potion.potionTypes.length];
-			for (int i = 0; i < Potion.potionTypes.length; i++)
+			if (potionNames == null)
 			{
-				if (Potion.potionTypes[i] != null)
-					potionNames[i] = StatCollector.translateToLocal(Potion.potionTypes[i].getName()).replace(" ", "").toLowerCase();
-				else
-					potionNames[i] = "";
+				int len = Potion.potionTypes.length;
+				potionNames = new String[len];
+				for (int i = 0; i < len; i++)
+				{
+					if (Potion.potionTypes[i] != null)
+					{
+						potionNames[i] = StatCollector.translateToLocal(Potion.potionTypes[i].getName()).replace(" ", "").toLowerCase();
+					}
+					else
+					{
+						potionNames[i] = "";
+					}
+				}
 			}
 			
-			List list = getListOfStringsMatchingLastWord(par2ArrayOfStr, potionNames);
+			List list = getListOfStringsMatchingLastWord(args, potionNames);
 			return list;
 		}
-		return super.addTabCompletionOptions(par1ICommandSender, par2ArrayOfStr);
+		return super.addTabCompletionOptions(sender, args);
+	}
+	
+	@Override
+	public int compareTo(Object o)
+	{
+		return 0;
 	}
 }

@@ -1,6 +1,6 @@
 package clashsoft.brewingapi.api;
 
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * The Interface IBrewingAttribute.
@@ -32,18 +32,23 @@ public interface IPotionAttribute<T>
 	public T setValue();
 	
 	/**
-	 * Creates a NBTTag for this attribute
+	 * Writed this attribute to the NBT tag compound
 	 * 
-	 * @return the NBT base
+	 * @param nbt
 	 */
-	public NBTBase toNBT();
+	public void writeToNBT(NBTTagCompound nbt);
 	
 	/**
-	 * Sets this attribute from the given NBTBase
+	 * Reads this attribute from the NBT tag compound
 	 * 
-	 * @param nbtbase
-	 *            the nbtbase
-	 * @return the i brewing attribute
+	 * @param nbt
 	 */
-	public IPotionAttribute fromNBT(NBTBase nbtbase);
+	public void readFromNBT(NBTTagCompound nbt);
+	
+	/**
+	 * Clones this attribute
+	 * 
+	 * @return a clone of this attribute
+	 */
+	public IPotionAttribute clone();
 }

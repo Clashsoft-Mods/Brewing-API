@@ -10,6 +10,7 @@ import clashsoft.brewingapi.brewing.PotionType;
 import clashsoft.brewingapi.brewing.PotionUtils;
 import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.lib.AttributeModifierComparator;
+import clashsoft.cslib.minecraft.I18n;
 import clashsoft.cslib.minecraft.util.CSFontRenderer;
 import clashsoft.cslib.util.CSString;
 
@@ -20,13 +21,13 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.BaseAttribute;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPotion;
@@ -36,10 +37,11 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StringUtils;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
 /**
  * @author Clashsoft
@@ -50,13 +52,12 @@ public class ItemPotion2 extends Item
 	
 	public Map<NBTTagCompound, List<PotionType>>	effectCache			= new HashMap();
 	
-	public Icon										bottle;
-	public Icon										splashbottle;
-	public Icon										liquid;
+	public IIcon									bottle;
+	public IIcon									splashbottle;
+	public IIcon									liquid;
 	
-	public ItemPotion2(int par1)
+	public ItemPotion2()
 	{
-		super(par1);
 		this.setMaxStackSize(BrewingAPI.potionStackSize);
 		this.setHasSubtypes(true);
 		this.setCreativeTab(CreativeTabs.tabBrewing);
@@ -71,7 +72,7 @@ public class ItemPotion2 extends Item
 	
 	public List<PotionType> getLegacyEffects(ItemStack stack)
 	{
-		List<PotionEffect> effects = Item.potion.getEffects(stack);
+		List<PotionEffect> effects = Items.potionitem.getEffects(stack);
 		List<PotionType> potionTypes = new ArrayList(effects.size());
 		for (PotionEffect effect : effects)
 		{
@@ -95,11 +96,11 @@ public class ItemPotion2 extends Item
 					return this.effectCache.get(compound);
 				else
 				{
-					NBTTagList tagList = compound.getTagList("Brewing");
+					NBTTagList tagList = compound.getTagList("Brewing", Constants.NBT.TAG_COMPOUND);
 					
 					for (int index = 0; index < tagList.tagCount(); ++index)
 					{
-						NBTTagCompound potionTypeNBT = (NBTTagCompound) tagList.tagAt(index);
+						NBTTagCompound potionTypeNBT = tagList.getCompoundTagAt(index);
 						PotionType potionType = PotionType.getPotionTypeFromNBT(potionTypeNBT);
 						result.add(potionType);
 					}
@@ -114,6 +115,98 @@ public class ItemPotion2 extends Item
 		return result;
 	}
 	
+	/**
+	 * Gets the bottle that is returned when drinking the potion.
+	 * 
+	 * @return the bottle item stack
+	 */
+	public ItemStack getGlassBottle()
+	{
+		return new ItemStack(Items.glass_bottle);
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static IIcon getPotionIcon(String iconName)
+	{
+		return iconName.equals("bottle_drinkable") ? BrewingAPI.potion2.bottle : (iconName.equals("bottle_splash") ? BrewingAPI.potion2.splashbottle : (iconName.equals("overlay") ? BrewingAPI.potion2.liquid : null));
+	}
+
+	/**
+	 * Returns the icon of the splash bottle of the potion {@code stack}
+	 * 
+	 * @param stack
+	 *            the stack
+	 * @return the icon
+	 */
+	public IIcon getSplashIcon(ItemStack stack)
+	{
+		return this.splashbottle;
+	}
+
+	/**
+	 * Returns true if this potion is a throwable splash potion.
+	 * 
+	 * @param metadata
+	 *            the damage value
+	 * @return true if this potion is a throwable splash potion
+	 */
+	public boolean isSplash(int metadata)
+	{
+		return (metadata & 2) != 0 ? true : ItemPotion.isSplash(metadata);
+	}
+
+	public int setSplash(int metadata, boolean splash)
+	{
+		return splash ? metadata | 2 : metadata & ~2;
+	}
+
+	public boolean isWater(int metadata)
+	{
+		return metadata == 0;
+	}
+
+	public int getLiquidColor(ItemStack stack)
+	{
+		if (this.isWater(stack.getItemDamage()))
+			return 0x0C0CFF;
+		
+		List<PotionType> effects = this.getEffects(stack);
+		
+		if (effects.isEmpty())
+			return 0x0C0CFF;
+		
+		int[] colors = new int[effects.size()];
+		
+		for (int j = 0; j < effects.size(); j++)
+		{
+			PotionType b = effects.get(j);
+			colors[j] = b instanceof PotionBase ? 0x0C0CFF : b.getLiquidColor();
+		}
+		return PotionUtils.combineColors(colors);
+	}
+
+	/**
+	 * Returns true if all effects of the potion {@code stack} are instant.
+	 * 
+	 * @param stack
+	 *            the stack
+	 * @return true if all effects of the potion are instant.
+	 */
+	public boolean isEffectInstant(ItemStack stack)
+	{
+		List<PotionType> effects = this.getEffects(stack);
+		if (effects.size() == 0)
+		{
+			return false;
+		}
+		boolean flag = true;
+		for (PotionType b : effects)
+		{
+			flag &= (b.getEffect() != null ? Potion.potionTypes[b.getEffect().getPotionID()].isInstant() : true);
+		}
+		return flag;
+	}
+
 	@Override
 	public ItemStack onEaten(ItemStack stack, World world, EntityPlayer player)
 	{
@@ -139,32 +232,18 @@ public class ItemPotion2 extends Item
 		return stack;
 	}
 	
-	public ItemStack getGlassBottle()
-	{
-		return new ItemStack(Item.glassBottle);
-	}
-	
-	/**
-	 * How long it takes to use or consume an item
-	 */
 	@Override
 	public int getMaxItemUseDuration(ItemStack stack)
 	{
 		return 32;
 	}
 	
-	/**
-	 * returns the action that specifies what animation to play when the items is being used
-	 */
 	@Override
 	public EnumAction getItemUseAction(ItemStack stack)
 	{
 		return EnumAction.drink;
 	}
 	
-	/**
-	 * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
-	 */
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
@@ -191,54 +270,27 @@ public class ItemPotion2 extends Item
 		}
 	}
 	
-	/**
-	 * Gets an icon index based on an item's damage value
-	 */
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Icon getIconFromDamage(int metadata)
+	public IIcon getIconFromDamage(int metadata)
 	{
 		return this.isSplash(metadata) ? this.splashbottle : this.bottle;
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Icon getIcon(ItemStack stack, int metadata)
+	public IIcon getIcon(ItemStack stack, int metadata)
 	{
 		return metadata == 0 ? this.liquid : (this.isSplash(stack.getItemDamage()) ? this.splashbottle : this.bottle);
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegister)
+	public void registerIcons(IIconRegister iconRegister)
 	{
 		this.itemIcon = this.bottle = iconRegister.registerIcon(this.getIconString() + "_bottle_drinkable");
 		this.splashbottle = iconRegister.registerIcon(this.getIconString() + "_bottle_splash");
 		this.liquid = iconRegister.registerIcon(this.getIconString() + "_overlay");
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public static Icon getPotionIcon(String iconName)
-	{
-		return iconName.equals("bottle_drinkable") ? BrewingAPI.potion2.bottle : (iconName.equals("bottle_splash") ? BrewingAPI.potion2.splashbottle : (iconName.equals("overlay") ? BrewingAPI.potion2.liquid : null));
-	}
-	
-	/**
-	 * returns wether or not a potion is a throwable splash potion based on damage value
-	 */
-	public boolean isSplash(int metadata)
-	{
-		return (metadata & 2) != 0 ? true : ItemPotion.isSplash(metadata);
-	}
-	
-	public int setSplash(int metadata, boolean splash)
-	{
-		return splash ? metadata | 2 : metadata & ~2;
-	}
-	
-	public boolean isWater(int metadata)
-	{
-		return metadata == 0;
 	}
 	
 	@Override
@@ -248,26 +300,6 @@ public class ItemPotion2 extends Item
 			return this.getLiquidColor(stack);
 		else
 			return super.getColorFromItemStack(stack, pass);
-	}
-	
-	public int getLiquidColor(ItemStack stack)
-	{
-		if (this.isWater(stack.getItemDamage()))
-			return 0x0C0CFF;
-		
-		List<PotionType> effects = this.getEffects(stack);
-		
-		if (effects.isEmpty())
-			return 0x0C0CFF;
-		
-		int[] colors = new int[effects.size()];
-		
-		for (int j = 0; j < effects.size(); j++)
-		{
-			PotionType b = effects.get(j);
-			colors[j] = b instanceof PotionBase ? 0x0C0CFF : b.getLiquidColor();
-		}
-		return PotionUtils.combineColors(colors);
 	}
 	
 	@Override
@@ -285,10 +317,12 @@ public class ItemPotion2 extends Item
 	}
 	
 	@Override
-	public String getItemDisplayName(ItemStack stack)
+	public String getItemStackDisplayName(ItemStack stack)
 	{
 		if (this.isWater(stack.getItemDamage()))
+		{
 			return I18n.getString("item.emptyPotion.name");
+		}
 		else
 		{
 			List<PotionType> potionTypes = this.getEffects(stack);
@@ -319,26 +353,37 @@ public class ItemPotion2 extends Item
 						result.append(I18n.getString(base.getEffectName())).append(" ");
 					}
 					if (effects.isEmpty())
-						result.append(super.getItemDisplayName(stack));
+					{
+						result.append(super.getItemStackDisplayName(stack));
+					}
 					else if (effects.size() > 4)
+					{
 						result.append(I18n.getString("potion.potionof")).append(" ").append(effects.size()).append(" ").append(I18n.getString("potion.effects"));
+					}
 					else
 					{
-						for (int i = 0; i < effects.size(); i++)
+						int size = effects.size();
+						for (int i = 0; i < size; i++)
 						{
 							PotionType type = effects.get(i);
 							
 							boolean hasPrevious = i > 0;
-							boolean isLast = i == effects.size() - 1;
+							boolean isLast = i == size - 1;
 							
 							if (!hasPrevious)
+							{
 								result.append(I18n.getString(type.getEffectName() + ".postfix"));
+							}
 							else
 							{
 								if (isLast)
+								{
 									result.append(" ").append(I18n.getString("potion.and")).append(" ");
+								}
 								else
+								{
 									result.append(", ");
+								}
 								result.append(I18n.getString(type.getEffectName()));
 							}
 						}
@@ -347,7 +392,9 @@ public class ItemPotion2 extends Item
 				return result.toString();
 			}
 			else
-				return super.getItemDisplayName(stack);
+			{
+				return super.getItemStackDisplayName(stack);
+			}
 		}
 	}
 	
@@ -362,26 +409,28 @@ public class ItemPotion2 extends Item
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	/**
-	 * allows items to add custom lines of information to the mouseover description
-	 */
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4)
 	{
 		if (!this.isWater(stack.getItemDamage()))
 		{
 			List<PotionType> potionTypes = this.getEffects(stack);
 			Multimap<String, AttributeModifier> hashmultimap = TreeMultimap.create(String.CASE_INSENSITIVE_ORDER, MODIFIER_COMPARATOR);
+			int size = potionTypes.size();
 			
-			if (!potionTypes.isEmpty())
+			if (size > 0)
 			{
 				glowPos++;
 				if (glowPos > 100)
+				{
 					glowPos = 0;
+				}
 				
-				if (potionTypes.size() > 5)
+				if (size > 5)
+				{
 					glowPos = -1;
+				}
 				
-				for (int i = 0; i < potionTypes.size(); i++)
+				for (int i = 0; i < size; i++)
 				{
 					PotionType potionType = potionTypes.get(i);
 					Potion potion = potionType.getPotion();
@@ -391,13 +440,19 @@ public class ItemPotion2 extends Item
 					
 					if (!isNormalEffect)
 					{
-						if (potionTypes.size() > 1)
+						if (size > 1)
+						{
 							continue;
+						}
 						else
+						{
 							effectName = EnumChatFormatting.GRAY + I18n.getString("potion.empty");
+						}
 					}
 					else
+					{
 						effectName = I18n.getString(potionType.getEffectName());
+					}
 					
 					StringBuilder builder = new StringBuilder(effectName);
 					
@@ -413,7 +468,7 @@ public class ItemPotion2 extends Item
 								if (attributemodifier != null)
 								{
 									AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.func_111183_a(potionType.getEffect().getAmplifier(), attributemodifier), attributemodifier.getOperation());
-									hashmultimap.put(((Attribute) object).getAttributeUnlocalizedName(), attributemodifier1);
+									hashmultimap.put(((BaseAttribute) object).getAttributeUnlocalizedName(), attributemodifier1);
 								}
 							}
 						}
@@ -456,11 +511,15 @@ public class ItemPotion2 extends Item
 							glowPosInt += colorDark.length();
 							
 							if (glowPosInt < builder.length())
+							{
 								builder.insert(glowPosInt, colorLight);
+							}
 							
 							glowPosInt += colorLight.length() + 1;
 							if (glowPosInt < builder.length())
+							{
 								builder.insert(glowPosInt, colorDark);
+							}
 						}
 						
 					}
@@ -479,12 +538,16 @@ public class ItemPotion2 extends Item
 								String localizedDescription = I18n.getString(description);
 								if (localizedDescription != description)
 								{
-									localizedDescription = clashsoft.cslib.util.CSString.cutString(localizedDescription, stack.getDisplayName().length());
-									for (String line : clashsoft.cslib.util.CSString.makeLineList(localizedDescription))
+									localizedDescription = CSString.cutString(localizedDescription, stack.getDisplayName().length());
+									for (String line : CSString.lineArray(localizedDescription))
+									{
 										list.add(EnumChatFormatting.BLUE.toString() + EnumChatFormatting.ITALIC.toString() + line);
+									}
 								}
 								else
+								{
 									list.add(EnumChatFormatting.RED.toString() + EnumChatFormatting.ITALIC.toString() + I18n.getString("potion.description.missing"));
+								}
 							}
 						}
 					}
@@ -540,9 +603,7 @@ public class ItemPotion2 extends Item
 						list.add(value.toString());
 					}
 				}
-				/*
-				 * Attribute List
-				 */
+				
 				if (!hashmultimap.isEmpty())
 				{
 					list.add("");
@@ -561,7 +622,9 @@ public class ItemPotion2 extends Item
 							}
 							
 							if (amount > 0.0D)
+							{
 								list.add(EnumChatFormatting.BLUE + I18n.getStringParams("attribute.modifier.plus." + operation, ItemStack.field_111284_a.format(amount), I18n.getString("attribute.name." + key)));
+							}
 							else if (amount < 0.0D)
 							{
 								amount = -amount;
@@ -589,10 +652,7 @@ public class ItemPotion2 extends Item
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	/**
-	 * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
-	 */
-	public void getSubItems(int itemID, CreativeTabs tab, List list)
+	public void getSubItems(Item item, CreativeTabs tab, List list)
 	{
 		if (tab == CreativeTabs.tabBrewing || tab == CreativeTabs.tabAllSearch)
 		{
@@ -611,6 +671,7 @@ public class ItemPotion2 extends Item
 					list.add(brewing.addPotionTypeToItemStack(new ItemStack(this, 1, i)));
 				}
 			}
+			
 			for (PotionType potionType : PotionType.effectMap.values())
 			{
 				for (int i = 1; i <= 2; i++)
@@ -682,17 +743,6 @@ public class ItemPotion2 extends Item
 		}
 	}
 	
-	public boolean isEffectInstant(ItemStack stack)
-	{
-		List<PotionType> effects = this.getEffects(stack);
-		if (effects.size() == 0)
-			return false;
-		boolean flag = true;
-		for (PotionType b : effects)
-			flag &= (b.getEffect() != null ? Potion.potionTypes[b.getEffect().getPotionID()].isInstant() : true);
-		return flag;
-	}
-	
 	@Override
 	public Entity createEntity(World world, Entity entity, ItemStack itemstack)
 	{
@@ -714,10 +764,5 @@ public class ItemPotion2 extends Item
 			return e;
 		}
 		return null;
-	}
-	
-	public Icon getSplashIcon(ItemStack stack)
-	{
-		return this.splashbottle;
 	}
 }

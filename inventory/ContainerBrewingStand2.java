@@ -27,7 +27,7 @@ public class ContainerBrewingStand2 extends Container
 		this.addSlotToContainer(new SlotPotion(inventory.player, brewingStand, 0, 56, 46));
 		this.addSlotToContainer(new SlotPotion(inventory.player, brewingStand, 1, 79, 53));
 		this.addSlotToContainer(new SlotPotion(inventory.player, brewingStand, 2, 102, 46));
-		this.theSlot = this.addSlotToContainer(new SlotBrewingStandIngredient2(this, brewingStand, 3, 79, 17));
+		this.theSlot = this.addSlotToContainer(new SlotBrewingStandIngredient2(brewingStand, 3, 79, 17));
 		int var3;
 		
 		for (var3 = 0; var3 < 3; ++var3)

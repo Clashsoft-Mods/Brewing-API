@@ -7,94 +7,38 @@ import clashsoft.brewingapi.api.IIngredientHandler;
 import clashsoft.brewingapi.brewing.PotionBase;
 import clashsoft.brewingapi.brewing.PotionType;
 import clashsoft.brewingapi.item.ItemPotion2;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntityBrewingStand;
 import net.minecraft.util.MathHelper;
+import net.minecraftforge.common.util.Constants;
 
 public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements ISidedInventory
 {
-	public EntityPlayer			thePlayer			= null;
+	public EntityPlayer	thePlayer			= null;
 	
 	/** The itemstacks currently placed in the slots of the brewing stand */
-	private ItemStack[]			brewingItemStacks	= new ItemStack[4];
-	private int					brewTime;
+	private ItemStack[]	brewingItemStacks	= new ItemStack[4];
+	private int			brewTime;
 	
 	/**
 	 * an integer with each bit specifying whether that slot of the stand contains a potion
 	 */
-	private int					filledSlots;
-	private ItemStack			ingredient;
-	
-	public static int			maxBrewTime			= 400;
+	private int			filledSlots;
+	private ItemStack	ingredient;
 	
 	public TileEntityBrewingStand2()
 	{
 		
 	}
 	
-	/**
-	 * Returns the number of slots in the inventory.
-	 */
-	@Override
-	public int getSizeInventory()
-	{
-		return this.brewingItemStacks.length;
-	}
-	
-	/**
-	 * Allows the entity to update its state. Overridden in most subclasses, e.g. the mob spawner uses this to count ticks and creates a new spawn inside its implementation.
-	 */
-	@Override
-	public void updateEntity()
-	{
-		if (this.brewTime > 0)
-		{
-			--this.brewTime;
-			
-			if (this.brewTime == 0)
-			{
-				this.brewPotions();
-				this.spawnXP();
-				this.onInventoryChanged();
-			}
-			else if (!this.canBrew())
-			{
-				this.brewTime = 0;
-				this.onInventoryChanged();
-			}
-			else if (this.ingredient != this.brewingItemStacks[3])
-			{
-				this.brewTime = 0;
-				this.onInventoryChanged();
-			}
-		}
-		else if (this.canBrew())
-		{
-			this.brewTime = this.getMaxBrewTime();
-			this.ingredient = this.brewingItemStacks[3];
-		}
-		
-		int var1 = this.getFilledSlots();
-		
-		if (var1 != this.filledSlots)
-		{
-			this.filledSlots = var1;
-			this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, var1, 2);
-		}
-		
-		super.updateEntity();
-	}
-	
-	private void spawnXP()
+	public void spawnXP()
 	{
 		if (this.thePlayer != null && !this.thePlayer.worldObj.isRemote)
 		{
@@ -134,7 +78,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 		}
 	}
 	
-	private int getPotions()
+	public int getPotions()
 	{
 		int i = 0;
 		for (ItemStack is : this.brewingItemStacks)
@@ -147,19 +91,20 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 		return i;
 	}
 	
-	public int getMaxBrewTime()
-	{
-		if (this.thePlayer != null && this.thePlayer.capabilities.isCreativeMode)
-		{
-			return 60;
-		}
-		return 400;
-	}
-	
 	@Override
-	public int getBrewTime()
+	public int getFilledSlots()
 	{
-		return this.brewTime;
+		int i = 0;
+		
+		for (int j = 0; j < 3; ++j)
+		{
+			if (this.brewingItemStacks[j] != null)
+			{
+				i |= 1 << j;
+			}
+		}
+		
+		return i;
 	}
 	
 	private boolean canBrew()
@@ -168,7 +113,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 		{
 			this.ingredient = this.brewingItemStacks[3];
 			
-			if (!Item.itemsList[this.ingredient.itemID].isPotionIngredient() && !PotionType.isPotionIngredient(this.ingredient))
+			if (!PotionType.isPotionIngredient(this.ingredient))
 				return false;
 			
 			for (int potionIndex = 0; potionIndex < 3; ++potionIndex)
@@ -181,31 +126,47 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 					boolean water = item.isWater(damage);
 					List<PotionType> potionTypes = item.getEffects(potion);
 					
-					if (this.ingredient.getItem() == Item.glowstone && !water)
+					if (this.ingredient.getItem() == Items.glowstone_dust && !water)
 					{
 						for (int i = 0; i < potionTypes.size(); i++)
+						{
 							if (potionTypes.get(i).isImprovable())
+							{
 								return true;
+							}
+						}
 					}
-					else if (this.ingredient.getItem() == Item.redstone && !water)
+					else if (this.ingredient.getItem() == Items.redstone && !water)
 					{
 						for (int i = 0; i < potionTypes.size(); i++)
+						{
 							if (potionTypes.get(i).isExtendable())
+							{
 								return true;
+							}
+						}
 					}
-					else if (this.ingredient.getItem() == Item.fermentedSpiderEye && !water)
+					else if (this.ingredient.getItem() == Items.fermented_spider_eye && !water)
 					{
 						for (int i = 0; i < potionTypes.size(); i++)
+						{
 							if (potionTypes.get(i).isInversible())
+							{
 								return true;
+							}
+						}
 					}
-					else if (this.ingredient.getItem() == Item.gunpowder)
+					else if (this.ingredient.getItem() == Items.gunpowder)
 					{
 						if (!item.isSplash(damage))
+						{
 							return true;
+						}
 					}
 					else
+					{
 						return PotionType.canApplyIngredient(this.ingredient, potion);
+					}
 				}
 			}
 		}
@@ -213,7 +174,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	}
 	
 	private void brewPotions()
-	{	
+	{
 		this.ingredient = this.brewingItemStacks[3];
 		
 		for (int potionIndex = 0; potionIndex < 3; ++potionIndex)
@@ -229,30 +190,38 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 				
 				boolean flag = false;
 				
-				if (this.ingredient.getItem() == Item.gunpowder)
+				if (this.ingredient.getItem() == Items.gunpowder)
 				{
 					damage = item.setSplash(damage, true);
 				}
 				
-				if (this.ingredient.getItem() == Item.glowstone && !water)
+				if (this.ingredient.getItem() == Items.glowstone_dust && !water)
 				{
 					for (int i = 0; i < potionTypes.size(); i++)
+					{
 						newPotionTypes.add(potionTypes.get(i).onImproved());
+					}
 				}
-				else if (this.ingredient.getItem() == Item.redstone && !water)
+				else if (this.ingredient.getItem() == Items.redstone && !water)
 				{
 					for (int i = 0; i < potionTypes.size(); i++)
+					{
 						newPotionTypes.add(potionTypes.get(i).onExtended());
+					}
 				}
-				else if (this.ingredient.getItem() == Item.fermentedSpiderEye && !water)
+				else if (this.ingredient.getItem() == Items.fermented_spider_eye && !water)
 				{
 					for (int i = 0; i < potionTypes.size(); i++)
+					{
 						newPotionTypes.add(potionTypes.get(i).onInverted());
+					}
 				}
-				else if (this.ingredient.getItem() == Item.gunpowder && !water)
+				else if (this.ingredient.getItem() == Items.gunpowder && !water)
 				{
 					for (int i = 0; i < potionTypes.size(); i++)
+					{
 						newPotionTypes.add(potionTypes.get(i).onGunpowderUsed());
+					}
 				}
 				else
 				{
@@ -301,9 +270,9 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 			}
 		}
 		
-		if (Item.itemsList[this.ingredient.itemID].hasContainerItem())
+		if (this.ingredient.getItem().hasContainerItem(this.ingredient))
 		{
-			this.brewingItemStacks[3] = Item.itemsList[this.ingredient.itemID].getContainerItemStack(this.brewingItemStacks[3]);
+			this.brewingItemStacks[3] = this.ingredient.getItem().getContainerItem(this.brewingItemStacks[3]);
 		}
 		else
 		{
@@ -316,73 +285,128 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 		}
 	}
 	
-	/**
-	 * Reads a tile entity from NBT.
-	 */
-	@Override
-	public void readFromNBT(NBTTagCompound par1NBTTagCompound)
+	public void setBrewTime(int brewTime)
 	{
-		super.readFromNBT(par1NBTTagCompound);
-		NBTTagList var2 = par1NBTTagCompound.getTagList("Items");
+		this.brewTime = brewTime;
+	}
+	
+	@Override
+	public int getBrewTime()
+	{
+		return this.brewTime;
+	}
+	
+	public int getMaxBrewTime()
+	{
+		if (this.thePlayer != null && this.thePlayer.capabilities.isCreativeMode)
+		{
+			return 60;
+		}
+		return 400;
+	}
+	
+	@Override
+	public void updateEntity()
+	{
+		if (this.brewTime > 0)
+		{
+			--this.brewTime;
+			
+			if (this.brewTime == 0)
+			{
+				this.brewPotions();
+				this.spawnXP();
+				this.markDirty();
+			}
+			else if (!this.canBrew())
+			{
+				this.brewTime = 0;
+				this.markDirty();
+			}
+			else if (this.ingredient != this.brewingItemStacks[3])
+			{
+				this.brewTime = 0;
+				this.markDirty();
+			}
+		}
+		else if (this.canBrew())
+		{
+			this.brewTime = this.getMaxBrewTime();
+			this.ingredient = this.brewingItemStacks[3];
+		}
+		
+		int var1 = this.getFilledSlots();
+		
+		if (var1 != this.filledSlots)
+		{
+			this.filledSlots = var1;
+			this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, var1, 2);
+		}
+		
+		super.updateEntity();
+	}
+	
+	@Override
+	public void readFromNBT(NBTTagCompound nbt)
+	{
+		super.readFromNBT(nbt);
+		NBTTagList list = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);
 		this.brewingItemStacks = new ItemStack[this.getSizeInventory()];
 		
-		for (int var3 = 0; var3 < var2.tagCount(); ++var3)
+		for (int i = 0; i < list.tagCount(); ++i)
 		{
-			NBTTagCompound var4 = (NBTTagCompound) var2.tagAt(var3);
-			byte var5 = var4.getByte("Slot");
+			NBTTagCompound tag = list.getCompoundTagAt(i);
+			byte slotID = tag.getByte("Slot");
 			
-			if (var5 >= 0 && var5 < this.brewingItemStacks.length)
+			if (slotID >= 0 && slotID < this.brewingItemStacks.length)
 			{
-				this.brewingItemStacks[var5] = ItemStack.loadItemStackFromNBT(var4);
+				this.brewingItemStacks[slotID] = ItemStack.loadItemStackFromNBT(tag);
 			}
 		}
 		
-		this.brewTime = par1NBTTagCompound.getShort("BrewTime");
+		this.brewTime = nbt.getShort("BrewTime");
 	}
 	
-	/**
-	 * Writes a tile entity to NBT.
-	 */
 	@Override
-	public void writeToNBT(NBTTagCompound par1NBTTagCompound)
+	public void writeToNBT(NBTTagCompound nbt)
 	{
-		super.writeToNBT(par1NBTTagCompound);
-		par1NBTTagCompound.setShort("BrewTime", (short) this.brewTime);
-		NBTTagList var2 = new NBTTagList();
+		super.writeToNBT(nbt);
+		nbt.setShort("BrewTime", (short) this.brewTime);
+		NBTTagList list = new NBTTagList();
 		
-		for (int var3 = 0; var3 < this.brewingItemStacks.length; ++var3)
+		for (int i = 0; i < this.brewingItemStacks.length; ++i)
 		{
-			if (this.brewingItemStacks[var3] != null)
+			if (this.brewingItemStacks[i] != null)
 			{
-				NBTTagCompound var4 = new NBTTagCompound();
-				var4.setByte("Slot", (byte) var3);
-				this.brewingItemStacks[var3].writeToNBT(var4);
-				var2.appendTag(var4);
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setByte("Slot", (byte) i);
+				this.brewingItemStacks[i].writeToNBT(tag);
+				list.appendTag(tag);
 			}
 		}
 		
-		par1NBTTagCompound.setTag("Items", var2);
+		nbt.setTag("Items", list);
 	}
 	
-	/**
-	 * Returns the stack in slot i
-	 */
 	@Override
-	public ItemStack getStackInSlot(int par1)
+	public int getSizeInventory()
 	{
-		return par1 >= 0 && par1 < this.brewingItemStacks.length ? this.brewingItemStacks[par1] : null;
+		return this.brewingItemStacks.length;
 	}
 	
-	/**
-	 * Removes from an inventory slot (first arg) up to a specified number (second arg) of items and returns them in a new stack.
-	 */
 	@Override
-	public ItemStack decrStackSize(int par1, int par2)
+	public ItemStack getStackInSlot(int slotID)
 	{
-		if (par1 >= 0 && par1 < this.brewingItemStacks.length)
+		return slotID >= 0 && slotID < this.brewingItemStacks.length ? this.brewingItemStacks[slotID] : null;
+	}
+	
+	@Override
+	public ItemStack decrStackSize(int slotID, int amount)
+	{
+		if (slotID >= 0 && slotID < this.brewingItemStacks.length)
 		{
-			ItemStack var3 = this.brewingItemStacks[par1];
-			this.brewingItemStacks[par1] = null;
+			ItemStack var3 = this.brewingItemStacks[slotID];
+			this.brewingItemStacks[slotID] = null;
 			return var3;
 		}
 		else
@@ -391,16 +415,13 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 		}
 	}
 	
-	/**
-	 * When some containers are closed they call this on each slot, then drop whatever it returns as an EntityItem - like when you close a workbench GUI.
-	 */
 	@Override
-	public ItemStack getStackInSlotOnClosing(int par1)
+	public ItemStack getStackInSlotOnClosing(int slotID)
 	{
-		if (par1 >= 0 && par1 < this.brewingItemStacks.length)
+		if (slotID >= 0 && slotID < this.brewingItemStacks.length)
 		{
-			ItemStack var2 = this.brewingItemStacks[par1];
-			this.brewingItemStacks[par1] = null;
+			ItemStack var2 = this.brewingItemStacks[slotID];
+			this.brewingItemStacks[slotID] = null;
 			return var2;
 		}
 		else
@@ -409,104 +430,33 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 		}
 	}
 	
-	/**
-	 * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
-	 */
 	@Override
-	public void setInventorySlotContents(int par1, ItemStack par2ItemStack)
+	public void setInventorySlotContents(int slotID, ItemStack stack)
 	{
-		if (par1 >= 0 && par1 < this.brewingItemStacks.length)
+		if (slotID >= 0 && slotID < this.brewingItemStacks.length)
 		{
-			this.brewingItemStacks[par1] = par2ItemStack;
+			this.brewingItemStacks[slotID] = stack;
 		}
 	}
 	
-	/**
-	 * Returns the maximum stack size for a inventory slot. Seems to always be 64, possibly will be extended. *Isn't this more of a set than a get?*
-	 */
 	@Override
 	public int getInventoryStackLimit()
 	{
 		return 1;
 	}
 	
-	/**
-	 * Do not make give this method the name canInteractWith because it clashes with Container
-	 */
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer par1EntityPlayer)
+	public boolean isUseableByPlayer(EntityPlayer player)
 	{
-		this.thePlayer = par1EntityPlayer;
-		return this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : par1EntityPlayer.getDistanceSq(this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D) <= 64.0D;
-	}
-	
-	@Override
-	public void openChest()
-	{
-	}
-	
-	@Override
-	public void closeChest()
-	{
-	}
-	
-	public void handlePacketData(int typeData, int[] intData)
-	{
-		TileEntityBrewingStand2 var1 = this;
-		if (intData != null)
-		{
-			int pos = 0;
-			if (intData.length < var1.brewingItemStacks.length * 3)
-			{
-				return;
-			}
-			for (int i = 0; i < var1.brewingItemStacks.length; i++)
-			{
-				if (intData[pos + 2] != 0)
-				{
-					ItemStack is = new ItemStack(intData[pos], intData[pos + 2], intData[pos + 1]);
-					var1.brewingItemStacks[i] = is;
-				}
-				else
-				{
-					var1.brewingItemStacks[i] = null;
-				}
-				pos += 3;
-			}
-		}
+		this.thePlayer = player;
+		return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) == this && player.getDistanceSq(this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D) <= 64.0D;
 	}
 	
 	/**
 	 * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
 	 */
-	public boolean isStackValidForSlot(int par1, ItemStack par2ItemStack)
+	public boolean isStackValidForSlot(int slotID, ItemStack stack)
 	{
-		return par1 == 3 ? Item.itemsList[par2ItemStack.itemID].isPotionIngredient() : par2ItemStack.itemID == Item.potion.itemID || par2ItemStack.itemID == Item.glassBottle.itemID;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void setBrewTime(int par1)
-	{
-		this.brewTime = par1;
-	}
-	
-	/**
-	 * returns an integer with each bit specifying wether that slot of the stand contains a potion
-	 */
-	@Override
-	public int getFilledSlots()
-	{
-		int i = 0;
-		
-		for (int j = 0; j < 3; ++j)
-		{
-			if (this.brewingItemStacks[j] != null)
-			{
-				i |= 1 << j;
-			}
-		}
-		
-		return i;
+		return slotID == 3 && PotionType.isPotionIngredient(stack);
 	}
 }

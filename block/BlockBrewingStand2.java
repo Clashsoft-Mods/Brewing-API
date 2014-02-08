@@ -5,84 +5,60 @@ import java.util.Random;
 
 import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
-import cpw.mods.fml.common.network.FMLNetworkHandler;
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockBrewingStand;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 public class BlockBrewingStand2 extends BlockBrewingStand
 {
 	private Random	rand	= new Random();
-	private Icon	texture;
+	private IIcon	texture;
 	
-	public BlockBrewingStand2(int par1)
+	public BlockBrewingStand2()
 	{
-		super(par1);
-		this.setTextureName("brewing_stand");
+		this.setBlockTextureName("brewing_stand");
 	}
 	
-	/**
-	 * Is this block (a) opaque and (b) a full 1m cube? This determines whether or not to render the shared face of two adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
-	 */
 	@Override
 	public boolean isOpaqueCube()
 	{
 		return false;
 	}
 	
-	/**
-	 * The type of render function that is called for this block
-	 */
 	@Override
 	public int getRenderType()
 	{
 		return 25;
 	}
 	
-	/**
-	 * Called whenever the block is added into the world. Args: world, x, y, z
-	 */
 	@Override
-	public void onBlockAdded(World world, int x, int y, int z)
-	{
-		super.onBlockAdded(world, x, y, z);
-		world.setBlockTileEntity(x, y, z, this.createNewTileEntity(world));
-	}
-	
-	/**
-	 * Returns a new instance of a block's tile entity class. Called on placing the block.
-	 */
-	@Override
-	public TileEntity createNewTileEntity(World world)
+	public TileEntity createNewTileEntity(World world, int metadata)
 	{
 		return new TileEntityBrewingStand2();
 	}
 	
-	/**
-	 * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
-	 */
 	@Override
 	public boolean renderAsNormalBlock()
 	{
 		return false;
 	}
 	
-	/**
-	 * if the specified block is in the given AABB, add its collision bounding box to the given list
-	 */
 	public void addCollidingBlockToList(World world, int x, int y, int z, AxisAlignedBB aabb, List list, Entity entity)
 	{
 		this.setBlockBounds(0.4375F, 0.0F, 0.4375F, 0.5625F, 0.875F, 0.5625F);
@@ -91,18 +67,12 @@ public class BlockBrewingStand2 extends BlockBrewingStand
 		super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
 	}
 	
-	/**
-	 * Sets the block's bounds for rendering it as an item
-	 */
 	@Override
 	public void setBlockBoundsForItemRender()
 	{
 		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.125F, 1.0F);
 	}
 	
-	/**
-	 * Called upon block activation (right click on the block.)
-	 */
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
@@ -112,7 +82,7 @@ public class BlockBrewingStand2 extends BlockBrewingStand
 		}
 		else
 		{
-			if (world.getBlockTileEntity(x, y, z) != null)
+			if (world.getTileEntity(x, y, z) != null)
 			{
 				FMLNetworkHandler.openGui(player, BrewingAPI.instance, BrewingAPI.brewingStand2ID, world, x, y, z);
 			}
@@ -123,9 +93,6 @@ public class BlockBrewingStand2 extends BlockBrewingStand
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	/**
-	 * A randomly called display update to be able to add particles or other items for display
-	 */
 	public void randomDisplayTick(World world, int x, int y, int z, Random random)
 	{
 		double var6 = x + 0.4F + random.nextFloat() * 0.2F;
@@ -134,13 +101,10 @@ public class BlockBrewingStand2 extends BlockBrewingStand
 		world.spawnParticle("smoke", var6, var8, var10, 0.0D, 0.0D, 0.0D);
 	}
 	
-	/**
-	 * Ejects contained items into the world, and notifies neighbours of an update, as appropriate
-	 */
 	@Override
-	public void breakBlock(World world, int x, int y, int z, int oldBlockID, int oldBlockMetadata)
+	public void breakBlock(World world, int x, int y, int z, Block oldBlock, int oldBlockMetadata)
 	{
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		
 		if (tileEntity instanceof IInventory)
 		{
@@ -178,39 +142,39 @@ public class BlockBrewingStand2 extends BlockBrewingStand
 			}
 		}
 		
-		super.breakBlock(world, x, y, z, oldBlockID, oldBlockMetadata);
+		super.breakBlock(world, x, y, z, oldBlock, oldBlockMetadata);
 	}
 	
 	@Override
-	public int idDropped(int metadata, Random random, int fortuneLevel)
+	public Item getItemDropped(int metadata, Random random, int fortuneLevel)
 	{
-		return Item.brewingStand.itemID;
+		return Items.brewing_stand;
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public int idPicked(World world, int x, int y, int z)
+	public Item getItem(World world, int x, int y, int z)
 	{
-		return Item.brewingStand.itemID;
+		return Items.brewing_stand;
 	}
 	
 	@Override
 	public int getComparatorInputOverride(World world, int x, int y, int z, int side)
 	{
-		return Container.calcRedstoneFromInventory((IInventory) world.getBlockTileEntity(x, y, z));
+		return Container.calcRedstoneFromInventory((IInventory) world.getTileEntity(x, y, z));
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegister)
+	public void registerBlockIcons(IIconRegister iconRegister)
 	{
-		super.registerIcons(iconRegister);
+		super.registerBlockIcons(iconRegister);
 		this.texture = iconRegister.registerIcon(this.getTextureName() + "_base");
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Icon getBrewingStandIcon()
+	public IIcon getIconBrewingStandBase()
 	{
 		return this.texture;
 	}

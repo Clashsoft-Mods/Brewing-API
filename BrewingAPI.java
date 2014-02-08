@@ -14,7 +14,6 @@ import clashsoft.brewingapi.brewing.PotionList;
 import clashsoft.brewingapi.brewing.PotionType;
 import clashsoft.brewingapi.command.CommandGivePotion;
 import clashsoft.brewingapi.common.BAPICommonProxy;
-import clashsoft.brewingapi.common.BAPIPacketHandler;
 import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.item.ItemBrewingStand2;
 import clashsoft.brewingapi.item.ItemGlassBottle2;
@@ -23,6 +22,10 @@ import clashsoft.brewingapi.lib.DispenserBehaviorPotion2;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
 import clashsoft.cslib.minecraft.update.CSUpdate;
 import clashsoft.cslib.minecraft.update.ModUpdate;
+import clashsoft.cslib.minecraft.util.CSBlocks;
+import clashsoft.cslib.minecraft.util.CSConfig;
+import clashsoft.cslib.minecraft.util.CSItems;
+import clashsoft.cslib.minecraft.util.CSLang;
 import clashsoft.cslib.util.CSLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -31,11 +34,10 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
@@ -46,18 +48,22 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
 @Mod(modid = "BrewingAPI", name = "Brewing API", version = BrewingAPI.VERSION)
-@NetworkMod(channels = { "BrewingAPI" }, packetHandler = BAPIPacketHandler.class, clientSideRequired = true, serverSideRequired = false)
 public class BrewingAPI
 {
 	public static final int			REVISION				= 5;
 	public static final String		VERSION					= CSUpdate.CURRENT_VERSION + "-" + REVISION;
+	
+	public static final int			POTION_LIST_LENGTH		= 1024;
+	
+	// API Stuff
+	
+	public static boolean			MORE_POTIONS_MOD		= false;
+	public static boolean			CLASHSOFT_LIB			= false;
 	
 	@Instance("BrewingAPI")
 	public static BrewingAPI		instance;
@@ -83,30 +89,29 @@ public class BrewingAPI
 	public static ItemPotion2		potion2;
 	public static ItemGlassBottle2	glassBottle2;
 	
-	public static final int			POTION_LIST_LENGTH		= 1024;
+	// API Stuff
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-		config.load();
+		CSConfig.loadConfig(event.getSuggestedConfigurationFile(), "Brewing API");
 		
-		brewingStand2ID = config.get("TileEntityIDs", "BrewingStand2TEID", 11).getInt();
+		brewingStand2ID = CSConfig.getInt("TileEntityIDs", "BrewingStand2TEID", 11);
 		
-		multiPotions = config.get("Potions", "MultiPotions", false, "If true, potions with 2 different effects are shown in the creative inventory.").getBoolean(false);
-		advancedPotionInfo = config.get("Potions", "AdvancedPotionInfo", true).getBoolean(true);
-		animatedPotionLiquid = config.get("Potions", "AnimatedPotionLiquid", true).getBoolean(true);
-		showAllBaseBrewings = config.get("Potions", "ShowAllBaseBrewings", false, "If true, all base potions are shown in creative inventory.").getBoolean(false);
-		defaultAwkwardBrewing = config.get("Potions", "DefaultAwkwardBrewing", false, "If true, all potions can be brewed with an awkward potion.").getBoolean(false);
-		potionStackSize = config.get("Potions", "PotionStackSize", 1).getInt();
+		multiPotions = CSConfig.getBool("potions", "MultiPotions", "If true, potions with 2 different effects are shown in the creative inventory.", false);
+		advancedPotionInfo = CSConfig.getBool("potions", "AdvancedPotionInfo", true);
+		animatedPotionLiquid = CSConfig.getBool("potions", "AnimatedPotionLiquid", true);
+		showAllBaseBrewings = CSConfig.getBool("potions", "ShowAllBaseBrewings", "If true, all base potions are shown in creative inventory.", false);
+		defaultAwkwardBrewing = CSConfig.getBool("potions", "DefaultAwkwardBrewing", "If true, all potions can be brewed with an awkward potion.", false);
+		potionStackSize = CSConfig.getInt("potions", "PotionStackSize", 1);
 		
-		config.save();
+		CSConfig.saveConfig();
 	}
 	
 	@EventHandler
 	public void load(FMLInitializationEvent event)
 	{
-		NetworkRegistry.instance().registerGuiHandler(instance, proxy);
+		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 		BrewingAPI.load();
 		
 		if (multiPotions)
@@ -118,7 +123,13 @@ public class BrewingAPI
 				@Override
 				public ItemStack getIconItemStack()
 				{
-					return stack == null ? stack = PotionList.damageBoost.addPotionTypeToItemStack(new ItemStack(BrewingAPI.potion2, 0, 1)) : stack;
+					return this.stack == null ? this.stack = PotionList.damageBoost.addPotionTypeToItemStack(new ItemStack(BrewingAPI.potion2, 0, 1)) : this.stack;
+				}
+				
+				@Override
+				public Item getTabIconItem()
+				{
+					return null;
 				}
 			};
 		}
@@ -127,27 +138,26 @@ public class BrewingAPI
 		EntityRegistry.registerGlobalEntityID(EntityPotion2.class, "SplashPotion2", splashPotion2ID);
 		EntityRegistry.registerModEntity(EntityPotion2.class, "SplashPotion2", splashPotion2ID, this, 100, 20, true);
 		
-		Block.blocksList[Block.brewingStand.blockID] = null;
-		brewingStand2 = (new BlockBrewingStand2(Block.brewingStand.blockID)).setHardness(0.5F).setLightValue(0.125F).setUnlocalizedName("brewingStand");
-		GameRegistry.registerBlock(brewingStand2, "BAPIBrewingStand");
+		brewingStand2 = (new BlockBrewingStand2()).setBlockName("brewing_stand").setHardness(0.5F).setLightLevel(0.125F);
+		CSBlocks.overrideBlock(brewingStand2, "brewing_stand");
 		
-		Item.itemsList[Item.brewingStand.itemID] = null;
-		brewingStand2Item = (new ItemBrewingStand2(123)).setUnlocalizedName("brewingStand").setCreativeTab(CreativeTabs.tabBrewing);
+		brewingStand2Item = (new ItemBrewingStand2()).setUnlocalizedName("brewing_stand").setTextureName("brewing_stand");
+		CSItems.overrideItem(brewingStand2Item, "brewing_stand");
 		
-		Item.itemsList[Item.potion.itemID - 256] = null;
-		potion2 = (ItemPotion2) (new ItemPotion2(117)).setUnlocalizedName("potion");
+		potion2 = (ItemPotion2) (new ItemPotion2()).setUnlocalizedName("potion");
+		CSItems.overrideItem(potion2, "potion");
 		
-		Item.itemsList[Item.glassBottle.itemID - 256] = null;
-		glassBottle2 = (ItemGlassBottle2) (new ItemGlassBottle2(118)).setUnlocalizedName("glassBottle");
+		glassBottle2 = (ItemGlassBottle2) (new ItemGlassBottle2()).setUnlocalizedName("glass_bottle");
+		CSItems.overrideItem(glassBottle2, "glass_bottle");
 		
 		MinecraftForge.EVENT_BUS.register(this);
 		BlockDispenser.dispenseBehaviorRegistry.putObject(potion2, new DispenserBehaviorPotion2());
 		proxy.registerRenderInformation();
 		proxy.registerRenderers();
 		
-		LanguageRegistry.instance().addStringLocalization("commands.givepotion.usage", "/givepotion <player> <effect> [seconds] [amplifier] [splash]");
-		LanguageRegistry.instance().addStringLocalization("commands.givepotion.success", "Given Potion (%1\u0024s (ID %2\u0024d) level %3\u0024d for %5\u0024d seconds) to %4\u0024s.");
-		LanguageRegistry.instance().addStringLocalization("commands.givepotion.success.splash", "Given Splash Potion (%1\u0024s (ID %2\u0024d) level %3\u0024d for %5\u0024d seconds) to %4\u0024s.");
+		CSLang.addLocalizationUS("commands.givepotion.usage", "/givepotion <player> <effect> [seconds] [amplifier] [splash]");
+		CSLang.addLocalizationUS("commands.givepotion.success", "Given Potion (%1\u0024s (ID %2\u0024d) level %3\u0024d for %5\u0024d seconds) to %4\u0024s.");
+		CSLang.addLocalizationUS("commands.givepotion.success.splash", "Given Splash Potion (%1\u0024s (ID %2\u0024d) level %3\u0024d for %5\u0024d seconds) to %4\u0024s.");
 	}
 	
 	@EventHandler
@@ -157,7 +167,7 @@ public class BrewingAPI
 		command.registerCommand(new CommandGivePotion());
 	}
 	
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void playerJoined(EntityJoinWorldEvent event)
 	{
 		if (event.entity instanceof EntityPlayer && isClashsoftLibInstalled())
@@ -180,8 +190,6 @@ public class BrewingAPI
 	
 	// API Stuff
 	
-	public static boolean	MORE_POTIONS_MOD	= false;
-	
 	public static boolean isMorePotionsModInstalled()
 	{
 		if (MORE_POTIONS_MOD)
@@ -197,8 +205,6 @@ public class BrewingAPI
 			return false;
 		}
 	}
-	
-	public static boolean	CLASHSOFT_LIB	= false;
 	
 	public static boolean isClashsoftLibInstalled()
 	{
@@ -246,7 +252,7 @@ public class BrewingAPI
 	
 	private int	tick	= 0;
 	
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onEntityUpdate(LivingUpdateEvent event)
 	{
 		if (event.entityLiving != null && !event.entityLiving.worldObj.isRemote)

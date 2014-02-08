@@ -25,22 +25,16 @@ public class GuiBrewingStand2 extends GuiContainer
 		brewingStand.thePlayer = par1InventoryPlayer.player;
 	}
 	
-	/**
-	 * Draw the foreground layer for the GuiContainer (everything in front of
-	 * the items)
-	 */
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2)
 	{
-		String s = this.brewingStand.isInvNameLocalized() ? this.brewingStand.getInvName() : StatCollector.translateToLocal(this.brewingStand.getInvName());
-		this.fontRenderer.drawString(s, (this.xSize - this.fontRenderer.getStringWidth(s)) / 2, 6, 4210752);
-		this.fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
+		String s = this.brewingStand.hasCustomInventoryName() ? this.brewingStand.getInventoryName() : StatCollector.translateToLocal(this.brewingStand.getInventoryName());
+		this.fontRendererObj.drawString(s, (this.xSize - this.fontRendererObj.getStringWidth(s)) / 2, 6, 4210752);
+		this.fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
+		
+		this.fontRendererObj.drawString("BREWING API", 0, 0, 0xFF0000);
 	}
 	
-	/**
-	 * Draw the background layer for the GuiContainer (everything behind the
-	 * items)
-	 */
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
 	{

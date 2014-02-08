@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
@@ -89,7 +90,7 @@ public class PotionBase extends PotionType implements Comparable<PotionType>
 			int ingredientAmount = nbt.getInteger("IngredientAmount");
 			int ingredientDamage = nbt.getInteger("IngredientDamage");
 			
-			this.setIngredient(new ItemStack(ingredientID, ingredientAmount, ingredientDamage));
+			this.setIngredient(new ItemStack(Item.getItemById(ingredientID), ingredientAmount, ingredientDamage));
 		}
 	}
 	
@@ -114,8 +115,9 @@ public class PotionBase extends PotionType implements Comparable<PotionType>
 		StringBuilder result = new StringBuilder("PotionBase {");
 		if (this.basename != null)
 			result.append("Name=[\"").append(this.basename).append("\"]");
-		if (this.getIngredient() != null)
-			result.append("&Ingredient=[").append(this.getIngredient().itemID).append(":").append(this.getIngredient().getItemDamage()).append("]");
+		ItemStack ingredient = this.getIngredient();
+		if (ingredient != null)
+			result.append("&Ingredient=[").append(ingredient).append("]");
 		result.append("}");
 		return result.toString();
 	}

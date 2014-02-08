@@ -148,8 +148,11 @@ public class EntityPotion2 extends EntityPotion
 	{
 		super.writeToNBT(nbt);
 		
-		if (this.getPotion() != null)
-			nbt.setCompoundTag("Item", this.getPotion().writeToNBT(new NBTTagCompound()));
+		ItemStack potion = this.getPotion();
+		if (potion != null)
+		{
+			nbt.setTag("Item", potion.writeToNBT(new NBTTagCompound()));
+		}
 	}
 	
 	@Override

@@ -1,43 +1,52 @@
 package clashsoft.brewingapi.common;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
+import clashsoft.cslib.minecraft.network.CSCodec;
+import clashsoft.cslib.minecraft.network.CSMessageHandler;
+import clashsoft.cslib.minecraft.network.CSPacketHandler;
 
-import clashsoft.brewingapi.BrewingAPI;
-import cpw.mods.fml.common.network.IPacketHandler;
-import cpw.mods.fml.common.network.Player;
+import net.minecraft.network.Packet;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
-
-public class BAPIPacketHandler implements IPacketHandler
+public class BAPIPacketHandler extends CSPacketHandler
 {
-	@Override
-	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player)
+	public static final BAPIPacketHandler	instance	= new BAPIPacketHandler();
+	
+	private BAPIPacketHandler()
 	{
-		if ("BrewingAPI".equals(packet.channel))
+		super("BAPI");
+	}
+	
+	@Override
+	public CSCodec createCodec()
+	{
+		return new BAPICodec();
+	}
+	
+	private static class BAPICodec extends CSCodec
+	{
+		@Override
+		public void addDiscriminators()
 		{
-			EntityPlayerMP entityplayermp = (EntityPlayerMP) player;
-			
-			if (entityplayermp.worldObj.isRemote)
-			{
-				ByteArrayInputStream bis = new ByteArrayInputStream(packet.data);
-				DataInputStream dis = new DataInputStream(bis);
-				try
-				{
-					double x = dis.readDouble();
-					double y = dis.readDouble();
-					double z = dis.readDouble();
-					int color = dis.readInt();
-					boolean isInstant = dis.readBoolean();
-					
-					BrewingAPI.proxy.playSplashEffect(entityplayermp.worldObj, x, y, z, color, isInstant);
-				}
-				catch (Exception ex)
-				{
-				}
-			}
+			this.addDiscriminator(0, SplashEffectData.class);
 		}
+	}
+	
+	@Override
+	public CSMessageHandler createMessageHandler()
+	{
+		return new BAPIMessageHandler();
+	}
+	
+	private static class BAPIMessageHandler extends CSMessageHandler<SplashEffectData>
+	{
+		@Override
+		public void process(SplashEffectData msg)
+		{
+			
+		}
+	}
+	
+	public static Packet getPacket(SplashEffectData data)
+	{
+		return instance.getServerChannel().generatePacketFrom(data);
 	}
 }
