@@ -18,7 +18,9 @@ public class PotionUtils
 		for (PotionType pt : potion)
 		{
 			if (pt.isBadEffect())
+			{
 				badEffects++;
+			}
 		}
 		
 		return badEffects;
@@ -28,10 +30,11 @@ public class PotionUtils
 	{
 		int averageAmplifier = 0;
 		for (PotionType pt : potion)
+		{
 			averageAmplifier += pt.getAmplifier() + 1;
-		averageAmplifier /= potion.size();
-		averageAmplifier -= 1;
+		}
 		
+		averageAmplifier = averageAmplifier / potion.size() - 1;
 		return averageAmplifier;
 	}
 	
@@ -39,28 +42,36 @@ public class PotionUtils
 	{
 		int averageDuration = 0;
 		for (PotionType pt : potion)
+		{
 			averageDuration += pt.getDuration();
+		}
 		averageDuration /= potion.size();
 		return averageDuration;
 	}
 	
 	public static int getMaxAmplifier(List<PotionType> potion)
 	{
-		List<PotionType> var5 = potion;
 		int maxAmplifier = 0;
 		for (PotionType pt : potion)
+		{
 			if (maxAmplifier < pt.getAmplifier())
+			{
 				maxAmplifier = pt.getAmplifier();
+			}
+		}
 		return maxAmplifier;
 	}
 	
 	public static int getMaxDuration(List<PotionType> potion)
 	{
-		List<PotionType> var5 = potion;
 		int maxDuration = 0;
 		for (PotionType pt : potion)
+		{
 			if (maxDuration < pt.getDuration())
+			{
 				maxDuration = pt.getDuration();
+			}
+		}
 		return maxDuration;
 	}
 	

@@ -98,9 +98,19 @@ public class CommandGivePotion extends CommandBase implements ICommand
 					String name = entityplayermp.getDisplayName();
 					
 					if (m)
-						notifyAdmins(sender, "commands.givepotion.success.splash", new Object[] { new ChatComponentText(potioneffect.getEffectName()), Integer.valueOf(i), Integer.valueOf(l), name, Integer.valueOf(k) });
+						notifyAdmins(sender, "commands.givepotion.success.splash", new Object[] {
+								new ChatComponentText(potioneffect.getEffectName()),
+								Integer.valueOf(i),
+								Integer.valueOf(l),
+								name,
+								Integer.valueOf(k) });
 					else
-						notifyAdmins(sender, "commands.givepotion.success", new Object[] { new ChatComponentText(potioneffect.getEffectName()), Integer.valueOf(i), Integer.valueOf(l), name, Integer.valueOf(k) });
+						notifyAdmins(sender, "commands.givepotion.success", new Object[] {
+								new ChatComponentText(potioneffect.getEffectName()),
+								Integer.valueOf(i),
+								Integer.valueOf(l),
+								name,
+								Integer.valueOf(k) });
 				}
 			}
 		}
@@ -127,9 +137,9 @@ public class CommandGivePotion extends CommandBase implements ICommand
 	}
 	
 	@Override
-	public boolean isUsernameIndex(String[] par1ArrayOfStr, int par2)
+	public boolean isUsernameIndex(String[] args, int index)
 	{
-		return par2 == 0;
+		return index == 0;
 	}
 	
 	@Override

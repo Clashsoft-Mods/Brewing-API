@@ -1,9 +1,10 @@
 package clashsoft.brewingapi.common;
 
-import io.netty.buffer.ByteBuf;
 import clashsoft.cslib.minecraft.network.CSPacket;
 
-public class SplashEffectData implements CSPacket
+import net.minecraft.network.PacketBuffer;
+
+public class SplashEffectData extends CSPacket
 {
 	public double	x;
 	public double	y;
@@ -21,7 +22,7 @@ public class SplashEffectData implements CSPacket
 	}
 	
 	@Override
-	public void write(ByteBuf buf)
+	public void write(PacketBuffer buf)
 	{
 		buf.writeDouble(this.x);
 		buf.writeDouble(this.y);
@@ -31,7 +32,7 @@ public class SplashEffectData implements CSPacket
 	}
 	
 	@Override
-	public void read(ByteBuf buf)
+	public void read(PacketBuffer buf)
 	{
 		this.x = buf.readDouble();
 		this.y = buf.readDouble();

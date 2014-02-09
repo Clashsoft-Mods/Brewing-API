@@ -28,19 +28,19 @@ public class ContainerBrewingStand2 extends Container
 		this.addSlotToContainer(new SlotPotion(inventory.player, brewingStand, 1, 79, 53));
 		this.addSlotToContainer(new SlotPotion(inventory.player, brewingStand, 2, 102, 46));
 		this.theSlot = this.addSlotToContainer(new SlotBrewingStandIngredient2(brewingStand, 3, 79, 17));
-		int var3;
+		int i;
 		
-		for (var3 = 0; var3 < 3; ++var3)
+		for (i = 0; i < 3; ++i)
 		{
-			for (int var4 = 0; var4 < 9; ++var4)
+			for (int j = 0; j < 9; ++j)
 			{
-				this.addSlotToContainer(new Slot(inventory, var4 + var3 * 9 + 9, 8 + var4 * 18, 84 + var3 * 18));
+				this.addSlotToContainer(new Slot(inventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
 			}
 		}
 		
-		for (var3 = 0; var3 < 9; ++var3)
+		for (i = 0; i < 9; ++i)
 		{
-			this.addSlotToContainer(new Slot(inventory, var3, 8 + var3 * 18, 142));
+			this.addSlotToContainer(new Slot(inventory, i, 8 + i * 18, 142));
 		}
 	}
 	
@@ -51,9 +51,6 @@ public class ContainerBrewingStand2 extends Container
 		icrafting.sendProgressBarUpdate(this, 0, this.brewingStand.getBrewTime());
 	}
 	
-	/**
-	 * Updates crafting matrix; called from onCraftMatrixChanged. Args: none
-	 */
 	@Override
 	public void detectAndSendChanges()
 	{
@@ -61,11 +58,11 @@ public class ContainerBrewingStand2 extends Container
 		
 		for (int i = 0; i < this.crafters.size(); ++i)
 		{
-			ICrafting var2 = (ICrafting) this.crafters.get(i);
+			ICrafting icrafting = (ICrafting) this.crafters.get(i);
 			
 			if (this.brewTime != this.brewingStand.getBrewTime())
 			{
-				var2.sendProgressBarUpdate(this, 0, this.brewingStand.getBrewTime());
+				icrafting.sendProgressBarUpdate(this, 0, this.brewingStand.getBrewTime());
 			}
 		}
 		
@@ -88,9 +85,6 @@ public class ContainerBrewingStand2 extends Container
 		return this.brewingStand.isUseableByPlayer(player);
 	}
 	
-	/**
-	 * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
-	 */
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{

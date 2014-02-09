@@ -8,25 +8,22 @@ import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-class DispenserBehaviorPotionProjectile extends BehaviorProjectileDispense
+public class DispenserBehaviorPotionProjectile extends BehaviorProjectileDispense
 {
-	final ItemStack					field_96462_b;
+	public final ItemStack					stack;
 	
-	final DispenserBehaviorPotion2	field_96463_c;
+	public final DispenserBehaviorPotion2	dispenserPotion;
 	
-	DispenserBehaviorPotionProjectile(DispenserBehaviorPotion2 par1DispenserBehaviorPotion, ItemStack par2ItemStack)
+	public DispenserBehaviorPotionProjectile(DispenserBehaviorPotion2 dispenserPotion2, ItemStack stack)
 	{
-		this.field_96463_c = par1DispenserBehaviorPotion;
-		this.field_96462_b = par2ItemStack;
+		this.dispenserPotion = dispenserPotion2;
+		this.stack = stack;
 	}
 	
-	/**
-	 * Return the projectile entity spawned by this dispense behavior.
-	 */
 	@Override
-	protected IProjectile getProjectileEntity(World par1World, IPosition par2IPosition)
+	protected IProjectile getProjectileEntity(World world, IPosition position)
 	{
-		return new EntityPotion2(par1World, par2IPosition.getX(), par2IPosition.getY(), par2IPosition.getZ(), this.field_96462_b.copy());
+		return new EntityPotion2(world, position.getX(), position.getY(), position.getZ(), this.stack.copy());
 	}
 	
 	@Override

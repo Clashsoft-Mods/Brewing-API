@@ -335,12 +335,12 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 			this.ingredient = this.brewingItemStacks[3];
 		}
 		
-		int var1 = this.getFilledSlots();
+		int filledSlots = this.getFilledSlots();
 		
-		if (var1 != this.filledSlots)
+		if (filledSlots != this.filledSlots)
 		{
-			this.filledSlots = var1;
-			this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, var1, 2);
+			this.filledSlots = filledSlots;
+			this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, filledSlots, 2);
 		}
 		
 		super.updateEntity();
@@ -405,9 +405,9 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	{
 		if (slotID >= 0 && slotID < this.brewingItemStacks.length)
 		{
-			ItemStack var3 = this.brewingItemStacks[slotID];
+			ItemStack stack = this.brewingItemStacks[slotID];
 			this.brewingItemStacks[slotID] = null;
-			return var3;
+			return stack;
 		}
 		else
 		{
@@ -420,9 +420,9 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	{
 		if (slotID >= 0 && slotID < this.brewingItemStacks.length)
 		{
-			ItemStack var2 = this.brewingItemStacks[slotID];
+			ItemStack stack = this.brewingItemStacks[slotID];
 			this.brewingItemStacks[slotID] = null;
-			return var2;
+			return stack;
 		}
 		else
 		{
@@ -453,7 +453,8 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	}
 	
 	/**
-	 * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
+	 * Returns true if automation is allowed to insert the given stack (ignoring stack size) into
+	 * the given slot.
 	 */
 	public boolean isStackValidForSlot(int slotID, ItemStack stack)
 	{

@@ -10,8 +10,8 @@ import clashsoft.brewingapi.brewing.PotionType;
 import clashsoft.brewingapi.brewing.PotionUtils;
 import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.lib.AttributeModifierComparator;
-import clashsoft.cslib.minecraft.I18n;
-import clashsoft.cslib.minecraft.util.CSFontRenderer;
+import clashsoft.cslib.minecraft.client.CSFontRenderer;
+import clashsoft.cslib.minecraft.lang.I18n;
 import clashsoft.cslib.util.CSString;
 
 import com.google.common.collect.Multimap;
@@ -67,7 +67,10 @@ public class ItemPotion2 extends Item
 	@Override
 	public CreativeTabs[] getCreativeTabs()
 	{
-		return new CreativeTabs[] { BrewingAPI.potions, CreativeTabs.tabBrewing, CreativeTabs.tabAllSearch };
+		return new CreativeTabs[] {
+				BrewingAPI.potions,
+				CreativeTabs.tabBrewing,
+				CreativeTabs.tabAllSearch };
 	}
 	
 	public List<PotionType> getLegacyEffects(ItemStack stack)
@@ -124,13 +127,13 @@ public class ItemPotion2 extends Item
 	{
 		return new ItemStack(Items.glass_bottle);
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	public static IIcon getPotionIcon(String iconName)
 	{
 		return iconName.equals("bottle_drinkable") ? BrewingAPI.potion2.bottle : (iconName.equals("bottle_splash") ? BrewingAPI.potion2.splashbottle : (iconName.equals("overlay") ? BrewingAPI.potion2.liquid : null));
 	}
-
+	
 	/**
 	 * Returns the icon of the splash bottle of the potion {@code stack}
 	 * 
@@ -142,7 +145,7 @@ public class ItemPotion2 extends Item
 	{
 		return this.splashbottle;
 	}
-
+	
 	/**
 	 * Returns true if this potion is a throwable splash potion.
 	 * 
@@ -154,17 +157,17 @@ public class ItemPotion2 extends Item
 	{
 		return (metadata & 2) != 0 ? true : ItemPotion.isSplash(metadata);
 	}
-
+	
 	public int setSplash(int metadata, boolean splash)
 	{
 		return splash ? metadata | 2 : metadata & ~2;
 	}
-
+	
 	public boolean isWater(int metadata)
 	{
 		return metadata == 0;
 	}
-
+	
 	public int getLiquidColor(ItemStack stack)
 	{
 		if (this.isWater(stack.getItemDamage()))
@@ -184,7 +187,7 @@ public class ItemPotion2 extends Item
 		}
 		return PotionUtils.combineColors(colors);
 	}
-
+	
 	/**
 	 * Returns true if all effects of the potion {@code stack} are instant.
 	 * 
@@ -206,7 +209,7 @@ public class ItemPotion2 extends Item
 		}
 		return flag;
 	}
-
+	
 	@Override
 	public ItemStack onEaten(ItemStack stack, World world, EntityPlayer player)
 	{
@@ -409,7 +412,7 @@ public class ItemPotion2 extends Item
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4)
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean flag)
 	{
 		if (!this.isWater(stack.getItemDamage()))
 		{
@@ -486,9 +489,9 @@ public class ItemPotion2 extends Item
 						String colorLight = "";
 						String colorDark = "";
 						
-						if (BrewingAPI.isClashsoftLibInstalled() && potion instanceof clashsoft.cslib.minecraft.CustomPotion && ((clashsoft.cslib.minecraft.CustomPotion) potion).getCustomColor() != -1)
+						if (BrewingAPI.isClashsoftLibInstalled() && potion instanceof clashsoft.cslib.minecraft.potion.CustomPotion && ((clashsoft.cslib.minecraft.potion.CustomPotion) potion).getCustomColor() != -1)
 						{
-							int c = ((clashsoft.cslib.minecraft.CustomPotion) potion).getCustomColor();
+							int c = ((clashsoft.cslib.minecraft.potion.CustomPotion) potion).getCustomColor();
 							colorLight = "\u00a7" + Integer.toHexString((c + 8) & 15);
 							colorDark = "\u00a7" + Integer.toHexString(c);
 							
@@ -636,18 +639,22 @@ public class ItemPotion2 extends Item
 			}
 			else
 			{
-				String var6 = I18n.getString("potion.empty").trim();
-				list.add("\u00a77" + var6);
+				String empty = I18n.getString("potion.empty").trim();
+				list.add("\u00a77" + empty);
 			}
 		}
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean hasEffect(ItemStack stack, int par1)
+	public boolean hasEffect(ItemStack stack, int pass)
 	{
-		List var2 = this.getEffects(stack);
-		return var2 != null && !var2.isEmpty() && ((PotionType) var2.get(0)).getEffect() != null && par1 == 0;
+		if (pass == 0)
+		{
+			List<PotionType> list = this.getEffects(stack);
+			return list != null && !list.isEmpty() && list.get(0).getEffect() != null;
+		}
+		return false;
 	}
 	
 	@Override
@@ -676,14 +683,14 @@ public class ItemPotion2 extends Item
 			{
 				for (int i = 1; i <= 2; i++)
 				{
-					for (PotionType brewing2 : potionType.getSubTypes())
+					for (PotionType potionType2 : potionType.getSubTypes())
 					{
-						PotionType var1 = new PotionType(brewing2.getEffect(), brewing2.getMaxAmplifier(), brewing2.getMaxDuration(), brewing2.getInverted(), brewing2.getIngredient(), brewing2.getBase());
-						if (i == 2 && var1 != null && var1.getEffect() != null && var1.getEffect().getPotionID() > 0)
+						PotionType type = new PotionType(potionType2.getEffect(), potionType2.getMaxAmplifier(), potionType2.getMaxDuration(), potionType2.getInverted(), potionType2.getIngredient(), potionType2.getBase());
+						if (i == 2 && type != null && type.getEffect() != null && type.getEffect().getPotionID() > 0)
 						{
-							var1.setEffect(new PotionEffect(var1.getEffect().getPotionID(), MathHelper.ceiling_double_int(var1.getEffect().getDuration() * 0.75D), var1.getEffect().getAmplifier()));
+							type.setEffect(new PotionEffect(type.getEffect().getPotionID(), MathHelper.ceiling_double_int(type.getEffect().getDuration() * 0.75D), type.getEffect().getAmplifier()));
 						}
-						list.add(var1.addPotionTypeToItemStack(new ItemStack(this, 1, i)));
+						list.add(type.addPotionTypeToItemStack(new ItemStack(this, 1, i)));
 					}
 				}
 			}

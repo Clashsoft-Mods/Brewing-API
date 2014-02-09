@@ -102,7 +102,7 @@ public class PotionType implements Comparable<PotionType>
 	 * @param ingredient
 	 *            the ingredient
 	 * @param base
-	 *            the base
+	 *        the base
 	 */
 	public PotionType(PotionEffect effect, int maxAmplifier, int maxDuration, ItemStack ingredient, PotionBase base)
 	{
@@ -181,9 +181,9 @@ public class PotionType implements Comparable<PotionType>
 			}
 			if (BrewingAPI.isClashsoftLibInstalled())
 			{
-				if (this.getPotion() instanceof clashsoft.cslib.minecraft.CustomPotion)
+				if (this.getPotion() instanceof clashsoft.cslib.minecraft.potion.CustomPotion)
 				{
-					return ((clashsoft.cslib.minecraft.CustomPotion) this.getPotion()).isBadEffect();
+					return ((clashsoft.cslib.minecraft.potion.CustomPotion) this.getPotion()).isBadEffect();
 				}
 			}
 		}
@@ -688,7 +688,8 @@ public class PotionType implements Comparable<PotionType>
 	}
 	
 	/**
-	 * Returns a PotionType that is brewed with the itemstack. it doesn't check for the amount. Ignores Special Ingredient Handlers.
+	 * Returns a PotionType that is brewed with the itemstack. it doesn't check for the amount.
+	 * Ignores Special Ingredient Handlers.
 	 * 
 	 * @param ingredient
 	 * @return PotionType that is brewed with the ItemStack
@@ -902,7 +903,7 @@ public class PotionType implements Comparable<PotionType>
 	 * Used to determine if it should use the actual Base or awkward when turned off in the config
 	 * 
 	 * @param base
-	 *            PotionType Base
+	 *        PotionType Base
 	 * @return base or awkward
 	 */
 	public static PotionBase getBaseBrewing(PotionBase base)

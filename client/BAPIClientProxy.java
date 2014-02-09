@@ -30,8 +30,10 @@ public class BAPIClientProxy extends BAPICommonProxy
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
-		if (ID == BrewingAPI.brewingStand2ID) {
-			return new GuiBrewingStand2(player.inventory, (TileEntityBrewingStand2) world.getTileEntity(x, y, z));}
+		if (ID == BrewingAPI.brewingStand2ID)
+		{
+			return new GuiBrewingStand2(player.inventory, (TileEntityBrewingStand2) world.getTileEntity(x, y, z));
+		}
 		return null;
 	}
 	

@@ -95,10 +95,10 @@ public class BlockBrewingStand2 extends BlockBrewingStand
 	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World world, int x, int y, int z, Random random)
 	{
-		double var6 = x + 0.4F + random.nextFloat() * 0.2F;
-		double var8 = y + 0.7F + random.nextFloat() * 0.3F;
-		double var10 = z + 0.4F + random.nextFloat() * 0.2F;
-		world.spawnParticle("smoke", var6, var8, var10, 0.0D, 0.0D, 0.0D);
+		double x1 = x + 0.4F + random.nextFloat() * 0.2F;
+		double y1 = y + 0.7F + random.nextFloat() * 0.3F;
+		double z1 = z + 0.4F + random.nextFloat() * 0.2F;
+		world.spawnParticle("smoke", x1, y1, z1, 0.0D, 0.0D, 0.0D);
 	}
 	
 	@Override

@@ -20,12 +20,12 @@ import clashsoft.brewingapi.item.ItemGlassBottle2;
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.lib.DispenserBehaviorPotion2;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
+import clashsoft.cslib.minecraft.block.CSBlocks;
+import clashsoft.cslib.minecraft.item.CSItems;
+import clashsoft.cslib.minecraft.lang.CSLang;
 import clashsoft.cslib.minecraft.update.CSUpdate;
 import clashsoft.cslib.minecraft.update.ModUpdate;
-import clashsoft.cslib.minecraft.util.CSBlocks;
 import clashsoft.cslib.minecraft.util.CSConfig;
-import clashsoft.cslib.minecraft.util.CSItems;
-import clashsoft.cslib.minecraft.util.CSLang;
 import clashsoft.cslib.util.CSLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -52,24 +52,26 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
-@Mod(modid = "BrewingAPI", name = "Brewing API", version = BrewingAPI.VERSION)
+@Mod(modid = BrewingAPI.MODID, name = BrewingAPI.NAME, version = BrewingAPI.VERSION)
 public class BrewingAPI
 {
-	public static final int			REVISION				= 5;
+	public static final String		MODID					= "brewingapi";
+	public static final String		NAME					= "Brewing API";
+	public static final int			REVISION				= 0;
 	public static final String		VERSION					= CSUpdate.CURRENT_VERSION + "-" + REVISION;
 	
-	public static final int			POTION_LIST_LENGTH		= 1024;
+	@Instance(MODID)
+	public static BrewingAPI		instance;
+	
+	@SidedProxy(clientSide = "clashsoft.brewingapi.client.BAPIClientProxy", serverSide = "clashsoft.brewingapi.common.BAPICommonProxy")
+	public static BAPICommonProxy	proxy;
 	
 	// API Stuff
 	
+	public static final int			POTION_LIST_LENGTH		= 1024;
+	
 	public static boolean			MORE_POTIONS_MOD		= false;
 	public static boolean			CLASHSOFT_LIB			= false;
-	
-	@Instance("BrewingAPI")
-	public static BrewingAPI		instance;
-	
-	@SidedProxy(modId = "BrewingAPI", clientSide = "clashsoft.brewingapi.client.BAPIClientProxy", serverSide = "clashsoft.brewingapi.common.BAPICommonProxy")
-	public static BAPICommonProxy	proxy;
 	
 	public static boolean			multiPotions			= false;
 	public static boolean			advancedPotionInfo		= false;
@@ -94,7 +96,7 @@ public class BrewingAPI
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		CSConfig.loadConfig(event.getSuggestedConfigurationFile(), "Brewing API");
+		CSConfig.loadConfig(event.getSuggestedConfigurationFile(), NAME);
 		
 		brewingStand2ID = CSConfig.getInt("TileEntityIDs", "BrewingStand2TEID", 11);
 		

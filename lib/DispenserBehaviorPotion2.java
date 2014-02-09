@@ -9,18 +9,15 @@ import net.minecraft.item.ItemStack;
 
 public final class DispenserBehaviorPotion2 implements IBehaviorDispenseItem
 {
-	public final BehaviorDefaultDispenseItem	field_96458_b	= new BehaviorDefaultDispenseItem();
+	public final BehaviorDefaultDispenseItem	itemDispenser	= new BehaviorDefaultDispenseItem();
 	
 	public DispenserBehaviorPotion2()
 	{
 	}
 	
-	/**
-	 * Dispenses the specified ItemStack from a dispenser.
-	 */
 	@Override
-	public ItemStack dispense(IBlockSource par1IBlockSource, ItemStack par2ItemStack)
+	public ItemStack dispense(IBlockSource source, ItemStack stack)
 	{
-		return par2ItemStack.getItem() instanceof ItemPotion2 && ((ItemPotion2) par2ItemStack.getItem()).isSplash(par2ItemStack.getItemDamage()) ? (new DispenserBehaviorPotionProjectile(this, par2ItemStack)).dispense(par1IBlockSource, par2ItemStack) : this.field_96458_b.dispense(par1IBlockSource, par2ItemStack);
+		return stack.getItem() instanceof ItemPotion2 && ((ItemPotion2) stack.getItem()).isSplash(stack.getItemDamage()) ? (new DispenserBehaviorPotionProjectile(this, stack)).dispense(source, stack) : this.itemDispenser.dispense(source, stack);
 	}
 }
