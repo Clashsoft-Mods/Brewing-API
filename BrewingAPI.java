@@ -14,6 +14,7 @@ import clashsoft.brewingapi.brewing.PotionList;
 import clashsoft.brewingapi.brewing.PotionType;
 import clashsoft.brewingapi.command.CommandGivePotion;
 import clashsoft.brewingapi.common.BAPICommonProxy;
+import clashsoft.brewingapi.common.SplashEffectData;
 import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.item.ItemBrewingStand2;
 import clashsoft.brewingapi.item.ItemGlassBottle2;
@@ -22,9 +23,8 @@ import clashsoft.brewingapi.lib.DispenserBehaviorPotion2;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
 import clashsoft.cslib.minecraft.block.CSBlocks;
 import clashsoft.cslib.minecraft.item.CSItems;
-import clashsoft.cslib.minecraft.lang.CSLang;
+import clashsoft.cslib.minecraft.network.CSNetHandler;
 import clashsoft.cslib.minecraft.update.CSUpdate;
-import clashsoft.cslib.minecraft.update.ModUpdate;
 import clashsoft.cslib.minecraft.util.CSConfig;
 import clashsoft.cslib.util.CSLog;
 import cpw.mods.fml.common.Mod;
@@ -32,6 +32,7 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -43,13 +44,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
 @Mod(modid = BrewingAPI.MODID, name = BrewingAPI.NAME, version = BrewingAPI.VERSION)
@@ -57,6 +55,7 @@ public class BrewingAPI
 {
 	public static final String		MODID					= "brewingapi";
 	public static final String		NAME					= "Brewing API";
+	public static final String		ACRONYM					= "bapi";
 	public static final int			REVISION				= 0;
 	public static final String		VERSION					= CSUpdate.CURRENT_VERSION + "-" + REVISION;
 	
@@ -65,6 +64,8 @@ public class BrewingAPI
 	
 	@SidedProxy(clientSide = "clashsoft.brewingapi.client.BAPIClientProxy", serverSide = "clashsoft.brewingapi.common.BAPICommonProxy")
 	public static BAPICommonProxy	proxy;
+	
+	public static CSNetHandler	netHandler = new CSNetHandler("BAPI");
 	
 	// API Stuff
 	
@@ -96,6 +97,8 @@ public class BrewingAPI
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		CSUpdate.updateCheckCS(NAME, ACRONYM, VERSION);
+		
 		CSConfig.loadConfig(event.getSuggestedConfigurationFile(), NAME);
 		
 		brewingStand2ID = CSConfig.getInt("TileEntityIDs", "BrewingStand2TEID", 11);
@@ -108,13 +111,28 @@ public class BrewingAPI
 		potionStackSize = CSConfig.getInt("potions", "PotionStackSize", 1);
 		
 		CSConfig.saveConfig();
+		
+		brewingStand2 = (new BlockBrewingStand2()).setBlockName("brewing_stand").setHardness(0.5F).setLightLevel(0.125F);
+		CSBlocks.overrideBlock(brewingStand2, "brewing_stand");
+		
+		brewingStand2Item = (new ItemBrewingStand2()).setUnlocalizedName("brewing_stand").setTextureName("brewing_stand");
+		CSItems.overrideItem(brewingStand2Item, "brewing_stand");
+		
+		potion2 = (ItemPotion2) (new ItemPotion2()).setUnlocalizedName("potion");
+		CSItems.overrideItem(potion2, "potion");
+		
+		glassBottle2 = (ItemGlassBottle2) (new ItemGlassBottle2()).setUnlocalizedName("glass_bottle");
+		CSItems.overrideItem(glassBottle2, "glass_bottle");
 	}
 	
 	@EventHandler
 	public void load(FMLInitializationEvent event)
 	{
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
-		BrewingAPI.load();
+		netHandler.init();
+		netHandler.registerPacket(SplashEffectData.class);
+		
+		load();
 		
 		if (multiPotions)
 		{
@@ -140,26 +158,22 @@ public class BrewingAPI
 		EntityRegistry.registerGlobalEntityID(EntityPotion2.class, "SplashPotion2", splashPotion2ID);
 		EntityRegistry.registerModEntity(EntityPotion2.class, "SplashPotion2", splashPotion2ID, this, 100, 20, true);
 		
-		brewingStand2 = (new BlockBrewingStand2()).setBlockName("brewing_stand").setHardness(0.5F).setLightLevel(0.125F);
-		CSBlocks.overrideBlock(brewingStand2, "brewing_stand");
-		
-		brewingStand2Item = (new ItemBrewingStand2()).setUnlocalizedName("brewing_stand").setTextureName("brewing_stand");
-		CSItems.overrideItem(brewingStand2Item, "brewing_stand");
-		
-		potion2 = (ItemPotion2) (new ItemPotion2()).setUnlocalizedName("potion");
-		CSItems.overrideItem(potion2, "potion");
-		
-		glassBottle2 = (ItemGlassBottle2) (new ItemGlassBottle2()).setUnlocalizedName("glass_bottle");
-		CSItems.overrideItem(glassBottle2, "glass_bottle");
-		
-		MinecraftForge.EVENT_BUS.register(this);
 		BlockDispenser.dispenseBehaviorRegistry.putObject(potion2, new DispenserBehaviorPotion2());
 		proxy.registerRenderInformation();
 		proxy.registerRenderers();
 		
-		CSLang.addLocalizationUS("commands.givepotion.usage", "/givepotion <player> <effect> [seconds] [amplifier] [splash]");
-		CSLang.addLocalizationUS("commands.givepotion.success", "Given Potion (%1\u0024s (ID %2\u0024d) level %3\u0024d for %5\u0024d seconds) to %4\u0024s.");
-		CSLang.addLocalizationUS("commands.givepotion.success.splash", "Given Splash Potion (%1\u0024s (ID %2\u0024d) level %3\u0024d for %5\u0024d seconds) to %4\u0024s.");
+		// CSLang.addLocalizationUS("commands.givepotion.usage",
+		// "/givepotion <player> <effect> [seconds] [amplifier] [splash]");
+		// CSLang.addLocalizationUS("commands.givepotion.success",
+		// "Given Potion (%1\u0024s (ID %2\u0024d) level %3\u0024d for %5\u0024d seconds) to %4\u0024s.");
+		// CSLang.addLocalizationUS("commands.givepotion.success.splash",
+		// "Given Splash Potion (%1\u0024s (ID %2\u0024d) level %3\u0024d for %5\u0024d seconds) to %4\u0024s.");
+	}
+	
+	@EventHandler
+	public void postInit(FMLPostInitializationEvent event)
+	{
+		netHandler.postInit();
 	}
 	
 	@EventHandler
@@ -167,16 +181,6 @@ public class BrewingAPI
 	{
 		ServerCommandManager command = (ServerCommandManager) event.getServer().getCommandManager();
 		command.registerCommand(new CommandGivePotion());
-	}
-	
-	@SubscribeEvent
-	public void playerJoined(EntityJoinWorldEvent event)
-	{
-		if (event.entity instanceof EntityPlayer && isClashsoftLibInstalled())
-		{
-			ModUpdate update = CSUpdate.checkForUpdate("Brewing API", "bapi", BrewingAPI.VERSION);
-			CSUpdate.notifyUpdate((EntityPlayer) event.entity, "Brewing API", update);
-		}
 	}
 	
 	public static void load()

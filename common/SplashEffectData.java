@@ -1,7 +1,9 @@
 package clashsoft.brewingapi.common;
 
+import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.cslib.minecraft.network.CSPacket;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 
 public class SplashEffectData extends CSPacket
@@ -39,5 +41,17 @@ public class SplashEffectData extends CSPacket
 		this.z = buf.readDouble();
 		this.color = buf.readInt();
 		this.instant = buf.readBoolean();
+	}
+
+	@Override
+	public void handleClient(EntityPlayer player)
+	{
+		BrewingAPI.proxy.playSplashEffect(BrewingAPI.proxy.getClientWorld(), x, y, z, color, instant);
+	}
+
+	@Override
+	public void handleServer(EntityPlayer player)
+	{
+		BrewingAPI.proxy.playSplashEffect(BrewingAPI.proxy.getClientWorld(), x, y, z, color, instant);
 	}
 }
