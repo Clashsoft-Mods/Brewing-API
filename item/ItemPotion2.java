@@ -61,7 +61,6 @@ public class ItemPotion2 extends Item
 		this.setMaxStackSize(BrewingAPI.potionStackSize);
 		this.setHasSubtypes(true);
 		this.setCreativeTab(CreativeTabs.tabBrewing);
-		this.setTextureName("potion");
 	}
 	
 	@Override
@@ -90,13 +89,15 @@ public class ItemPotion2 extends Item
 	public List<PotionType> getEffects(ItemStack stack)
 	{
 		List<PotionType> result = new ArrayList();
-		if (stack != null && !this.isWater(stack.getItemDamage()))
+		if (stack != null && !this.isWater(stack))
 		{
 			NBTTagCompound compound = stack.getTagCompound();
 			if (compound != null)
 			{
 				if (this.effectCache.containsKey(compound))
+				{
 					return this.effectCache.get(compound);
+				}
 				else
 				{
 					NBTTagList tagList = compound.getTagList("Brewing", Constants.NBT.TAG_COMPOUND);
@@ -153,25 +154,33 @@ public class ItemPotion2 extends Item
 	 *            the damage value
 	 * @return true if this potion is a throwable splash potion
 	 */
-	public boolean isSplash(int metadata)
+	public boolean isSplash(ItemStack stack)
 	{
-		return (metadata & 2) != 0 ? true : ItemPotion.isSplash(metadata);
+		return isSplash(stack.getItemDamage());
 	}
 	
-	public int setSplash(int metadata, boolean splash)
+	public boolean isSplash(int metadata)
 	{
+		return (metadata & 2) != 0 || ItemPotion.isSplash(metadata);
+	}
+	
+	public int setSplash(ItemStack stack, boolean splash)
+	{
+		int metadata = stack.getItemDamage();
 		return splash ? metadata | 2 : metadata & ~2;
 	}
 	
-	public boolean isWater(int metadata)
+	public boolean isWater(ItemStack stack)
 	{
-		return metadata == 0;
+		return stack.getItemDamage() == 0;
 	}
 	
 	public int getLiquidColor(ItemStack stack)
 	{
-		if (this.isWater(stack.getItemDamage()))
+		if (this.isWater(stack))
+		{
 			return 0x0C0CFF;
+		}
 		
 		List<PotionType> effects = this.getEffects(stack);
 		
@@ -250,7 +259,7 @@ public class ItemPotion2 extends Item
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		if (this.isSplash(stack.getItemDamage()))
+		if (this.isSplash(stack))
 		{
 			if (!player.capabilities.isCreativeMode)
 			{
@@ -284,7 +293,7 @@ public class ItemPotion2 extends Item
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(ItemStack stack, int metadata)
 	{
-		return metadata == 0 ? this.liquid : (this.isSplash(stack.getItemDamage()) ? this.splashbottle : this.bottle);
+		return metadata == 0 ? this.liquid : this.getIconFromDamage(metadata);
 	}
 	
 	@Override
@@ -307,13 +316,6 @@ public class ItemPotion2 extends Item
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public int getRenderPasses(int metadata)
-	{
-		return 2;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
 	public boolean requiresMultipleRenderPasses()
 	{
 		return true;
@@ -322,7 +324,7 @@ public class ItemPotion2 extends Item
 	@Override
 	public String getItemStackDisplayName(ItemStack stack)
 	{
-		if (this.isWater(stack.getItemDamage()))
+		if (this.isWater(stack))
 		{
 			return I18n.getString("item.emptyPotion.name");
 		}
@@ -334,21 +336,29 @@ public class ItemPotion2 extends Item
 			
 			StringBuilder result = new StringBuilder(potionTypes.size() * 20);
 			
-			if (this.isSplash(stack.getItemDamage()))
+			if (this.isSplash(stack))
+			{
 				result.append(I18n.getString("potion.prefix.grenade")).append(" ");
+			}
 			
 			if (!potionTypes.isEmpty())
 			{
 				if (potionTypes.size() == PotionType.combinableEffects.size())
+				{
 					result.insert(0, EnumChatFormatting.BLUE.toString()).append(I18n.getString("potion.alleffects.postfix"));
+				}
 				else
 				{
 					for (PotionType pt : potionTypes)
 					{
 						if (pt.isBase())
+						{
 							baseEffects.add((PotionBase) pt);
+						}
 						else
+						{
 							effects.add(pt);
+						}
 					}
 					
 					for (PotionBase base : baseEffects)
@@ -414,7 +424,7 @@ public class ItemPotion2 extends Item
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean flag)
 	{
-		if (!this.isWater(stack.getItemDamage()))
+		if (!this.isWater(stack))
 		{
 			List<PotionType> potionTypes = this.getEffects(stack);
 			Multimap<String, AttributeModifier> hashmultimap = TreeMultimap.create(String.CASE_INSENSITIVE_ORDER, MODIFIER_COMPARATOR);
@@ -751,17 +761,17 @@ public class ItemPotion2 extends Item
 	}
 	
 	@Override
-	public Entity createEntity(World world, Entity entity, ItemStack itemstack)
+	public Entity createEntity(World world, Entity entity, ItemStack stack)
 	{
-		if (entity instanceof EntityPlayer && this.isSplash(itemstack.getItemDamage()))
+		if (entity instanceof EntityPlayer && this.isSplash(stack))
 		{
 			if (!((EntityPlayer) entity).capabilities.isCreativeMode)
 			{
-				--itemstack.stackSize;
+				--stack.stackSize;
 			}
 			
 			world.playSoundAtEntity((entity), "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-			Entity e = new EntityPotion2(world, ((EntityPlayer) entity), itemstack);
+			Entity e = new EntityPotion2(world, ((EntityPlayer) entity), stack);
 			
 			if (!world.isRemote)
 			{

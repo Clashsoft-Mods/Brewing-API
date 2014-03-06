@@ -9,7 +9,6 @@ public class ItemGlassBottle2 extends ItemGlassBottle
 {
 	public ItemGlassBottle2()
 	{
-		this.setTextureName("potion");
 	}
 	
 	@Override

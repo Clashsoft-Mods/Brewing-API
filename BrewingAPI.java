@@ -65,7 +65,7 @@ public class BrewingAPI
 	@SidedProxy(clientSide = "clashsoft.brewingapi.client.BAPIClientProxy", serverSide = "clashsoft.brewingapi.common.BAPICommonProxy")
 	public static BAPICommonProxy	proxy;
 	
-	public static CSNetHandler	netHandler = new CSNetHandler("BAPI");
+	public static CSNetHandler		netHandler				= new CSNetHandler("BAPI");
 	
 	// API Stuff
 	
@@ -136,7 +136,7 @@ public class BrewingAPI
 		
 		if (multiPotions)
 		{
-			potions = new CreativeTabs("morepotions")
+			potions = new CreativeTabs("mixedpotions")
 			{
 				ItemStack	stack	= null;
 				
@@ -161,13 +161,6 @@ public class BrewingAPI
 		BlockDispenser.dispenseBehaviorRegistry.putObject(potion2, new DispenserBehaviorPotion2());
 		proxy.registerRenderInformation();
 		proxy.registerRenderers();
-		
-		// CSLang.addLocalizationUS("commands.givepotion.usage",
-		// "/givepotion <player> <effect> [seconds] [amplifier] [splash]");
-		// CSLang.addLocalizationUS("commands.givepotion.success",
-		// "Given Potion (%1\u0024s (ID %2\u0024d) level %3\u0024d for %5\u0024d seconds) to %4\u0024s.");
-		// CSLang.addLocalizationUS("commands.givepotion.success.splash",
-		// "Given Splash Potion (%1\u0024s (ID %2\u0024d) level %3\u0024d for %5\u0024d seconds) to %4\u0024s.");
 	}
 	
 	@EventHandler
@@ -199,7 +192,9 @@ public class BrewingAPI
 	public static boolean isMorePotionsModInstalled()
 	{
 		if (MORE_POTIONS_MOD)
+		{
 			return true;
+		}
 		
 		try
 		{
@@ -215,7 +210,9 @@ public class BrewingAPI
 	public static boolean isClashsoftLibInstalled()
 	{
 		if (CLASHSOFT_LIB)
+		{
 			return true;
+		}
 		
 		try
 		{

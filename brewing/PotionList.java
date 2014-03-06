@@ -1,6 +1,7 @@
 package clashsoft.brewingapi.brewing;
 
 import clashsoft.brewingapi.BrewingAPI;
+import clashsoft.cslib.minecraft.item.CSStacks;
 import clashsoft.cslib.util.CSLog;
 
 import net.minecraft.init.Items;
@@ -117,16 +118,16 @@ public class PotionList
 	public static void initializeBrewings_BrewingAPI()
 	{
 		moveSlowdown = new PotionType(new PotionEffect(Potion.moveSlowdown.id, 20 * 90, 0), 4, 20 * 240);
-		moveSpeed = new PotionType(new PotionEffect(Potion.moveSpeed.id, 20 * 180, 0), 7, 20 * 360, moveSlowdown, new ItemStack(Items.sugar), PotionType.getBaseBrewing(dashing));
-		weakness = new PotionType(new PotionEffect(Potion.weakness.id, 20 * 90, 0), 2, 20 * 240, new ItemStack(Items.fermented_spider_eye), awkward);
-		damageBoost = new PotionType(new PotionEffect(Potion.damageBoost.id, 20 * 180, 0), 4, 20 * 300, weakness, new ItemStack(Items.blaze_powder), awkward);
+		moveSpeed = new PotionType(new PotionEffect(Potion.moveSpeed.id, 20 * 180, 0), 7, 20 * 360, moveSlowdown, CSStacks.sugar, PotionType.getBaseBrewing(dashing));
+		weakness = new PotionType(new PotionEffect(Potion.weakness.id, 20 * 90, 0), 2, 20 * 240, CSStacks.fermented_spider_eye, awkward);
+		damageBoost = new PotionType(new PotionEffect(Potion.damageBoost.id, 20 * 180, 0), 4, 20 * 300, weakness, CSStacks.blaze_powder, awkward);
 		harm = new PotionType(new PotionEffect(Potion.harm.id, 1, 0), 1, 0);
-		heal = new PotionType(new PotionEffect(Potion.heal.id, 1, 0), 1, 0, harm, new ItemStack(Items.speckled_melon), PotionType.getBaseBrewing(thick));
-		regeneration = new PotionType(new PotionEffect(Potion.regeneration.id, 20 * 45, 0), 2, 20 * 180, moveSlowdown, new ItemStack(Items.ghast_tear), awkward);
-		fireResistance = new PotionType(new PotionEffect(Potion.fireResistance.id, 20 * 180, 0), 0, 20 * 360, moveSlowdown, new ItemStack(Items.magma_cream), awkward);
+		heal = new PotionType(new PotionEffect(Potion.heal.id, 1, 0), 1, 0, harm, CSStacks.speckled_melon, PotionType.getBaseBrewing(thick));
+		regeneration = new PotionType(new PotionEffect(Potion.regeneration.id, 20 * 45, 0), 2, 20 * 180, moveSlowdown, CSStacks.ghast_tear, awkward);
+		fireResistance = new PotionType(new PotionEffect(Potion.fireResistance.id, 20 * 180, 0), 0, 20 * 360, moveSlowdown, CSStacks.magma_cream, awkward);
 		invisibility = new PotionType(new PotionEffect(Potion.invisibility.id, 20 * 180, 0), 0, 720 * 20);
-		nightVision = new PotionType(new PotionEffect(Potion.nightVision.id, 20 * 180, 0), 0, 20 * 300, invisibility, new ItemStack(Items.golden_carrot), PotionType.getBaseBrewing(thin));
-		poison = new PotionType(new PotionEffect(Potion.poison.id, 20 * 45, 0), 2, 20 * 60, new ItemStack(Items.spider_eye), PotionType.getBaseBrewing(acrid));
+		nightVision = new PotionType(new PotionEffect(Potion.nightVision.id, 20 * 180, 0), 0, 20 * 300, invisibility, CSStacks.golden_carrot, PotionType.getBaseBrewing(thin));
+		poison = new PotionType(new PotionEffect(Potion.poison.id, 20 * 45, 0), 2, 20 * 60, CSStacks.spider_eye, PotionType.getBaseBrewing(acrid));
 	}
 	
 	public static void registerBrewings_BrewingAPI()

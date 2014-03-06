@@ -122,8 +122,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 				{
 					ItemStack potion = this.brewingItemStacks[potionIndex];
 					ItemPotion2 item = (ItemPotion2) potion.getItem();
-					int damage = potion.getItemDamage();
-					boolean water = item.isWater(damage);
+					boolean water = item.isWater(potion);
 					List<PotionType> potionTypes = item.getEffects(potion);
 					
 					if (this.ingredient.getItem() == Items.glowstone_dust && !water)
@@ -158,7 +157,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 					}
 					else if (this.ingredient.getItem() == Items.gunpowder)
 					{
-						if (!item.isSplash(damage))
+						if (!item.isSplash(potion))
 						{
 							return true;
 						}
@@ -184,7 +183,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 				ItemStack potion = this.brewingItemStacks[potionIndex];
 				ItemPotion2 item = (ItemPotion2) potion.getItem();
 				int damage = potion.getItemDamage();
-				boolean water = item.isWater(damage);
+				boolean water = item.isWater(potion);
 				List<PotionType> potionTypes = item.getEffects(potion);
 				List<PotionType> newPotionTypes = new ArrayList(potionTypes.size());
 				
@@ -192,7 +191,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 				
 				if (this.ingredient.getItem() == Items.gunpowder)
 				{
-					damage = item.setSplash(damage, true);
+					damage = item.setSplash(potion, true);
 				}
 				
 				if (this.ingredient.getItem() == Items.glowstone_dust && !water)
@@ -259,7 +258,9 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 				potion.setItemDamage(damage | 1);
 				
 				if (potion.hasTagCompound())
+				{
 					potion.getTagCompound().removeTag(PotionType.COMPOUND_NAME);
+				}
 				
 				for (PotionType potionType : newPotionTypes)
 				{
