@@ -104,7 +104,7 @@ public class ItemPotion2 extends ItemPotion
 					for (int index = 0; index < tagList.tagCount(); ++index)
 					{
 						NBTTagCompound potionTypeNBT = tagList.getCompoundTagAt(index);
-						PotionType potionType = PotionType.getPotionTypeFromNBT(potionTypeNBT);
+						PotionType potionType = PotionType.getFromNBT(potionTypeNBT);
 						result.add(potionType);
 					}
 					
@@ -678,8 +678,8 @@ public class ItemPotion2 extends ItemPotion
 			
 			for (PotionBase pt : PotionBase.baseList)
 			{
-				list.add(pt.addPotionTypeToItemStack(new ItemStack(this, 1, 1)));
-				list.add(pt.addPotionTypeToItemStack(new ItemStack(this, 1, 2)));
+				list.add(pt.apply(new ItemStack(this, 1, 1)));
+				list.add(pt.apply(new ItemStack(this, 1, 2)));
 			}
 			
 			for (PotionType pt : PotionType.effectMap.values())
@@ -692,7 +692,7 @@ public class ItemPotion2 extends ItemPotion
 						{
 							pt2 = pt2.onGunpowderUsed();
 						}
-						list.add(pt2.addPotionTypeToItemStack(new ItemStack(this, 1, i)));
+						list.add(pt2.apply(new ItemStack(this, 1, i)));
 					}
 				}
 			}
@@ -703,17 +703,17 @@ public class ItemPotion2 extends ItemPotion
 				{
 					if (!potionType.isBadEffect())
 					{
-						potionType.addPotionTypeToItemStack(good1);
-						potionType.addPotionTypeToItemStack(good2);
+						potionType.apply(good1);
+						potionType.apply(good2);
 					}
 					else
 					{
-						potionType.addPotionTypeToItemStack(bad1);
-						potionType.addPotionTypeToItemStack(bad2);
+						potionType.apply(bad1);
+						potionType.apply(bad2);
 					}
 					
-					potionType.addPotionTypeToItemStack(allEffects1);
-					potionType.addPotionTypeToItemStack(allEffects2);
+					potionType.apply(allEffects1);
+					potionType.apply(allEffects2);
 				}
 				
 				list.add(allEffects1);
@@ -740,8 +740,8 @@ public class ItemPotion2 extends ItemPotion
 								pt2 = pt2.onGunpowderUsed();
 							}
 							ItemStack stack = new ItemStack(this, 1, i);
-							pt1.addPotionTypeToItemStack(stack);
-							pt2.addPotionTypeToItemStack(stack);
+							pt1.apply(stack);
+							pt2.apply(stack);
 							list.add(stack);
 						}
 					}

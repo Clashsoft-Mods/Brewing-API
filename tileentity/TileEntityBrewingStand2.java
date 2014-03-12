@@ -224,14 +224,14 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 				}
 				else
 				{
-					IIngredientHandler handler = PotionType.getHandlerForIngredient(this.ingredient);
+					IIngredientHandler handler = PotionType.getIngredientHandler(this.ingredient);
 					if (handler != null && handler.canApplyIngredient(this.ingredient, potion))
 					{
 						this.brewingItemStacks[potionIndex] = handler.applyIngredient(this.ingredient, potion);
 						continue;
 					}
 					
-					PotionType potionType = PotionType.getPotionTypeFromIngredient(this.ingredient);
+					PotionType potionType = PotionType.getFromIngredient(this.ingredient);
 					if (potionType != null)
 					{
 						PotionBase requiredBase = potionType.getBase();
@@ -264,7 +264,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 				
 				for (PotionType potionType : newPotionTypes)
 				{
-					potionType.addPotionTypeToItemStack(potion);
+					potionType.apply(potion);
 				}
 				
 				this.brewingItemStacks[potionIndex] = potion;

@@ -33,7 +33,13 @@ public class PotionBase extends PotionType implements Comparable<PotionType>
 		this(name, null);
 	}
 	
-	public static PotionBase getBrewingBaseFromIngredient(ItemStack ingredient)
+	@Override
+	public int getLiquidColor()
+	{
+		return 0x0C0CFF;
+	}
+	
+	public static PotionBase getFromIngredient(ItemStack ingredient)
 	{
 		for (PotionBase pb : baseList)
 		{

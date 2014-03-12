@@ -143,7 +143,7 @@ public class BrewingAPI
 				@Override
 				public ItemStack getIconItemStack()
 				{
-					return this.stack == null ? this.stack = PotionList.damageBoost.addPotionTypeToItemStack(new ItemStack(BrewingAPI.potion2, 0, 1)) : this.stack;
+					return this.stack == null ? this.stack = PotionList.damageBoost.apply(new ItemStack(BrewingAPI.potion2, 0, 1)) : this.stack;
 				}
 				
 				@Override

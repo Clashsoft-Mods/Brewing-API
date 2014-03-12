@@ -315,7 +315,9 @@ public class PotionType implements Comparable<PotionType>
 	{
 		Potion potion = this.getPotion();
 		if (potion != null)
+		{
 			return potion.getLiquidColor();
+		}
 		return 0x0C0CFF;
 	}
 	
@@ -460,7 +462,7 @@ public class PotionType implements Comparable<PotionType>
 	
 	public static PotionType getLegacyPotionType(PotionEffect potionEffect)
 	{
-		PotionType potionType = getPotionTypeFromPotionID(potionEffect.getPotionID());
+		PotionType potionType = getFromID(potionEffect.getPotionID());
 		if (potionType != null)
 		{
 			potionType = potionType.copy();
@@ -486,18 +488,6 @@ public class PotionType implements Comparable<PotionType>
 		return this;
 	}
 	
-	public static PotionType getPotionTypeFromPotionID(int potionID)
-	{
-		for (PotionType pt : potionTypeList)
-		{
-			if (!pt.isDummy() && pt.getPotionID() == potionID)
-			{
-				return pt;
-			}
-		}
-		return null;
-	}
-	
 	/**
 	 * Writes the PotionType to the ItemStack NBT
 	 * 
@@ -505,7 +495,7 @@ public class PotionType implements Comparable<PotionType>
 	 *            the stack
 	 * @return ItemStack with PotionType NBT
 	 */
-	public ItemStack addPotionTypeToItemStack(ItemStack stack)
+	public ItemStack apply(ItemStack stack)
 	{
 		if (stack != null)
 		{
@@ -524,7 +514,7 @@ public class PotionType implements Comparable<PotionType>
 		return stack;
 	}
 	
-	public ItemStack removePotionTypeFromItemStack(ItemStack stack)
+	public ItemStack remove(ItemStack stack)
 	{
 		if (stack != null)
 		{
@@ -565,7 +555,7 @@ public class PotionType implements Comparable<PotionType>
 			if (list != null && list.tagCount() > 0)
 			{
 				NBTTagCompound compound = list.getCompoundTagAt(0);
-				PotionType potionType = getPotionTypeFromNBT(compound);
+				PotionType potionType = getFromNBT(compound);
 				return potionType;
 			}
 		}
@@ -581,7 +571,7 @@ public class PotionType implements Comparable<PotionType>
 	 */
 	public static boolean isPotionIngredient(ItemStack stack)
 	{
-		return getPotionTypeFromIngredient(stack) != null || hasIngredientHandler(stack);
+		return getFromIngredient(stack) != null || hasIngredientHandler(stack);
 	}
 	
 	/**
@@ -591,7 +581,7 @@ public class PotionType implements Comparable<PotionType>
 	 *            the ingredient
 	 * @return the corresponding {@link IIngredientHandler}
 	 */
-	public static IIngredientHandler getHandlerForIngredient(ItemStack ingredient)
+	public static IIngredientHandler getIngredientHandler(ItemStack ingredient)
 	{
 		for (IIngredientHandler handler : BrewingAPI.ingredientHandlers)
 			if (handler.canHandleIngredient(ingredient))
@@ -607,7 +597,7 @@ public class PotionType implements Comparable<PotionType>
 	 */
 	public static boolean hasIngredientHandler(ItemStack ingredient)
 	{
-		return getHandlerForIngredient(ingredient) != null;
+		return getIngredientHandler(ingredient) != null;
 	}
 	
 	/**
@@ -621,11 +611,11 @@ public class PotionType implements Comparable<PotionType>
 	 */
 	public static ItemStack applyIngredient(ItemStack ingredient, ItemStack potion)
 	{
-		IIngredientHandler handler = getHandlerForIngredient(ingredient);
+		IIngredientHandler handler = getIngredientHandler(ingredient);
 		if (handler != null && handler.canApplyIngredient(ingredient, potion))
 			return handler.applyIngredient(ingredient, potion);
 		
-		PotionType potionType = getPotionTypeFromIngredient(ingredient);
+		PotionType potionType = getFromIngredient(ingredient);
 		if (potionType != null)
 		{
 			PotionBase requiredBase = potionType.getBase();
@@ -645,7 +635,7 @@ public class PotionType implements Comparable<PotionType>
 						if (basename.equals(requiredBase.basename))
 						{
 							flag = true;
-							pt.removePotionTypeFromItemStack(potion);
+							pt.remove(potion);
 							break;
 						}
 					}
@@ -653,20 +643,20 @@ public class PotionType implements Comparable<PotionType>
 			}
 			
 			if (flag)
-				return potionType.addPotionTypeToItemStack(potion);
+				return potionType.apply(potion);
 		}
 		return potion;
 	}
 	
 	public static boolean canApplyIngredient(ItemStack ingredient, ItemStack potion)
 	{
-		IIngredientHandler handler = getHandlerForIngredient(ingredient);
+		IIngredientHandler handler = getIngredientHandler(ingredient);
 		
 		if (handler != null)
 			return handler.canApplyIngredient(ingredient, potion);
-		else if (getPotionTypeFromIngredient(ingredient) != null)
+		else if (getFromIngredient(ingredient) != null)
 		{
-			PotionType potionType = getPotionTypeFromIngredient(ingredient);
+			PotionType potionType = getFromIngredient(ingredient);
 			PotionBase requiredBase = potionType.getBase();
 			
 			List<PotionType> potionTypes = ((ItemPotion2) potion.getItem()).getEffects(potion);
@@ -687,6 +677,18 @@ public class PotionType implements Comparable<PotionType>
 		return false;
 	}
 	
+	public static PotionType getFromID(int potionID)
+	{
+		for (PotionType pt : potionTypeList)
+		{
+			if (!pt.isDummy() && pt.getPotionID() == potionID)
+			{
+				return pt;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * Returns a PotionType that is brewed with the itemstack. it doesn't check for the amount.
 	 * Ignores Special Ingredient Handlers.
@@ -694,7 +696,7 @@ public class PotionType implements Comparable<PotionType>
 	 * @param ingredient
 	 * @return PotionType that is brewed with the ItemStack
 	 */
-	public static PotionType getPotionTypeFromIngredient(ItemStack ingredient)
+	public static PotionType getFromIngredient(ItemStack ingredient)
 	{
 		if (ingredient != null)
 		{
@@ -709,6 +711,22 @@ public class PotionType implements Comparable<PotionType>
 						return pt;
 				}
 			}
+		}
+		return null;
+	}
+	
+	public static PotionType getFromNBT(NBTTagCompound nbt)
+	{
+		if (nbt != null && !nbt.hasNoTags())
+		{
+			PotionType result;
+			if (nbt.hasKey("BaseName"))
+				result = new PotionBase();
+			else
+				result = new PotionType();
+			result.readFromNBT(nbt);
+			result.setDummy(true);
+			return result;
 		}
 		return null;
 	}
@@ -781,22 +799,6 @@ public class PotionType implements Comparable<PotionType>
 		}
 	}
 	
-	public static PotionType getPotionTypeFromNBT(NBTTagCompound nbt)
-	{
-		if (nbt != null && !nbt.hasNoTags())
-		{
-			PotionType result;
-			if (nbt.hasKey("BaseName"))
-				result = new PotionBase();
-			else
-				result = new PotionType();
-			result.readFromNBT(nbt);
-			result.setDummy(true);
-			return result;
-		}
-		return null;
-	}
-	
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		String nbtVersion = nbt.getString("VERSION");
@@ -810,8 +812,8 @@ public class PotionType implements Comparable<PotionType>
 			
 			this.ingredient = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("Ingredient"));
 			
-			this.inverted = getPotionTypeFromNBT(nbt.getCompoundTag("Inverted"));
-			this.base = (PotionBase) getPotionTypeFromNBT(nbt.getCompoundTag("Base"));
+			this.inverted = getFromNBT(nbt.getCompoundTag("Inverted"));
+			this.base = (PotionBase) getFromNBT(nbt.getCompoundTag("Base"));
 			
 			if (nbt.hasKey("ExtendedAttributes"))
 			{
@@ -849,8 +851,8 @@ public class PotionType implements Comparable<PotionType>
 			
 			this.ingredient = new ItemStack(Item.getItemById(ingredientID), ingredientAmount, ingredientDamage);
 			
-			this.inverted = getPotionTypeFromNBT(nbt.getCompoundTag("Opposite"));
-			this.base = (PotionBase) getPotionTypeFromNBT(nbt.getCompoundTag("Base"));
+			this.inverted = getFromNBT(nbt.getCompoundTag("Opposite"));
+			this.base = (PotionBase) getFromNBT(nbt.getCompoundTag("Base"));
 			
 			if (nbt.hasKey("ExtendedAttributes"))
 			{

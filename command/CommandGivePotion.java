@@ -91,7 +91,7 @@ public class CommandGivePotion extends CommandBase implements ICommand
 					PotionEffect potioneffect = new PotionEffect(i, j, l);
 					ItemStack stack = new ItemStack(BrewingAPI.potion2, 1, m ? 2 : 1);
 					PotionType b = new PotionType(potioneffect, l, j);
-					b.addPotionTypeToItemStack(stack);
+					b.apply(stack);
 					
 					EntityItem entityitem = entityplayermp.dropPlayerItemWithRandomChoice(stack, false);
 					entityitem.delayBeforeCanPickup = 0;
