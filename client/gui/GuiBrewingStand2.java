@@ -31,8 +31,6 @@ public class GuiBrewingStand2 extends GuiContainer
 		String s = this.brewingStand.hasCustomInventoryName() ? this.brewingStand.getInventoryName() : StatCollector.translateToLocal(this.brewingStand.getInventoryName());
 		this.fontRendererObj.drawString(s, (this.xSize - this.fontRendererObj.getStringWidth(s)) / 2, 6, 4210752);
 		this.fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
-		
-		this.fontRendererObj.drawString("BREWING API", 0, 0, 0xFF0000);
 	}
 	
 	@Override

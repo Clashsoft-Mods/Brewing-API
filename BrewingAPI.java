@@ -19,7 +19,7 @@ import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.item.ItemBrewingStand2;
 import clashsoft.brewingapi.item.ItemGlassBottle2;
 import clashsoft.brewingapi.item.ItemPotion2;
-import clashsoft.brewingapi.lib.DispenserBehaviorPotion2;
+import clashsoft.brewingapi.lib.PotionDispenser;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
 import clashsoft.cslib.minecraft.block.CSBlocks;
 import clashsoft.cslib.minecraft.item.CSItems;
@@ -44,6 +44,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -113,21 +115,19 @@ public class BrewingAPI
 		CSConfig.saveConfig();
 		
 		brewingStand2 = (new BlockBrewingStand2()).setBlockName("brewing_stand").setHardness(0.5F).setLightLevel(0.125F);
-		CSBlocks.overrideBlock(brewingStand2, "brewing_stand");
-		
 		brewingStand2Item = (new ItemBrewingStand2()).setUnlocalizedName("brewing_stand").setTextureName("brewing_stand");
-		CSItems.overrideItem(brewingStand2Item, "brewing_stand");
-		
 		potion2 = (ItemPotion2) (new ItemPotion2()).setUnlocalizedName("potion");
-		CSItems.overrideItem(potion2, "potion");
+		glassBottle2 = (ItemGlassBottle2) (new ItemGlassBottle2()).setUnlocalizedName("glass_bottle").setTextureName("potion_bottle_empty");
 		
-		glassBottle2 = (ItemGlassBottle2) (new ItemGlassBottle2()).setUnlocalizedName("glass_bottle");
-		CSItems.overrideItem(glassBottle2, "glass_bottle");
+		CSBlocks.replaceBlock(Blocks.brewing_stand, brewingStand2);
+		CSItems.replaceItem(Items.brewing_stand, brewingStand2Item);
+		CSItems.replaceItem(Items.potionitem, potion2);
+		CSItems.replaceItem(Items.glass_bottle, glassBottle2);
 	}
 	
 	@EventHandler
 	public void load(FMLInitializationEvent event)
-	{
+	{	
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 		netHandler.init();
 		netHandler.registerPacket(SplashEffectData.class);
@@ -158,7 +158,7 @@ public class BrewingAPI
 		EntityRegistry.registerGlobalEntityID(EntityPotion2.class, "SplashPotion2", splashPotion2ID);
 		EntityRegistry.registerModEntity(EntityPotion2.class, "SplashPotion2", splashPotion2ID, this, 100, 20, true);
 		
-		BlockDispenser.dispenseBehaviorRegistry.putObject(potion2, new DispenserBehaviorPotion2());
+		BlockDispenser.dispenseBehaviorRegistry.putObject(potion2, new PotionDispenser());
 		proxy.registerRenderInformation();
 		proxy.registerRenderers();
 	}

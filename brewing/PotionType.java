@@ -885,7 +885,7 @@ public class PotionType implements Comparable<PotionType>
 		if (stack != null && stack.getItem() instanceof ItemPotion2)
 		{
 			List<PotionType> effects = ((ItemPotion2) stack.getItem()).getEffects(stack);
-			float value = ((ItemPotion2) stack.getItem()).isSplash(stack.getItemDamage()) ? 0.3F : 0.2F;
+			float value = ((ItemPotion2) stack.getItem()).isSplashDamage(stack.getItemDamage()) ? 0.3F : 0.2F;
 			for (PotionType b : effects)
 			{
 				if (b.hasEffect())

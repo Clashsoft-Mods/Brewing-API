@@ -3,21 +3,23 @@ package clashsoft.brewingapi.lib;
 import clashsoft.brewingapi.entity.EntityPotion2;
 
 import net.minecraft.dispenser.BehaviorProjectileDispense;
+import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class DispenserBehaviorPotionProjectile extends BehaviorProjectileDispense
+public class PotionDispenser extends BehaviorProjectileDispense
 {
-	public final ItemStack					stack;
+	public ItemStack stack;
 	
-	public final DispenserBehaviorPotion2	dispenserPotion;
-	
-	public DispenserBehaviorPotionProjectile(DispenserBehaviorPotion2 dispenserPotion2, ItemStack stack)
+	@Override
+	public ItemStack dispenseStack(IBlockSource blockSource, ItemStack stack)
 	{
-		this.dispenserPotion = dispenserPotion2;
 		this.stack = stack;
+		super.dispenseStack(blockSource, stack);
+		this.stack = null;
+		return stack;
 	}
 	
 	@Override
