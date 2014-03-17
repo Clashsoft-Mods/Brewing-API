@@ -9,23 +9,24 @@ import java.util.List;
 
 import clashsoft.brewingapi.api.IIngredientHandler;
 import clashsoft.brewingapi.api.IPotionEffectHandler;
+import clashsoft.brewingapi.api.IPotionList;
 import clashsoft.brewingapi.block.BlockBrewingStand2;
 import clashsoft.brewingapi.brewing.PotionList;
 import clashsoft.brewingapi.brewing.PotionType;
 import clashsoft.brewingapi.command.CommandGivePotion;
 import clashsoft.brewingapi.common.BAPICommonProxy;
-import clashsoft.brewingapi.common.SplashEffectData;
 import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.item.ItemBrewingStand2;
 import clashsoft.brewingapi.item.ItemGlassBottle2;
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.lib.PotionDispenser;
+import clashsoft.brewingapi.network.BAPINetHandler;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
 import clashsoft.cslib.minecraft.block.CSBlocks;
 import clashsoft.cslib.minecraft.item.CSItems;
-import clashsoft.cslib.minecraft.network.CSNetHandler;
 import clashsoft.cslib.minecraft.update.CSUpdate;
 import clashsoft.cslib.minecraft.util.CSConfig;
+import clashsoft.cslib.reflect.CSReflection;
 import clashsoft.cslib.util.CSLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -44,6 +45,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -67,19 +69,16 @@ public class BrewingAPI
 	@SidedProxy(clientSide = "clashsoft.brewingapi.client.BAPIClientProxy", serverSide = "clashsoft.brewingapi.common.BAPICommonProxy")
 	public static BAPICommonProxy	proxy;
 	
-	public static CSNetHandler		netHandler				= new CSNetHandler("BAPI");
+	public static BAPINetHandler	netHandler				= new BAPINetHandler();
 	
 	// API Stuff
 	
-	public static final int			POTION_LIST_LENGTH		= 1024;
-	
-	public static boolean			MORE_POTIONS_MOD		= false;
-	public static boolean			CLASHSOFT_LIB			= false;
+	private static boolean			MORE_POTIONS_MOD		= false;
+	private static boolean			CLASHSOFT_LIB			= false;
 	
 	public static boolean			multiPotions			= false;
 	public static boolean			advancedPotionInfo		= false;
-	public static boolean			animatedPotionLiquid	= true;
-	public static boolean			showAllBaseBrewings		= false;
+	public static boolean			showAllBaseTypes		= false;
 	public static boolean			defaultAwkwardBrewing	= false;
 	public static int				potionStackSize			= 1;
 	
@@ -94,30 +93,32 @@ public class BrewingAPI
 	public static ItemPotion2		potion2;
 	public static ItemGlassBottle2	glassBottle2;
 	
+	static
+	{
+		expandPotionList(64);
+	}
+	
 	// API Stuff
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		CSUpdate.updateCheckCS(NAME, ACRONYM, VERSION);
-		
 		CSConfig.loadConfig(event.getSuggestedConfigurationFile(), NAME);
 		
-		brewingStand2ID = CSConfig.getInt("TileEntityIDs", "BrewingStand2TEID", 11);
+		brewingStand2ID = CSConfig.getTileEntity("Brewing Stand", 11);
 		
-		multiPotions = CSConfig.getBool("potions", "MultiPotions", "If true, potions with 2 different effects are shown in the creative inventory.", false);
-		advancedPotionInfo = CSConfig.getBool("potions", "AdvancedPotionInfo", true);
-		animatedPotionLiquid = CSConfig.getBool("potions", "AnimatedPotionLiquid", true);
-		showAllBaseBrewings = CSConfig.getBool("potions", "ShowAllBaseBrewings", "If true, all base potions are shown in creative inventory.", false);
-		defaultAwkwardBrewing = CSConfig.getBool("potions", "DefaultAwkwardBrewing", "If true, all potions can be brewed with an awkward potion.", false);
-		potionStackSize = CSConfig.getInt("potions", "PotionStackSize", 1);
+		multiPotions = CSConfig.getBool("potions", "MultiPotions", multiPotions);
+		advancedPotionInfo = CSConfig.getBool("potions", "Advanced Potion Info", advancedPotionInfo);
+		showAllBaseTypes = CSConfig.getBool("potions", "Show All Base Potion Types", showAllBaseTypes);
+		defaultAwkwardBrewing = CSConfig.getBool("potions", "Default Awkward Brewing", defaultAwkwardBrewing);
+		potionStackSize = CSConfig.getInt("potions", "PotionStackSize", potionStackSize);
 		
 		CSConfig.saveConfig();
 		
 		brewingStand2 = (new BlockBrewingStand2()).setBlockName("brewing_stand").setHardness(0.5F).setLightLevel(0.125F);
 		brewingStand2Item = (new ItemBrewingStand2()).setUnlocalizedName("brewing_stand").setTextureName("brewing_stand");
 		potion2 = (ItemPotion2) (new ItemPotion2()).setUnlocalizedName("potion");
-		glassBottle2 = (ItemGlassBottle2) (new ItemGlassBottle2()).setUnlocalizedName("glass_bottle").setTextureName("potion_bottle_empty");
+		glassBottle2 = (ItemGlassBottle2) (new ItemGlassBottle2()).setUnlocalizedName("glassBottle").setTextureName("potion_bottle_empty");
 		
 		CSBlocks.replaceBlock(Blocks.brewing_stand, brewingStand2);
 		CSItems.replaceItem(Items.brewing_stand, brewingStand2Item);
@@ -127,12 +128,11 @@ public class BrewingAPI
 	
 	@EventHandler
 	public void load(FMLInitializationEvent event)
-	{	
+	{
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 		netHandler.init();
-		netHandler.registerPacket(SplashEffectData.class);
 		
-		load();
+		PotionList.init();
 		
 		if (multiPotions)
 		{
@@ -166,6 +166,8 @@ public class BrewingAPI
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
+		CSUpdate.updateCheckCS(NAME, ACRONYM, VERSION);
+		
 		netHandler.postInit();
 	}
 	
@@ -175,19 +177,6 @@ public class BrewingAPI
 		ServerCommandManager command = (ServerCommandManager) event.getServer().getCommandManager();
 		command.registerCommand(new CommandGivePotion());
 	}
-	
-	public static void load()
-	{
-		if (!hasLoaded)
-		{
-			expandPotionList();
-			PotionList.initializeBrewings();
-			PotionList.registerBrewings();
-			hasLoaded = true;
-		}
-	}
-	
-	// API Stuff
 	
 	public static boolean isMorePotionsModInstalled()
 	{
@@ -216,7 +205,7 @@ public class BrewingAPI
 		
 		try
 		{
-			Class.forName("clashsoft.cslib.util.CSUtil", false, ClassLoader.getSystemClassLoader());
+			Class.forName("clashsoft.cslib.util.CSUtil");
 			return CLASHSOFT_LIB = true;
 		}
 		catch (ClassNotFoundException e)
@@ -225,14 +214,21 @@ public class BrewingAPI
 		}
 	}
 	
+	// API
+	
 	public static boolean						hasLoaded			= false;
 	
 	public static List<IPotionEffectHandler>	effectHandlers		= new LinkedList<IPotionEffectHandler>();
 	public static List<IIngredientHandler>		ingredientHandlers	= new LinkedList<IIngredientHandler>();
 	
-	public static PotionType addBrewing(PotionType potionType)
+	public static PotionType addPotionType(PotionType potionType)
 	{
 		return potionType.register();
+	}
+	
+	public static void setPotionList(IPotionList potionList)
+	{
+		PotionList.instance = potionList;
 	}
 	
 	public static void registerIngredientHandler(IIngredientHandler handler)
@@ -253,68 +249,43 @@ public class BrewingAPI
 		}
 	}
 	
-	private int	tick	= 0;
-	
 	@SubscribeEvent
 	public void onEntityUpdate(LivingUpdateEvent event)
 	{
-		if (event.entityLiving != null && !event.entityLiving.worldObj.isRemote)
+		EntityLivingBase living = event.entityLiving;
+		if (living != null && !living.worldObj.isRemote)
 		{
-			Collection<PotionEffect> c = event.entityLiving.getActivePotionEffects();
+			Collection<PotionEffect> c = living.getActivePotionEffects();
 			List<PotionEffect> potionEffects = new ArrayList(c);
 			
-			for (int i = 0; i < potionEffects.size(); i++)
+			for (PotionEffect effect : potionEffects)
 			{
-				PotionEffect effect = potionEffects.get(i);
 				for (IPotionEffectHandler handler : effectHandlers)
 				{
 					if (handler.canHandle(effect))
-						handler.onPotionUpdate(this.tick, event.entityLiving, effect);
+					{
+						handler.onPotionUpdate(living.getAge(), living, effect);
+					}
 				}
-			}
-			
-			this.tick++;
-			
-			if (this.tick > 1023)
-			{
-				this.tick = 0;
 			}
 		}
 	}
 	
-	public static void expandPotionList()
+	public static void expandPotionList(int size)
 	{
-		Potion[] potionTypes = null;
-		
-		if (Potion.potionTypes.length != POTION_LIST_LENGTH)
+		if (Potion.potionTypes.length < size)
 		{
-			for (Field f : Potion.class.getDeclaredFields())
+			try
 			{
-				f.setAccessible(true);
-				try
-				{
-					if (f.getName().equals("potionTypes") || f.getName().equals("field_76425_a"))
-					{
-						Field modfield = Field.class.getDeclaredField("modifiers");
-						modfield.setAccessible(true);
-						modfield.setInt(f, f.getModifiers() & ~Modifier.FINAL);
-						
-						potionTypes = (Potion[]) f.get(null);
-						final Potion[] newPotionTypes = new Potion[POTION_LIST_LENGTH];
-						for (int i = 0; i < newPotionTypes.length; i++)
-						{
-							if (i < Potion.potionTypes.length)
-								newPotionTypes[i] = Potion.potionTypes[i];
-							else
-								newPotionTypes[i] = null;
-						}
-						f.set(null, newPotionTypes);
-					}
-				}
-				catch (Exception e)
-				{
-					CSLog.error(e);
-				}
+				Field f = CSReflection.getField(Potion.class, 0);
+				CSReflection.setModifier(f, Modifier.FINAL, false);
+				Potion[] potionTypes = new Potion[size];
+				System.arraycopy(Potion.potionTypes, 0, potionTypes, 0, Potion.potionTypes.length);
+				f.set(null, potionTypes);
+			}
+			catch (Exception e)
+			{
+				CSLog.error(e);
 			}
 		}
 	}

@@ -1,18 +1,19 @@
 package clashsoft.brewingapi.brewing;
 
-import clashsoft.brewingapi.BrewingAPI;
+import clashsoft.brewingapi.api.IPotionList;
 import clashsoft.cslib.minecraft.item.CSStacks;
-import clashsoft.cslib.util.CSLog;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
-public class PotionList
+public class PotionList implements IPotionList
 {
 	public static boolean		DEFAULT_AWKWARD_BREWING	= false;
 	public static boolean		SHOW_ALL_BASES			= false;
+	
+	public static IPotionList	instance				= new PotionList();
 	
 	/** Base needed for all potions **/
 	public static PotionBase	awkward;
@@ -80,43 +81,15 @@ public class PotionList
 	public static PotionType	saturation;
 	public static PotionType	wither;
 	
-	public static void initializeBrewings()
+	private PotionList()
 	{
-		if (!BrewingAPI.isMorePotionsModInstalled())
-		{
-			CSLog.info("Initializing BrewingAPI Potion Types");
-			initializeBaseBrewings_BrewingAPI();
-			initializeBrewings_BrewingAPI();
-		}
-		else
-		{
-			CSLog.info("Skipping initialization of BrewingAPI Potion Types ... More Potions Mod will do that.");
-		}
 	}
 	
-	public static void registerBrewings()
+	@Override
+	public void initPotionTypes()
 	{
-		if (!BrewingAPI.isMorePotionsModInstalled())
-		{
-			CSLog.info("Registering BrewingAPI Brewings");
-			registerBaseBrewings_BrewingAPI();
-			registerBrewings_BrewingAPI();
-		}
-		else
-		{
-			CSLog.info("Skipping registration of BrewingAPI Brewings ... More Potions Mod will do that.");
-		}
-	}
-	
-	public static void initializeBaseBrewings_BrewingAPI()
-	{
-		SHOW_ALL_BASES = false;
-		DEFAULT_AWKWARD_BREWING = true;
 		awkward = new PotionBase("awkward", new ItemStack(Items.nether_wart));
-	}
-	
-	public static void initializeBrewings_BrewingAPI()
-	{
+		
 		moveSlowdown = new PotionType(new PotionEffect(Potion.moveSlowdown.id, 20 * 90, 0), 4, 20 * 240);
 		moveSpeed = new PotionType(new PotionEffect(Potion.moveSpeed.id, 20 * 180, 0), 7, 20 * 360, moveSlowdown, CSStacks.sugar, PotionType.getBaseBrewing(dashing));
 		weakness = new PotionType(new PotionEffect(Potion.weakness.id, 20 * 90, 0), 2, 20 * 240, CSStacks.fermented_spider_eye, awkward);
@@ -130,8 +103,11 @@ public class PotionList
 		poison = new PotionType(new PotionEffect(Potion.poison.id, 20 * 45, 0), 2, 20 * 60, CSStacks.spider_eye, PotionType.getBaseBrewing(acrid));
 	}
 	
-	public static void registerBrewings_BrewingAPI()
+	@Override
+	public void loadPotionTypes()
 	{
+		awkward.register();
+		
 		regeneration.register();
 		moveSpeed.register();
 		fireResistance.register();
@@ -145,8 +121,9 @@ public class PotionList
 		invisibility.register();
 	}
 	
-	private static void registerBaseBrewings_BrewingAPI()
+	public static void init()
 	{
-		awkward.register();
+		instance.initPotionTypes();
+		instance.loadPotionTypes();
 	}
 }
