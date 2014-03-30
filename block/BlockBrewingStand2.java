@@ -76,19 +76,11 @@ public class BlockBrewingStand2 extends BlockBrewingStand
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		if (world.isRemote)
+		if (!world.isRemote && world.getTileEntity(x, y, z) != null)
 		{
-			return true;
+			FMLNetworkHandler.openGui(player, BrewingAPI.instance, BrewingAPI.brewingStand2ID, world, x, y, z);
 		}
-		else
-		{
-			if (world.getTileEntity(x, y, z) != null)
-			{
-				FMLNetworkHandler.openGui(player, BrewingAPI.instance, BrewingAPI.brewingStand2ID, world, x, y, z);
-			}
-			
-			return true;
-		}
+		return true;
 	}
 	
 	@Override
