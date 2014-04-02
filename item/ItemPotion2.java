@@ -5,6 +5,7 @@ import java.util.*;
 import org.lwjgl.input.Keyboard;
 
 import clashsoft.brewingapi.BrewingAPI;
+import clashsoft.brewingapi.brewing.IPotionType;
 import clashsoft.brewingapi.brewing.PotionBase;
 import clashsoft.brewingapi.brewing.PotionType;
 import clashsoft.brewingapi.brewing.PotionUtils;
@@ -48,7 +49,7 @@ public class ItemPotion2 extends ItemPotion
 {
 	public static Comparator<AttributeModifier>		MODIFIER_COMPARATOR	= new AttributeModifierComparator();
 	
-	public Map<NBTTagCompound, List<PotionType>>	effectCache			= new HashMap();
+	public Map<NBTTagCompound, List<IPotionType>>	effectCache			= new HashMap();
 	
 	public IIcon									bottle;
 	public IIcon									splashbottle;
@@ -70,13 +71,13 @@ public class ItemPotion2 extends ItemPotion
 				CreativeTabs.tabAllSearch };
 	}
 	
-	public List<PotionType> getLegacyEffects(ItemStack stack)
+	public List<IPotionType> getLegacyEffects(ItemStack stack)
 	{
 		List<PotionEffect> effects = Items.potionitem.getEffects(stack);
-		List<PotionType> potionTypes = new ArrayList(effects.size());
+		List<IPotionType> potionTypes = new ArrayList(effects.size());
 		for (PotionEffect effect : effects)
 		{
-			potionTypes.add(PotionType.getLegacyPotionType(effect));
+			potionTypes.add(PotionType.getFromEffect(effect));
 		}
 		return potionTypes;
 	}
@@ -85,11 +86,11 @@ public class ItemPotion2 extends ItemPotion
 	 * Returns a list of potion effects for the specified itemstack.
 	 */
 	@Override
-	public List<PotionType> getEffects(ItemStack stack)
+	public List<IPotionType> getEffects(ItemStack stack)
 	{
 		if (stack != null && !this.isWater(stack))
 		{
-			List<PotionType> result = new ArrayList();
+			List<IPotionType> result = new ArrayList();
 			NBTTagCompound compound = stack.getTagCompound();
 			if (compound != null)
 			{
@@ -104,7 +105,7 @@ public class ItemPotion2 extends ItemPotion
 					for (int index = 0; index < tagList.tagCount(); ++index)
 					{
 						NBTTagCompound potionTypeNBT = tagList.getCompoundTagAt(index);
-						PotionType potionType = PotionType.getFromNBT(potionTypeNBT);
+						IPotionType potionType = PotionType.getFromNBT(potionTypeNBT);
 						result.add(potionType);
 					}
 					
@@ -181,7 +182,7 @@ public class ItemPotion2 extends ItemPotion
 			return 0x0C0CFF;
 		}
 		
-		List<PotionType> effects = this.getEffects(stack);
+		List<IPotionType> effects = this.getEffects(stack);
 		
 		if (effects.isEmpty())
 			return 0x0C0CFF;
@@ -190,7 +191,7 @@ public class ItemPotion2 extends ItemPotion
 		
 		for (int j = 0; j < effects.size(); j++)
 		{
-			PotionType b = effects.get(j);
+			IPotionType b = effects.get(j);
 			colors[j] = b.getLiquidColor();
 		}
 		return PotionUtils.combineColors(colors);
@@ -205,13 +206,13 @@ public class ItemPotion2 extends ItemPotion
 	 */
 	public boolean isEffectInstant(ItemStack stack)
 	{
-		List<PotionType> effects = this.getEffects(stack);
+		List<IPotionType> effects = this.getEffects(stack);
 		if (effects.size() == 0)
 		{
 			return false;
 		}
 		boolean flag = true;
-		for (PotionType b : effects)
+		for (IPotionType b : effects)
 		{
 			flag &= (b.getEffect() != null ? Potion.potionTypes[b.getEffect().getPotionID()].isInstant() : true);
 		}
@@ -223,7 +224,7 @@ public class ItemPotion2 extends ItemPotion
 	{
 		if (!world.isRemote)
 		{
-			for (PotionType potionType : this.getEffects(stack))
+			for (IPotionType potionType : this.getEffects(stack))
 			{
 				if (potionType.hasEffect())
 					player.addPotionEffect(potionType.getEffect());
@@ -325,9 +326,9 @@ public class ItemPotion2 extends ItemPotion
 		}
 		else
 		{
-			List<PotionType> potionTypes = this.getEffects(stack);
-			List<PotionBase> baseEffects = new ArrayList(3);
-			List<PotionType> effects = new ArrayList(potionTypes.size());
+			List<IPotionType> potionTypes = this.getEffects(stack);
+			List<IPotionType> effects = new ArrayList();
+			List<PotionBase> bases = new ArrayList();
 			
 			StringBuilder result = new StringBuilder(potionTypes.size() * 20);
 			
@@ -338,17 +339,17 @@ public class ItemPotion2 extends ItemPotion
 			
 			if (!potionTypes.isEmpty())
 			{
-				if (potionTypes.size() == PotionType.combinableEffects.size())
+				if (potionTypes.size() == PotionType.combinableTypes.size())
 				{
 					result.insert(0, EnumChatFormatting.BLUE.toString()).append(I18n.getString("potion.alleffects.postfix"));
 				}
 				else
 				{
-					for (PotionType pt : potionTypes)
+					for (IPotionType pt : potionTypes)
 					{
 						if (pt.isBase())
 						{
-							baseEffects.add((PotionBase) pt);
+							bases.add((PotionBase) pt);
 						}
 						else
 						{
@@ -356,7 +357,7 @@ public class ItemPotion2 extends ItemPotion
 						}
 					}
 					
-					for (PotionBase base : baseEffects)
+					for (PotionBase base : bases)
 					{
 						result.append(I18n.getString(base.getEffectName())).append(" ");
 					}
@@ -373,7 +374,7 @@ public class ItemPotion2 extends ItemPotion
 						int size = effects.size();
 						for (int i = 0; i < size; i++)
 						{
-							PotionType type = effects.get(i);
+							IPotionType type = effects.get(i);
 							
 							boolean hasPrevious = i > 0;
 							boolean isLast = i == size - 1;
@@ -421,7 +422,7 @@ public class ItemPotion2 extends ItemPotion
 	{
 		if (!this.isWater(stack))
 		{
-			List<PotionType> potionTypes = this.getEffects(stack);
+			List<IPotionType> potionTypes = this.getEffects(stack);
 			Multimap<String, AttributeModifier> hashmultimap = TreeMultimap.create(String.CASE_INSENSITIVE_ORDER, MODIFIER_COMPARATOR);
 			int size = potionTypes.size();
 			
@@ -440,7 +441,7 @@ public class ItemPotion2 extends ItemPotion
 				
 				for (int i = 0; i < size; i++)
 				{
-					PotionType potionType = potionTypes.get(i);
+					IPotionType potionType = potionTypes.get(i);
 					Potion potion = potionType.getPotion();
 					
 					boolean isNormalEffect = !potionType.isBase();
@@ -538,7 +539,7 @@ public class ItemPotion2 extends ItemPotion
 				{
 					if (potionTypes.size() == 1 && BrewingAPI.isClashsoftLibInstalled() && BrewingAPI.isMorePotionsModInstalled())
 					{
-						for (PotionType pt : potionTypes)
+						for (IPotionType pt : potionTypes)
 						{
 							if (pt.hasEffect())
 							{
@@ -656,7 +657,7 @@ public class ItemPotion2 extends ItemPotion
 	{
 		if (pass == 0 && stack.getItemDamage() > 0)
 		{
-			List<PotionType> list = this.getEffects(stack);
+			List<IPotionType> list = this.getEffects(stack);
 			return list != null && !list.isEmpty() && list.get(0).getEffect() != null;
 		}
 		return false;
@@ -682,11 +683,11 @@ public class ItemPotion2 extends ItemPotion
 				list.add(pt.apply(new ItemStack(this, 1, 2)));
 			}
 			
-			for (PotionType pt : PotionType.effectMap.values())
+			for (IPotionType pt : IPotionType.effectTypes)
 			{
 				for (int i = 1; i <= 2; i++)
 				{
-					for (PotionType pt2 : pt.getSubTypes())
+					for (IPotionType pt2 : pt.getSubTypes())
 					{
 						if (this.isSplashDamage(i))
 						{
@@ -699,7 +700,7 @@ public class ItemPotion2 extends ItemPotion
 			
 			if (BrewingAPI.isMorePotionsModInstalled())
 			{
-				for (PotionType potionType : PotionType.combinableEffects)
+				for (IPotionType potionType : PotionType.combinableTypes)
 				{
 					if (!potionType.isBadEffect())
 					{
@@ -723,26 +724,27 @@ public class ItemPotion2 extends ItemPotion
 				list.add(bad1);
 				list.add(bad2);
 			}
-		}
-		else if (BrewingAPI.multiPotions && BrewingAPI.isMorePotionsModInstalled() && tab == BrewingAPI.potions)
-		{
-			for (int i = 1; i <= 2; i++)
+			
+			else if (BrewingAPI.multiPotions && tab == BrewingAPI.potions)
 			{
-				for (PotionType pt1 : PotionType.combinableEffects)
+				for (int i = 1; i <= 2; i++)
 				{
-					for (PotionType pt2 : PotionType.combinableEffects)
+					for (IPotionType pt1 : PotionType.combinableTypes)
 					{
-						if (pt1 != pt2)
+						for (IPotionType pt2 : PotionType.combinableTypes)
 						{
-							if (this.isSplashDamage(i))
+							if (pt1 != pt2)
 							{
-								pt1 = pt1.onGunpowderUsed();
-								pt2 = pt2.onGunpowderUsed();
+								if (this.isSplashDamage(i))
+								{
+									pt1 = pt1.onGunpowderUsed();
+									pt2 = pt2.onGunpowderUsed();
+								}
+								ItemStack stack = new ItemStack(this, 1, i);
+								pt1.apply(stack);
+								pt2.apply(stack);
+								list.add(stack);
 							}
-							ItemStack stack = new ItemStack(this, 1, i);
-							pt1.apply(stack);
-							pt2.apply(stack);
-							list.add(stack);
 						}
 					}
 				}

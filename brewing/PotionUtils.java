@@ -6,16 +6,16 @@ import net.minecraft.item.ItemStack;
 
 public class PotionUtils
 {
-	public static int getGoodEffects(List<PotionType> potion)
+	public static int getGoodEffects(List<IPotionType> potion)
 	{
 		return potion.size() - getBadEffects(potion);
 	}
 	
-	public static int getBadEffects(List<PotionType> potion)
+	public static int getBadEffects(List<IPotionType> potion)
 	{
 		int badEffects = 0;
 		
-		for (PotionType pt : potion)
+		for (IPotionType pt : potion)
 		{
 			if (pt.isBadEffect())
 			{
@@ -26,10 +26,10 @@ public class PotionUtils
 		return badEffects;
 	}
 	
-	public static int getAverageAmplifier(List<PotionType> potion)
+	public static int getAverageAmplifier(List<IPotionType> potion)
 	{
 		int averageAmplifier = 0;
-		for (PotionType pt : potion)
+		for (IPotionType pt : potion)
 		{
 			averageAmplifier += pt.getAmplifier() + 1;
 		}
@@ -38,10 +38,10 @@ public class PotionUtils
 		return averageAmplifier;
 	}
 	
-	public static int getAverageDuration(List<PotionType> potion)
+	public static int getAverageDuration(List<IPotionType> potion)
 	{
 		int averageDuration = 0;
-		for (PotionType pt : potion)
+		for (IPotionType pt : potion)
 		{
 			averageDuration += pt.getDuration();
 		}
@@ -49,10 +49,10 @@ public class PotionUtils
 		return averageDuration;
 	}
 	
-	public static int getMaxAmplifier(List<PotionType> potion)
+	public static int getMaxAmplifier(List<IPotionType> potion)
 	{
 		int maxAmplifier = 0;
-		for (PotionType pt : potion)
+		for (IPotionType pt : potion)
 		{
 			if (maxAmplifier < pt.getAmplifier())
 			{
@@ -62,10 +62,10 @@ public class PotionUtils
 		return maxAmplifier;
 	}
 	
-	public static int getMaxDuration(List<PotionType> potion)
+	public static int getMaxDuration(List<IPotionType> potion)
 	{
 		int maxDuration = 0;
-		for (PotionType pt : potion)
+		for (IPotionType pt : potion)
 		{
 			if (maxDuration < pt.getDuration())
 			{

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import clashsoft.brewingapi.api.IIngredientHandler;
+import clashsoft.brewingapi.brewing.IPotionType;
 import clashsoft.brewingapi.brewing.PotionBase;
 import clashsoft.brewingapi.brewing.PotionType;
 import clashsoft.brewingapi.item.ItemPotion2;
@@ -123,7 +124,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 					ItemStack potion = this.brewingItemStacks[potionIndex];
 					ItemPotion2 item = (ItemPotion2) potion.getItem();
 					boolean water = item.isWater(potion);
-					List<PotionType> potionTypes = item.getEffects(potion);
+					List<IPotionType> potionTypes = item.getEffects(potion);
 					
 					if (this.ingredient.getItem() == Items.glowstone_dust && !water)
 					{
@@ -184,8 +185,8 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 				ItemPotion2 item = (ItemPotion2) potion.getItem();
 				int damage = potion.getItemDamage();
 				boolean water = item.isWater(potion);
-				List<PotionType> potionTypes = item.getEffects(potion);
-				List<PotionType> newPotionTypes = new ArrayList(potionTypes.size());
+				List<IPotionType> potionTypes = item.getEffects(potion);
+				List<IPotionType> newPotionTypes = new ArrayList(potionTypes.size());
 				
 				boolean flag = false;
 				
@@ -231,7 +232,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 						continue;
 					}
 					
-					PotionType potionType = PotionType.getFromIngredient(this.ingredient);
+					IPotionType potionType = PotionType.getFromIngredient(this.ingredient);
 					if (potionType != null)
 					{
 						PotionBase requiredBase = potionType.getBase();
@@ -240,15 +241,11 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 							newPotionTypes.add(potionType);
 						else
 						{
-							for (PotionType pt : potionTypes)
+							for (IPotionType pt : potionTypes)
 							{
-								if (pt instanceof PotionBase)
+								if (pt instanceof PotionBase && requiredBase.matches((PotionBase) pt))
 								{
-									String basename = ((PotionBase) pt).basename;
-									if (basename.equals(requiredBase.basename))
-									{
-										newPotionTypes.add(potionType);
-									}
+									newPotionTypes.add(potionType);	
 								}
 							}
 						}
@@ -262,7 +259,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 					potion.getTagCompound().removeTag(PotionType.COMPOUND_NAME);
 				}
 				
-				for (PotionType potionType : newPotionTypes)
+				for (IPotionType potionType : newPotionTypes)
 				{
 					potionType.apply(potion);
 				}

@@ -5,17 +5,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import clashsoft.brewingapi.BrewingAPI;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class PotionBase extends PotionType implements Comparable<PotionType>
+public class PotionBase extends AbstractPotionType
 {
 	public static List<PotionBase>			baseList	= new ArrayList();
 	public static Map<String, PotionBase>	baseMap		= new HashMap();
 	
-	public String							basename;
+	private String							name;
+	private ItemStack						ingredient;
 	
 	public PotionBase()
 	{
@@ -24,19 +28,13 @@ public class PotionBase extends PotionType implements Comparable<PotionType>
 	
 	public PotionBase(String name, ItemStack ingredient)
 	{
-		super(null, 0, 0, ingredient, null);
-		this.basename = name;
+		this.name = name;
+		this.ingredient = ingredient;
 	}
 	
 	public PotionBase(String name)
 	{
 		this(name, null);
-	}
-	
-	@Override
-	public int getLiquidColor()
-	{
-		return 0x0C0CFF;
 	}
 	
 	public static PotionBase getFromIngredient(ItemStack ingredient)
@@ -52,27 +50,31 @@ public class PotionBase extends PotionType implements Comparable<PotionType>
 	}
 	
 	@Override
+	public int getLiquidColor()
+	{
+		return 0x0C0CFF;
+	}
+	
+	public String getName()
+	{
+		return this.name;
+	}
+	
+	@Override
 	public String getEffectName()
 	{
-		return "potion.prefix." + this.basename;
+		return "potion.prefix." + this.name;
 	}
 	
 	@Override
 	public PotionBase register()
 	{
-		super.register();
-		
+		PotionType.potionTypeList.add(this);
 		baseList.add(this);
-		if (this.basename != null)
-			baseMap.put(this.basename, this);
+		if (this.name != null)
+			baseMap.put(this.name, this);
 		
 		return this;
-	}
-	
-	@Override
-	public PotionType getEqualPotionType()
-	{
-		return baseMap.get(this.basename);
 	}
 	
 	@Override
@@ -84,56 +86,144 @@ public class PotionBase extends PotionType implements Comparable<PotionType>
 			PotionBase base = baseMap.get(nbt.getString("BaseName"));
 			if (base != null)
 			{
-				this.basename = base.basename;
-				this.setIngredient(base.getIngredient());
+				this.name = base.name;
+				this.ingredient = base.ingredient;
 			}
 		}
 		else
 		{
-			this.basename = nbt.getString("BaseName");
+			this.name = nbt.getString("BaseName");
 			
 			int ingredientID = nbt.getInteger("IngredientID");
 			int ingredientAmount = nbt.getInteger("IngredientAmount");
 			int ingredientDamage = nbt.getInteger("IngredientDamage");
 			
-			this.setIngredient(new ItemStack(Item.getItemById(ingredientID), ingredientAmount, ingredientDamage));
+			this.ingredient = new ItemStack(Item.getItemById(ingredientID), ingredientAmount, ingredientDamage);
 		}
 	}
 	
 	@Override
 	public void writeToNBT(NBTTagCompound nbt)
 	{
-		String nbtVersion = NBT_VERSION;
-		if ("1.1".equals(nbtVersion))
-		{
-			nbt.setString("BaseName", this.basename);
-		}
-		else
-		{
-			nbt.setString("BaseName", this.basename);
-			super.writeToNBT(nbt);
-		}
+		nbt.setString("BaseName", this.name);
 	}
 	
 	@Override
 	public String toString()
 	{
-		StringBuilder result = new StringBuilder("PotionBase {");
-		if (this.basename != null)
-			result.append("Name=[\"").append(this.basename).append("\"]");
-		ItemStack ingredient = this.getIngredient();
-		if (ingredient != null)
-			result.append("&Ingredient=[").append(ingredient).append("]");
-		result.append("}");
+		StringBuilder result = new StringBuilder("PotionBase [");
+		result.append("Name:\"").append(this.name).append("\", ");
+		result.append("Ingredient:[").append(this.ingredient).append("]]");
 		return result.toString();
 	}
 	
 	@Override
-	public int compareTo(PotionType o)
+	public int compareTo(IPotionType o)
 	{
 		if (o instanceof PotionBase)
-			return (this.basename != null && ((PotionBase) o).basename != null) ? this.basename.compareTo(((PotionBase) o).basename) : 0;
-		else
-			return super.compareTo(o);
+		{
+			PotionBase base = (PotionBase) o;
+			return (this.name != null && base.name != null) ? this.name.compareTo(base.name) : 0;
+		}
+		return 0;
+	}
+	
+	public boolean matches(PotionBase base)
+	{
+		if (BrewingAPI.defaultAwkwardBrewing)
+		{
+			return "awkward".equals(base.getName());
+		}
+		return this.name.equals(base.getName());
+	}
+	
+	@Override
+	public IPotionType copy()
+	{
+		return new PotionBase(this.name, this.ingredient);
+	}
+	
+	@Override
+	public boolean isBadEffect()
+	{
+		return false;
+	}
+	
+	@Override
+	public PotionEffect getEffect()
+	{
+		return null;
+	}
+	
+	@Override
+	public int getMaxAmplifier()
+	{
+		return 0;
+	}
+	
+	@Override
+	public int getMaxDuration()
+	{
+		return 0;
+	}
+	
+	@Override
+	public int getDefaultDuration()
+	{
+		return 0;
+	}
+	
+	@Override
+	public IPotionType getInverted()
+	{
+		return null;
+	}
+	
+	@Override
+	public ItemStack getIngredient()
+	{
+		return this.ingredient;
+	}
+	
+	@Override
+	public PotionBase getBase()
+	{
+		return null;
+	}
+	
+	@Override
+	public boolean isBase()
+	{
+		return true;
+	}
+	
+	@Override
+	public IPotionType onImproved()
+	{
+		return this;
+	}
+	
+	@Override
+	public IPotionType onExtended()
+	{
+		return this;
+	}
+	
+	@Override
+	public IPotionType onDiluted()
+	{
+		return this;
+	}
+	
+	@Override
+	public IPotionType onGunpowderUsed()
+	{
+		return this;
+	}
+	
+	@Override
+	public IPotionType onInverted()
+	{
+		return this;
 	}
 }

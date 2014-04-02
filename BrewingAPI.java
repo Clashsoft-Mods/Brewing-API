@@ -11,8 +11,8 @@ import clashsoft.brewingapi.api.IIngredientHandler;
 import clashsoft.brewingapi.api.IPotionEffectHandler;
 import clashsoft.brewingapi.api.IPotionList;
 import clashsoft.brewingapi.block.BlockBrewingStand2;
+import clashsoft.brewingapi.brewing.IPotionType;
 import clashsoft.brewingapi.brewing.PotionList;
-import clashsoft.brewingapi.brewing.PotionType;
 import clashsoft.brewingapi.command.CommandGivePotion;
 import clashsoft.brewingapi.common.BAPICommonProxy;
 import clashsoft.brewingapi.entity.EntityPotion2;
@@ -221,7 +221,7 @@ public class BrewingAPI
 	public static List<IPotionEffectHandler>	effectHandlers		= new LinkedList<IPotionEffectHandler>();
 	public static List<IIngredientHandler>		ingredientHandlers	= new LinkedList<IIngredientHandler>();
 	
-	public static PotionType addPotionType(PotionType potionType)
+	public static IPotionType addPotionType(IPotionType potionType)
 	{
 		return potionType.register();
 	}
