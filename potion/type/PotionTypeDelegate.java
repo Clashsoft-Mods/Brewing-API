@@ -1,4 +1,4 @@
-package clashsoft.brewingapi.brewing;
+package clashsoft.brewingapi.potion.type;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

@@ -3,8 +3,8 @@ package clashsoft.brewingapi.command;
 import java.util.List;
 
 import clashsoft.brewingapi.BrewingAPI;
-import clashsoft.brewingapi.brewing.IPotionType;
-import clashsoft.brewingapi.brewing.PotionType;
+import clashsoft.brewingapi.potion.type.IPotionType;
+import clashsoft.brewingapi.potion.type.PotionType;
 
 import net.minecraft.command.*;
 import net.minecraft.entity.item.EntityItem;

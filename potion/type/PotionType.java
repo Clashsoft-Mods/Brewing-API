@@ -1,10 +1,11 @@
-package clashsoft.brewingapi.brewing;
+package clashsoft.brewingapi.potion.type;
 
 import java.util.*;
 
 import clashsoft.brewingapi.BrewingAPI;
-import clashsoft.brewingapi.api.IIngredientHandler;
 import clashsoft.brewingapi.item.ItemPotion2;
+import clashsoft.brewingapi.potion.IIngredientHandler;
+import clashsoft.brewingapi.potion.PotionList;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -401,12 +402,12 @@ public class PotionType extends AbstractPotionType
 		{
 			return new PotionTypeDelegate(effect, potionType);
 		}
-		return new PotionType(effect, effect.getAmplifier(), effect.getDuration());
+		return effect == null ? null : new PotionType(effect, effect.getAmplifier(), effect.getDuration());
 	}
 	
 	protected static IPotionType getFromEffect_(PotionEffect effect)
 	{
-		return (IPotionType) getFromID(effect.getPotionID());
+		return effect == null ? null : (IPotionType) getFromID(effect.getPotionID());
 	}
 	
 	/**

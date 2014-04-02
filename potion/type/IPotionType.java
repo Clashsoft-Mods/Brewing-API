@@ -1,4 +1,4 @@
-package clashsoft.brewingapi.brewing;
+package clashsoft.brewingapi.potion.type;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package clashsoft.brewingapi.brewing;
+package clashsoft.brewingapi.potion.type;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,11 @@ public abstract class AbstractPotionType implements IPotionType
 		{
 			combinableTypes.add(this);
 		}
+		if (this.hasEffect())
+		{
+			effectTypes.add(this);
+		}
+		
 		return this;
 	}
 	

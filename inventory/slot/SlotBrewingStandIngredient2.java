@@ -1,6 +1,6 @@
 package clashsoft.brewingapi.inventory.slot;
 
-import clashsoft.brewingapi.brewing.PotionType;
+import clashsoft.brewingapi.potion.type.PotionType;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;

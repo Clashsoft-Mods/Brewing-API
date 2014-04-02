@@ -1,6 +1,8 @@
-package clashsoft.brewingapi.brewing;
+package clashsoft.brewingapi.potion;
 
-import clashsoft.brewingapi.api.IPotionList;
+import clashsoft.brewingapi.potion.type.IPotionType;
+import clashsoft.brewingapi.potion.type.PotionBase;
+import clashsoft.brewingapi.potion.type.PotionType;
 import clashsoft.cslib.minecraft.item.CSStacks;
 
 import net.minecraft.init.Items;

@@ -3,11 +3,11 @@ package clashsoft.brewingapi.tileentity;
 import java.util.ArrayList;
 import java.util.List;
 
-import clashsoft.brewingapi.api.IIngredientHandler;
-import clashsoft.brewingapi.brewing.IPotionType;
-import clashsoft.brewingapi.brewing.PotionBase;
-import clashsoft.brewingapi.brewing.PotionType;
 import clashsoft.brewingapi.item.ItemPotion2;
+import clashsoft.brewingapi.potion.IIngredientHandler;
+import clashsoft.brewingapi.potion.type.IPotionType;
+import clashsoft.brewingapi.potion.type.PotionBase;
+import clashsoft.brewingapi.potion.type.PotionType;
 
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
