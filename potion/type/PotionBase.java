@@ -7,7 +7,6 @@ import java.util.Map;
 
 import clashsoft.brewingapi.BrewingAPI;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
@@ -80,25 +79,11 @@ public class PotionBase extends AbstractPotionType
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
-		String nbtVersion = nbt.getString("VERSION");
-		if ("1.1".equals(nbtVersion))
+		PotionBase base = baseMap.get(nbt.getString("BaseName"));
+		if (base != null)
 		{
-			PotionBase base = baseMap.get(nbt.getString("BaseName"));
-			if (base != null)
-			{
-				this.name = base.name;
-				this.ingredient = base.ingredient;
-			}
-		}
-		else
-		{
-			this.name = nbt.getString("BaseName");
-			
-			int ingredientID = nbt.getInteger("IngredientID");
-			int ingredientAmount = nbt.getInteger("IngredientAmount");
-			int ingredientDamage = nbt.getInteger("IngredientDamage");
-			
-			this.ingredient = new ItemStack(Item.getItemById(ingredientID), ingredientAmount, ingredientDamage);
+			this.name = base.name;
+			this.ingredient = base.ingredient;
 		}
 	}
 	

@@ -296,7 +296,7 @@ public class PotionType extends AbstractPotionType
 		this.effect.writeCustomPotionEffectToNBT(effect);
 		nbt.setTag("Effect", effect);
 	}
-
+	
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
@@ -524,24 +524,37 @@ public class PotionType extends AbstractPotionType
 		IIngredientHandler handler = getIngredientHandler(ingredient);
 		
 		if (handler != null)
-			return handler.canApplyIngredient(ingredient, potion);
-		else if (getFromIngredient(ingredient) != null)
 		{
-			IPotionType potionType = getFromIngredient(ingredient);
-			PotionBase requiredBase = potionType.getBase();
-			
-			List<IPotionType> potionTypes = ((ItemPotion2) potion.getItem()).getEffects(potion);
-			
-			if (requiredBase == null)
-				return potionTypes.isEmpty();
-			else
-				for (IPotionType pt : potionTypes)
+			return handler.canApplyIngredient(ingredient, potion);
+		}
+		else
+		{
+			IPotionType type = getFromIngredient(ingredient);
+			if (type != null)
+			{
+				List<IPotionType> potionTypes = ((ItemPotion2) potion.getItem()).getEffects(potion);
+				return hasBase(type, potionTypes);
+			}
+		}
+		return false;
+	}
+	
+	public static boolean hasBase(IPotionType type, List<IPotionType> types)
+	{
+		PotionBase base = type.getBase();
+		if (base == null)
+		{
+			return true;
+		}
+		else
+		{
+			for (IPotionType pt : types)
+			{
+				if (pt instanceof PotionBase && base.matches((PotionBase) pt))
 				{
-					if (pt instanceof PotionBase && requiredBase.matches((PotionBase) pt))
-					{
-						return true;
-					}
+					return true;
 				}
+			}
 		}
 		return false;
 	}
@@ -562,22 +575,18 @@ public class PotionType extends AbstractPotionType
 	 * Returns a PotionType that is brewed with the itemstack. it doesn't check for the amount.
 	 * Ignores Special Ingredient Handlers.
 	 * 
-	 * @param ingredient
+	 * @param stack
 	 * @return PotionType that is brewed with the ItemStack
 	 */
-	public static IPotionType getFromIngredient(ItemStack ingredient)
+	public static IPotionType getFromIngredient(ItemStack stack)
 	{
-		if (ingredient != null)
+		if (stack != null)
 		{
 			for (IPotionType pt : potionTypeList)
 			{
-				if (pt.getIngredient() != null)
+				if (stacksEqual(stack, pt.getIngredient()))
 				{
-					// Ore Dictionary
-					if (OreDictionary.itemMatches(pt.getIngredient(), ingredient, true))
-						return pt;
-					if (pt.getIngredient().getItem() == ingredient.getItem() && pt.getIngredient().getItemDamage() == ingredient.getItemDamage())
-						return pt;
+					return pt;
 				}
 			}
 		}
@@ -610,13 +619,14 @@ public class PotionType extends AbstractPotionType
 	{
 		if (stack != null && stack.getItem() instanceof ItemPotion2)
 		{
-			List<IPotionType> effects = ((ItemPotion2) stack.getItem()).getEffects(stack);
-			float value = ((ItemPotion2) stack.getItem()).isSplashDamage(stack.getItemDamage()) ? 0.3F : 0.2F;
+			ItemPotion2 item = ((ItemPotion2) stack.getItem());
+			List<IPotionType> effects = item.getEffects(stack);
+			float value = item.isSplashDamage(stack.getItemDamage()) ? 0.3F : 0.2F;
 			for (IPotionType b : effects)
 			{
 				if (b.hasEffect())
 				{
-					float f1 = b.isBadEffect() ? 0.4F : 0.5F;
+					float f1 = b.isBadEffect() ? 0.2F : 0.3F;
 					value += f1 + (b.getAmplifier() * 0.1F) + (b.getEffect().getDuration() / 600);
 				}
 			}
@@ -635,7 +645,7 @@ public class PotionType extends AbstractPotionType
 				boolean duplicate = false;
 				for (IPotionType b2 : result)
 				{
-					if (b.hasEffect() && b2.hasEffect() && b.getPotionID() == b2.getPotionID())
+					if (b.getPotionID() == b2.getPotionID())
 					{
 						duplicate = true;
 						break;
@@ -672,5 +682,20 @@ public class PotionType extends AbstractPotionType
 			return result;
 		}
 		return Collections.EMPTY_LIST;
+	}
+	
+	public static boolean stacksEqual(ItemStack stack1, ItemStack stack2)
+	{
+		if (stack1 == null)
+			return stack2 == null;
+		if (stack2 == null)
+			return stack1 == null;
+		
+		if (stack1.isItemEqual(stack2))
+			return true;
+		if (OreDictionary.itemMatches(stack1, stack2, true))
+			return true;
+		
+		return false;
 	}
 }

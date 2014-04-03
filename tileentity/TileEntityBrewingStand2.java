@@ -6,33 +6,27 @@ import java.util.List;
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.potion.IIngredientHandler;
 import clashsoft.brewingapi.potion.type.IPotionType;
-import clashsoft.brewingapi.potion.type.PotionBase;
 import clashsoft.brewingapi.potion.type.PotionType;
 
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntityBrewingStand;
-import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.Constants;
 
 public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements ISidedInventory
 {
 	public EntityPlayer	thePlayer			= null;
 	
-	/** The itemstacks currently placed in the slots of the brewing stand */
 	private ItemStack[]	brewingItemStacks	= new ItemStack[4];
 	private int			brewTime;
 	
-	/**
-	 * an integer with each bit specifying whether that slot of the stand contains a potion
-	 */
 	private int			filledSlots;
-	private ItemStack	ingredient;
 	
 	public TileEntityBrewingStand2()
 	{
@@ -43,33 +37,18 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	{
 		if (this.thePlayer != null && !this.thePlayer.worldObj.isRemote)
 		{
-			int i = this.getPotions();
 			float f = 0F;
+			for (int i = 0; i < 3; i++)
+			{
+				ItemStack stack = this.brewingItemStacks[i];
+				if (stack != null)
+				{
+					f += PotionType.getExperience(stack);
+				}
+			}
+			
+			int i = Math.round(f);
 			int j;
-			for (ItemStack is : this.brewingItemStacks)
-			{
-				if (is != null && is.getItem() instanceof ItemPotion2)
-				{
-					f += PotionType.getExperience(is);
-				}
-			}
-			
-			if (f == 0.0F)
-			{
-				i = 0;
-			}
-			else if (f < 1.0F)
-			{
-				j = MathHelper.floor_float(i * f);
-				
-				if (j < MathHelper.ceiling_float_int(i * f) && (float) Math.random() < i * f - j)
-				{
-					++j;
-				}
-				
-				i = j;
-			}
-			
 			while (i > 0)
 			{
 				j = EntityXPOrb.getXPSplit(i);
@@ -77,19 +56,6 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 				this.thePlayer.worldObj.spawnEntityInWorld(new EntityXPOrb(this.thePlayer.worldObj, this.thePlayer.posX, this.thePlayer.posY + 0.5D, this.thePlayer.posZ + 0.5D, j));
 			}
 		}
-	}
-	
-	public int getPotions()
-	{
-		int i = 0;
-		for (ItemStack is : this.brewingItemStacks)
-		{
-			if (is != null && is.getItem() instanceof ItemPotion2)
-			{
-				i++;
-			}
-		}
-		return i;
 	}
 	
 	@Override
@@ -110,62 +76,60 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	
 	private boolean canBrew()
 	{
-		if (this.brewingItemStacks[3] != null && this.brewingItemStacks[3].stackSize > 0)
+		ItemStack ingredient = this.brewingItemStacks[3];
+		if (ingredient != null && ingredient.stackSize > 0)
 		{
-			this.ingredient = this.brewingItemStacks[3];
+			Item item = ingredient.getItem();
 			
-			if (!PotionType.isPotionIngredient(this.ingredient))
-				return false;
-			
-			for (int potionIndex = 0; potionIndex < 3; ++potionIndex)
+			for (int i = 0; i < 3; i++)
 			{
-				if (this.brewingItemStacks[potionIndex] != null)
+				ItemStack potionStack = this.brewingItemStacks[i];
+				if (potionStack != null)
 				{
-					ItemStack potion = this.brewingItemStacks[potionIndex];
-					ItemPotion2 item = (ItemPotion2) potion.getItem();
-					boolean water = item.isWater(potion);
-					List<IPotionType> potionTypes = item.getEffects(potion);
+					ItemPotion2 potion = (ItemPotion2) potionStack.getItem();
+					boolean water = potion.isWater(potionStack);
+					List<IPotionType> types = potion.getEffects(potionStack);
 					
-					if (this.ingredient.getItem() == Items.glowstone_dust && !water)
+					if (item == Items.glowstone_dust && !water)
 					{
-						for (int i = 0; i < potionTypes.size(); i++)
+						for (IPotionType type : types)
 						{
-							if (potionTypes.get(i).isImprovable())
+							if (type.isImprovable())
 							{
 								return true;
 							}
 						}
 					}
-					else if (this.ingredient.getItem() == Items.redstone && !water)
+					else if (item == Items.redstone && !water)
 					{
-						for (int i = 0; i < potionTypes.size(); i++)
+						for (IPotionType type : types)
 						{
-							if (potionTypes.get(i).isExtendable())
+							if (type.isExtendable())
 							{
 								return true;
 							}
 						}
 					}
-					else if (this.ingredient.getItem() == Items.fermented_spider_eye && !water)
+					else if (item == Items.fermented_spider_eye && !water)
 					{
-						for (int i = 0; i < potionTypes.size(); i++)
+						for (IPotionType type : types)
 						{
-							if (potionTypes.get(i).isInversible())
+							if (type.isInversible())
 							{
 								return true;
 							}
 						}
 					}
-					else if (this.ingredient.getItem() == Items.gunpowder)
+					else if (item == Items.gunpowder)
 					{
-						if (!item.isSplash(potion))
+						if (!potion.isSplash(potionStack))
 						{
 							return true;
 						}
 					}
 					else
 					{
-						return PotionType.canApplyIngredient(this.ingredient, potion);
+						return PotionType.canApplyIngredient(ingredient, potionStack);
 					}
 				}
 			}
@@ -175,112 +139,99 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	
 	private void brewPotions()
 	{
-		this.ingredient = this.brewingItemStacks[3];
+		ItemStack ingredient = this.brewingItemStacks[3];
+		Item item = ingredient.getItem();
 		
-		for (int potionIndex = 0; potionIndex < 3; ++potionIndex)
+		for (int i = 0; i < 3; ++i)
 		{
-			if (this.brewingItemStacks[potionIndex] != null)
+			ItemStack stack = this.brewingItemStacks[i];
+			if (stack != null)
 			{
-				ItemStack potion = this.brewingItemStacks[potionIndex];
-				ItemPotion2 item = (ItemPotion2) potion.getItem();
-				int damage = potion.getItemDamage();
-				boolean water = item.isWater(potion);
-				List<IPotionType> potionTypes = item.getEffects(potion);
-				List<IPotionType> newPotionTypes = new ArrayList(potionTypes.size());
+				ItemPotion2 potionItem = (ItemPotion2) stack.getItem();
+				int damage = stack.getItemDamage();
+				boolean water = potionItem.isWater(stack);
+				List<IPotionType> types = potionItem.getEffects(stack);
+				List<IPotionType> newTypes = new ArrayList(types.size());
 				
 				boolean flag = false;
 				
-				if (this.ingredient.getItem() == Items.gunpowder)
+				if (item == Items.gunpowder)
 				{
-					damage = item.setSplash(potion, true);
+					damage = potionItem.setSplash(stack, true);
 				}
 				
-				if (this.ingredient.getItem() == Items.glowstone_dust && !water)
+				if (item == Items.glowstone_dust && !water)
 				{
-					for (int i = 0; i < potionTypes.size(); i++)
+					for (IPotionType type : types)
 					{
-						newPotionTypes.add(potionTypes.get(i).onImproved());
+						newTypes.add(type.onImproved());
 					}
 				}
-				else if (this.ingredient.getItem() == Items.redstone && !water)
+				else if (item == Items.redstone && !water)
 				{
-					for (int i = 0; i < potionTypes.size(); i++)
+					for (IPotionType type : types)
 					{
-						newPotionTypes.add(potionTypes.get(i).onExtended());
+						newTypes.add(type.onExtended());
 					}
 				}
-				else if (this.ingredient.getItem() == Items.fermented_spider_eye && !water)
+				else if (item == Items.fermented_spider_eye && !water)
 				{
-					for (int i = 0; i < potionTypes.size(); i++)
+					for (IPotionType type : types)
 					{
-						newPotionTypes.add(potionTypes.get(i).onInverted());
+						newTypes.add(type.onInverted());
 					}
 				}
-				else if (this.ingredient.getItem() == Items.gunpowder && !water)
+				else if (item == Items.gunpowder && !water)
 				{
-					for (int i = 0; i < potionTypes.size(); i++)
+					for (IPotionType type : types)
 					{
-						newPotionTypes.add(potionTypes.get(i).onGunpowderUsed());
+						newTypes.add(type.onGunpowderUsed());
 					}
 				}
 				else
 				{
-					IIngredientHandler handler = PotionType.getIngredientHandler(this.ingredient);
-					if (handler != null && handler.canApplyIngredient(this.ingredient, potion))
+					IIngredientHandler handler = PotionType.getIngredientHandler(ingredient);
+					if (handler != null && handler.canApplyIngredient(ingredient, stack))
 					{
-						this.brewingItemStacks[potionIndex] = handler.applyIngredient(this.ingredient, potion);
+						this.brewingItemStacks[i] = handler.applyIngredient(ingredient, stack);
 						continue;
 					}
 					
-					IPotionType potionType = PotionType.getFromIngredient(this.ingredient);
-					if (potionType != null)
+					IPotionType potionType = PotionType.getFromIngredient(ingredient);
+					if (potionType != null && PotionType.hasBase(potionType, types))
 					{
-						PotionBase requiredBase = potionType.getBase();
-						
-						if (requiredBase == null)
-							newPotionTypes.add(potionType);
-						else
-						{
-							for (IPotionType pt : potionTypes)
-							{
-								if (pt instanceof PotionBase && requiredBase.matches((PotionBase) pt))
-								{
-									newPotionTypes.add(potionType);	
-								}
-							}
-						}
+						newTypes.add(potionType);
 					}
 				}
 				
-				potion.setItemDamage(damage | 1);
+				stack.setItemDamage(damage | 1);
+				stack.stackTagCompound = new NBTTagCompound();
 				
-				if (potion.hasTagCompound())
+				for (IPotionType potionType : newTypes)
 				{
-					potion.getTagCompound().removeTag(PotionType.COMPOUND_NAME);
+					potionType.apply(stack);
 				}
 				
-				for (IPotionType potionType : newPotionTypes)
-				{
-					potionType.apply(potion);
-				}
-				
-				this.brewingItemStacks[potionIndex] = potion;
+				this.brewingItemStacks[i] = stack;
 			}
 		}
 		
-		if (this.ingredient.getItem().hasContainerItem(this.ingredient))
+		ItemStack container = item.getContainerItem(ingredient);
+		if (container != null)
 		{
-			this.brewingItemStacks[3] = this.ingredient.getItem().getContainerItem(this.brewingItemStacks[3]);
+			ingredient = container;
 		}
 		else
 		{
-			--this.brewingItemStacks[3].stackSize;
+			--ingredient.stackSize;
 			
-			if (this.brewingItemStacks[3].stackSize <= 0)
+			if (ingredient.stackSize <= 0)
 			{
-				this.brewingItemStacks[3] = null;
+				ingredient = null;
 			}
 		}
+		
+		this.brewingItemStacks[3] = ingredient;
 	}
 	
 	public void setBrewTime(int brewTime)
@@ -321,16 +272,10 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 				this.brewTime = 0;
 				this.markDirty();
 			}
-			else if (this.ingredient != this.brewingItemStacks[3])
-			{
-				this.brewTime = 0;
-				this.markDirty();
-			}
 		}
 		else if (this.canBrew())
 		{
 			this.brewTime = this.getMaxBrewTime();
-			this.ingredient = this.brewingItemStacks[3];
 		}
 		
 		int filledSlots = this.getFilledSlots();
@@ -355,11 +300,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 		{
 			NBTTagCompound tag = list.getCompoundTagAt(i);
 			byte slotID = tag.getByte("Slot");
-			
-			if (slotID >= 0 && slotID < this.brewingItemStacks.length)
-			{
-				this.brewingItemStacks[slotID] = ItemStack.loadItemStackFromNBT(tag);
-			}
+			this.brewingItemStacks[slotID] = ItemStack.loadItemStackFromNBT(tag);
 		}
 		
 		this.brewTime = nbt.getShort("BrewTime");
@@ -393,48 +334,45 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	}
 	
 	@Override
-	public ItemStack getStackInSlot(int slotID)
+	public ItemStack getStackInSlot(int slot)
 	{
-		return slotID >= 0 && slotID < this.brewingItemStacks.length ? this.brewingItemStacks[slotID] : null;
+		return this.brewingItemStacks[slot];
 	}
 	
 	@Override
-	public ItemStack decrStackSize(int slotID, int amount)
+	public ItemStack decrStackSize(int slot, int amount)
 	{
-		if (slotID >= 0 && slotID < this.brewingItemStacks.length)
+		ItemStack stack = this.brewingItemStacks[slot];
+		if (stack != null)
 		{
-			ItemStack stack = this.brewingItemStacks[slotID];
-			this.brewingItemStacks[slotID] = null;
-			return stack;
+			if (stack.stackSize <= amount)
+			{
+				this.brewingItemStacks[slot] = null;
+				return stack;
+			}
+			else
+			{
+				ItemStack stack1 = stack.splitStack(amount);
+				if (stack.stackSize <= 0)
+				{
+					this.brewingItemStacks[slot] = null;
+				}
+				return stack1;
+			}
 		}
-		else
-		{
-			return null;
-		}
+		return null;
 	}
 	
 	@Override
-	public ItemStack getStackInSlotOnClosing(int slotID)
+	public ItemStack getStackInSlotOnClosing(int slot)
 	{
-		if (slotID >= 0 && slotID < this.brewingItemStacks.length)
-		{
-			ItemStack stack = this.brewingItemStacks[slotID];
-			this.brewingItemStacks[slotID] = null;
-			return stack;
-		}
-		else
-		{
-			return null;
-		}
+		return this.getStackInSlot(slot);
 	}
 	
 	@Override
-	public void setInventorySlotContents(int slotID, ItemStack stack)
+	public void setInventorySlotContents(int slot, ItemStack stack)
 	{
-		if (slotID >= 0 && slotID < this.brewingItemStacks.length)
-		{
-			this.brewingItemStacks[slotID] = stack;
-		}
+		this.brewingItemStacks[slot] = stack;
 	}
 	
 	@Override
@@ -450,12 +388,16 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 		return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) == this && player.getDistanceSq(this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D) <= 64.0D;
 	}
 	
-	/**
-	 * Returns true if automation is allowed to insert the given stack (ignoring stack size) into
-	 * the given slot.
-	 */
-	public boolean isStackValidForSlot(int slotID, ItemStack stack)
+	@Override
+	public boolean isItemValidForSlot(int slotID, ItemStack stack)
 	{
-		return slotID == 3 && PotionType.isPotionIngredient(stack);
+		if (slotID == 3)
+		{
+			return PotionType.isPotionIngredient(stack);
+		}
+		else
+		{
+			return stack.getItem() instanceof ItemPotion2;
+		}
 	}
 }

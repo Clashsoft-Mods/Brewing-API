@@ -89,20 +89,8 @@ public interface IPotionType extends Comparable<IPotionType>
 	
 	public IPotionType onInverted();
 	
-	/**
-	 * Returns the subtypes for one Potion depending on improvability and extendability
-	 * 
-	 * @return
-	 */
 	public List<IPotionType> getSubTypes();
 	
-	/**
-	 * Writes the PotionType to the ItemStack NBT
-	 * 
-	 * @param stack
-	 *            the stack
-	 * @return ItemStack with PotionType NBT
-	 */
 	public ItemStack apply(ItemStack stack);
 	
 	public ItemStack remove(ItemStack stack);
