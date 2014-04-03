@@ -11,7 +11,6 @@ import clashsoft.brewingapi.block.BlockBrewingStand2;
 import clashsoft.brewingapi.command.CommandGivePotion;
 import clashsoft.brewingapi.common.BAPICommonProxy;
 import clashsoft.brewingapi.entity.EntityPotion2;
-import clashsoft.brewingapi.item.ItemBrewingStand2;
 import clashsoft.brewingapi.item.ItemGlassBottle2;
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.lib.PotionDispenser;
@@ -49,6 +48,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemReed;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -88,7 +88,7 @@ public class BrewingAPI
 	public static CreativeTabs		potions;
 	
 	public static Block				brewingStand2;
-	public static Item				brewingStand2Item;
+	public static Item				brewingStandItem2;
 	
 	public static ItemPotion2		potion2;
 	public static ItemGlassBottle2	glassBottle2;
@@ -97,8 +97,6 @@ public class BrewingAPI
 	{
 		expandPotionList(64);
 	}
-	
-	// API Stuff
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -115,13 +113,13 @@ public class BrewingAPI
 		
 		CSConfig.saveConfig();
 		
-		brewingStand2 = (new BlockBrewingStand2()).setBlockName("brewing_stand").setHardness(0.5F).setLightLevel(0.125F);
-		brewingStand2Item = (new ItemBrewingStand2()).setUnlocalizedName("brewing_stand").setTextureName("brewing_stand");
+		brewingStand2 = new BlockBrewingStand2().setBlockName("brewingStand").setHardness(0.5F).setLightLevel(0.125F);
+		brewingStandItem2 = new ItemReed(brewingStand2).setUnlocalizedName("brewingStand").setTextureName("brewing_stand").setCreativeTab(CreativeTabs.tabBrewing);
 		potion2 = (ItemPotion2) (new ItemPotion2()).setUnlocalizedName("potion");
 		glassBottle2 = (ItemGlassBottle2) (new ItemGlassBottle2()).setUnlocalizedName("glassBottle").setTextureName("potion_bottle_empty");
 		
 		CSBlocks.replaceBlock(Blocks.brewing_stand, brewingStand2);
-		CSItems.replaceItem(Items.brewing_stand, brewingStand2Item);
+		CSItems.replaceItem(Items.brewing_stand, brewingStandItem2);
 		CSItems.replaceItem(Items.potionitem, potion2);
 		CSItems.replaceItem(Items.glass_bottle, glassBottle2);
 	}
