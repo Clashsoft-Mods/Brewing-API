@@ -6,6 +6,8 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 
 public class AttributeModifierComparator implements Comparator<AttributeModifier>
 {
+	public static AttributeModifierComparator	instance	= new AttributeModifierComparator();
+	
 	@Override
 	public int compare(AttributeModifier o1, AttributeModifier o2)
 	{

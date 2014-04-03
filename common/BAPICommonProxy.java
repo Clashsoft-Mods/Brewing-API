@@ -2,6 +2,7 @@ package clashsoft.brewingapi.common;
 
 import clashsoft.brewingapi.inventory.ContainerBrewingStand2;
 import clashsoft.brewingapi.item.ItemPotion2;
+import clashsoft.brewingapi.network.PacketSplashEffect;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
 import clashsoft.cslib.minecraft.network.CSPacket;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -57,7 +58,7 @@ public class BAPICommonProxy implements IGuiHandler
 	{
 		if (!world.isRemote)
 		{
-			CSPacket packet = new SplashEffectData(x, y, z, color, isInstant);
+			CSPacket packet = new PacketSplashEffect(x, y, z, color, isInstant);
 			
 		}
 	}

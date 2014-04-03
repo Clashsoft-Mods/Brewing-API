@@ -283,7 +283,7 @@ public class PotionType extends AbstractPotionType
 	{
 		if (this.isInversible())
 		{
-			PotionEffect pe = new PotionEffect(inverted.getPotionID(), (int) (this.getDuration() * 0.75D), this.getAmplifier());
+			PotionEffect pe = new PotionEffect(this.inverted.getPotionID(), (int) (this.getDuration() * 0.75D), this.getAmplifier());
 			return new PotionTypeDelegate(pe, this.inverted);
 		}
 		return this;

@@ -68,7 +68,7 @@ public class PotionBase extends AbstractPotionType
 	@Override
 	public PotionBase register()
 	{
-		PotionType.potionTypeList.add(this);
+		IPotionType.potionTypeList.add(this);
 		baseList.add(this);
 		if (this.name != null)
 			baseMap.put(this.name, this);

@@ -47,9 +47,7 @@ import net.minecraftforge.common.util.Constants;
  */
 public class ItemPotion2 extends ItemPotion
 {
-	public static Comparator<AttributeModifier>		MODIFIER_COMPARATOR	= new AttributeModifierComparator();
-	
-	public Map<NBTTagCompound, List<IPotionType>>	effectCache			= new HashMap();
+	public Map<NBTTagCompound, List<IPotionType>>	effectCache	= new HashMap();
 	
 	public IIcon									bottle;
 	public IIcon									splashbottle;
@@ -156,7 +154,7 @@ public class ItemPotion2 extends ItemPotion
 	 */
 	public boolean isSplash(ItemStack stack)
 	{
-		return isSplashDamage(stack.getItemDamage());
+		return this.isSplashDamage(stack.getItemDamage());
 	}
 	
 	public boolean isSplashDamage(int metadata)
@@ -339,7 +337,7 @@ public class ItemPotion2 extends ItemPotion
 			
 			if (!potionTypes.isEmpty())
 			{
-				if (potionTypes.size() == PotionType.combinableTypes.size())
+				if (potionTypes.size() == IPotionType.combinableTypes.size())
 				{
 					result.insert(0, EnumChatFormatting.BLUE.toString()).append(I18n.getString("potion.alleffects.postfix"));
 				}
@@ -423,7 +421,7 @@ public class ItemPotion2 extends ItemPotion
 		if (!this.isWater(stack))
 		{
 			List<IPotionType> potionTypes = this.getEffects(stack);
-			Multimap<String, AttributeModifier> hashmultimap = TreeMultimap.create(String.CASE_INSENSITIVE_ORDER, MODIFIER_COMPARATOR);
+			Multimap<String, AttributeModifier> hashmultimap = TreeMultimap.create(String.CASE_INSENSITIVE_ORDER, AttributeModifierComparator.instance);
 			int size = potionTypes.size();
 			
 			if (size > 0)
@@ -700,7 +698,7 @@ public class ItemPotion2 extends ItemPotion
 			
 			if (BrewingAPI.isMorePotionsModInstalled())
 			{
-				for (IPotionType potionType : PotionType.combinableTypes)
+				for (IPotionType potionType : IPotionType.combinableTypes)
 				{
 					if (!potionType.isBadEffect())
 					{
@@ -729,9 +727,9 @@ public class ItemPotion2 extends ItemPotion
 			{
 				for (int i = 1; i <= 2; i++)
 				{
-					for (IPotionType pt1 : PotionType.combinableTypes)
+					for (IPotionType pt1 : IPotionType.combinableTypes)
 					{
-						for (IPotionType pt2 : PotionType.combinableTypes)
+						for (IPotionType pt2 : IPotionType.combinableTypes)
 						{
 							if (pt1 != pt2)
 							{

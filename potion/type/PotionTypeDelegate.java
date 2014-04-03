@@ -6,8 +6,8 @@ import net.minecraft.potion.PotionEffect;
 
 public class PotionTypeDelegate extends AbstractPotionType
 {
-	private PotionEffect effect;
-	private IPotionType thePotionType;
+	private PotionEffect	effect;
+	private IPotionType		thePotionType;
 	
 	public PotionTypeDelegate()
 	{
@@ -29,31 +29,31 @@ public class PotionTypeDelegate extends AbstractPotionType
 		this.effect = effect;
 		this.thePotionType = PotionType.getFromEffect_(effect);
 	}
-
+	
 	@Override
 	public IPotionType copy()
 	{
 		return new PotionTypeDelegate(this.effect);
 	}
-
+	
 	@Override
 	public boolean isBadEffect()
 	{
 		return this.thePotionType.isBadEffect();
 	}
-
+	
 	@Override
 	public PotionEffect getEffect()
 	{
 		return this.effect;
 	}
-
+	
 	@Override
 	public int getMaxAmplifier()
 	{
 		return this.thePotionType.getMaxAmplifier();
 	}
-
+	
 	@Override
 	public int getMaxDuration()
 	{
@@ -65,37 +65,37 @@ public class PotionTypeDelegate extends AbstractPotionType
 	{
 		return this.thePotionType.getDuration();
 	}
-
+	
 	@Override
 	public IPotionType getInverted()
 	{
 		return this.thePotionType.getInverted();
 	}
-
+	
 	@Override
 	public ItemStack getIngredient()
 	{
 		return this.thePotionType.getIngredient();
 	}
-
+	
 	@Override
 	public PotionBase getBase()
 	{
 		return this.thePotionType.getBase();
 	}
-
+	
 	@Override
 	public boolean isBase()
 	{
 		return false;
 	}
-
+	
 	@Override
 	public IPotionType onImproved()
 	{
 		return this.thePotionType.onImproved();
 	}
-
+	
 	@Override
 	public IPotionType onExtended()
 	{
@@ -107,19 +107,19 @@ public class PotionTypeDelegate extends AbstractPotionType
 	{
 		return this.thePotionType.onDiluted();
 	}
-
+	
 	@Override
 	public IPotionType onGunpowderUsed()
 	{
 		return this.thePotionType.onGunpowderUsed();
 	}
-
+	
 	@Override
 	public IPotionType onInverted()
 	{
 		return this.thePotionType.onInverted();
 	}
-
+	
 	@Override
 	public void writeToNBT(NBTTagCompound nbt)
 	{
@@ -127,7 +127,7 @@ public class PotionTypeDelegate extends AbstractPotionType
 		this.effect.writeCustomPotionEffectToNBT(effect);
 		nbt.setTag("Effect", effect);
 	}
-
+	
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
@@ -138,9 +138,9 @@ public class PotionTypeDelegate extends AbstractPotionType
 		}
 		else
 		{
-			int id = nbt.getInteger("PotionID") ;
-			int duration = nbt.getInteger("PotionDuration") ;
-			int amplifier = nbt.getInteger("PotionAmplifier") ;
+			int id = nbt.getInteger("PotionID");
+			int duration = nbt.getInteger("PotionDuration");
+			int amplifier = nbt.getInteger("PotionAmplifier");
 			
 			this.effect = new PotionEffect(id, duration, amplifier);
 		}

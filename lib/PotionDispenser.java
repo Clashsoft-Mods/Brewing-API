@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 
 public class PotionDispenser extends BehaviorProjectileDispense
 {
-	public ItemStack stack;
+	public ItemStack	stack;
 	
 	@Override
 	public ItemStack dispenseStack(IBlockSource blockSource, ItemStack stack)
