@@ -262,7 +262,7 @@ public class BrewingAPI
 				{
 					if (handler.canHandle(effect))
 					{
-						handler.onPotionUpdate(living.getAge(), living, effect);
+						handler.onPotionUpdate(living.deathTime, living, effect);
 					}
 				}
 			}
