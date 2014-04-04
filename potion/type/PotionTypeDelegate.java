@@ -75,7 +75,8 @@ public class PotionTypeDelegate extends AbstractPotionType
 	@Override
 	public ItemStack getIngredient()
 	{
-		return this.thePotionType.getIngredient();
+		ItemStack ingredient = this.thePotionType.getIngredient();
+		return ingredient == null ? null : ingredient.copy();
 	}
 	
 	@Override

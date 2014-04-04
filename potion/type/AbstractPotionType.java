@@ -152,16 +152,21 @@ public abstract class AbstractPotionType implements IPotionType
 		if (stack != null)
 		{
 			if (stack.stackTagCompound == null)
+			{
 				stack.setTagCompound(new NBTTagCompound());
-			
-			if (!stack.stackTagCompound.hasKey(COMPOUND_NAME))
-				stack.stackTagCompound.setTag(COMPOUND_NAME, new NBTTagList());
+			}
 			
 			NBTTagList tagList = (NBTTagList) stack.stackTagCompound.getTag(COMPOUND_NAME);
+			if (tagList == null)
+			{
+				tagList = new NBTTagList();
+			}
 			
-			NBTTagCompound compound = new NBTTagCompound();
-			this.writeToNBT(compound);
-			tagList.appendTag(compound);
+			NBTTagCompound nbt = new NBTTagCompound();
+			this.writeToNBT(nbt);
+			tagList.appendTag(nbt);
+			
+			stack.stackTagCompound.setTag(COMPOUND_NAME, tagList);
 		}
 		return stack;
 	}

@@ -88,7 +88,6 @@ public class ItemPotion2 extends ItemPotion
 	{
 		if (stack != null && !this.isWater(stack))
 		{
-			List<IPotionType> result = new ArrayList();
 			NBTTagCompound compound = stack.getTagCompound();
 			if (compound != null)
 			{
@@ -98,6 +97,7 @@ public class ItemPotion2 extends ItemPotion
 				}
 				else
 				{
+					List<IPotionType> result = new ArrayList();
 					NBTTagList tagList = compound.getTagList("Brewing", Constants.NBT.TAG_COMPOUND);
 					
 					for (int index = 0; index < tagList.tagCount(); ++index)
@@ -111,10 +111,17 @@ public class ItemPotion2 extends ItemPotion
 				}
 			}
 			else
-				result = this.getLegacyEffects(stack);
+			{
+				return this.getLegacyEffects(stack);
+			}
 		}
-		
 		return Collections.EMPTY_LIST;
+	}
+	
+	public boolean hasEffects(ItemStack stack)
+	{
+		List<IPotionType> effects = this.getEffects(stack);
+		return effects != null && !effects.isEmpty();
 	}
 	
 	/**
@@ -224,8 +231,11 @@ public class ItemPotion2 extends ItemPotion
 		{
 			for (IPotionType potionType : this.getEffects(stack))
 			{
-				if (potionType.hasEffect())
-					player.addPotionEffect(potionType.getEffect());
+				PotionEffect effect = potionType.getEffect();
+				if (effect != null)
+				{
+					player.addPotionEffect(new PotionEffect(effect));
+				}
 			}
 		}
 		
@@ -234,9 +244,13 @@ public class ItemPotion2 extends ItemPotion
 			--stack.stackSize;
 			
 			if (stack.stackSize <= 0)
+			{
 				return this.getGlassBottle();
+			}
 			else
+			{
 				player.inventory.addItemStackToInventory(this.getGlassBottle());
+			}
 		}
 		
 		return stack;
@@ -668,12 +682,6 @@ public class ItemPotion2 extends ItemPotion
 		if (tab == CreativeTabs.tabBrewing || tab == CreativeTabs.tabAllSearch)
 		{
 			list.add(new ItemStack(this, 1, 0));
-			ItemStack allEffects1 = new ItemStack(this, 1, 1);
-			ItemStack allEffects2 = new ItemStack(this, 1, 2);
-			ItemStack good1 = new ItemStack(this, 1, 1);
-			ItemStack good2 = new ItemStack(this, 1, 2);
-			ItemStack bad1 = new ItemStack(this, 1, 1);
-			ItemStack bad2 = new ItemStack(this, 1, 2);
 			
 			for (PotionBase pt : PotionBase.baseList)
 			{
@@ -681,69 +689,77 @@ public class ItemPotion2 extends ItemPotion
 				list.add(pt.apply(new ItemStack(this, 1, 2)));
 			}
 			
-			for (IPotionType pt : IPotionType.effectTypes)
+			for (IPotionType type : IPotionType.effectTypes)
 			{
-				for (int i = 1; i <= 2; i++)
+				List<IPotionType> subTypes = type.getSubTypes();
+				for (IPotionType subType : subTypes)
 				{
-					for (IPotionType pt2 : pt.getSubTypes())
+					list.add(subType.apply(new ItemStack(this, 1, 1)));
+				}
+				subTypes = type.onGunpowderUsed().getSubTypes();
+				for (IPotionType subType : subTypes)
+				{
+					list.add(subType.apply(new ItemStack(this, 1, 2)));
+				}
+			}
+			
+			if (BrewingAPI.isMorePotionsModInstalled() && BrewingAPI.multiPotions && tab == BrewingAPI.potions)
+			{
+				this.addMultiPotions(list);
+			}
+		}
+	}
+	
+	public void addMultiPotions(List list)
+	{
+		ItemStack allEffects1 = new ItemStack(this, 1, 1);
+		ItemStack allEffects2 = new ItemStack(this, 1, 2);
+		ItemStack good1 = new ItemStack(this, 1, 1);
+		ItemStack good2 = new ItemStack(this, 1, 2);
+		ItemStack bad1 = new ItemStack(this, 1, 1);
+		ItemStack bad2 = new ItemStack(this, 1, 2);
+		
+		for (IPotionType potionType : IPotionType.combinableTypes)
+		{
+			if (!potionType.isBadEffect())
+			{
+				potionType.apply(good1);
+				potionType.apply(good2);
+			}
+			else
+			{
+				potionType.apply(bad1);
+				potionType.apply(bad2);
+			}
+			
+			potionType.apply(allEffects1);
+			potionType.apply(allEffects2);
+		}
+		
+		list.add(allEffects1);
+		list.add(allEffects2);
+		list.add(good1);
+		list.add(good2);
+		list.add(bad1);
+		list.add(bad2);
+		
+		for (int i = 1; i <= 2; i++)
+		{
+			for (IPotionType pt1 : IPotionType.combinableTypes)
+			{
+				for (IPotionType pt2 : IPotionType.combinableTypes)
+				{
+					if (pt1 != pt2)
 					{
 						if (this.isSplashDamage(i))
 						{
+							pt1 = pt1.onGunpowderUsed();
 							pt2 = pt2.onGunpowderUsed();
 						}
-						list.add(pt2.apply(new ItemStack(this, 1, i)));
-					}
-				}
-			}
-			
-			if (BrewingAPI.isMorePotionsModInstalled())
-			{
-				for (IPotionType potionType : IPotionType.combinableTypes)
-				{
-					if (!potionType.isBadEffect())
-					{
-						potionType.apply(good1);
-						potionType.apply(good2);
-					}
-					else
-					{
-						potionType.apply(bad1);
-						potionType.apply(bad2);
-					}
-					
-					potionType.apply(allEffects1);
-					potionType.apply(allEffects2);
-				}
-				
-				list.add(allEffects1);
-				list.add(allEffects2);
-				list.add(good1);
-				list.add(good2);
-				list.add(bad1);
-				list.add(bad2);
-			}
-			
-			else if (BrewingAPI.multiPotions && tab == BrewingAPI.potions)
-			{
-				for (int i = 1; i <= 2; i++)
-				{
-					for (IPotionType pt1 : IPotionType.combinableTypes)
-					{
-						for (IPotionType pt2 : IPotionType.combinableTypes)
-						{
-							if (pt1 != pt2)
-							{
-								if (this.isSplashDamage(i))
-								{
-									pt1 = pt1.onGunpowderUsed();
-									pt2 = pt2.onGunpowderUsed();
-								}
-								ItemStack stack = new ItemStack(this, 1, i);
-								pt1.apply(stack);
-								pt2.apply(stack);
-								list.add(stack);
-							}
-						}
+						ItemStack stack = new ItemStack(this, 1, i);
+						pt1.apply(stack);
+						pt2.apply(stack);
+						list.add(stack);
 					}
 				}
 			}

@@ -6,13 +6,13 @@ import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.potion.IIngredientHandler;
 import clashsoft.brewingapi.potion.PotionList;
+import clashsoft.cslib.minecraft.item.CSStacks;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * Class that stores all data that the new potion need and all new potion types
@@ -21,6 +21,8 @@ import net.minecraftforge.oredict.OreDictionary;
  */
 public class PotionType extends AbstractPotionType
 {
+	public static final float TWO_THIRDS = 2F / 3F;
+	
 	/** The effect **/
 	private PotionEffect	effect;
 	/** Maximum effect amplifier **/
@@ -237,10 +239,11 @@ public class PotionType extends AbstractPotionType
 	@Override
 	public IPotionType onImproved()
 	{
-		if (this.isImprovable())
+		PotionEffect effect = this.getEffect();
+		if (effect != null)
 		{
-			PotionEffect pe = new PotionEffect(this.getPotionID(), this.getDuration(), this.getAmplifier() + 1);
-			return new PotionTypeDelegate(pe, this);
+			effect = new PotionEffect(effect.getPotionID(), (int) (effect.getDuration() * TWO_THIRDS), effect.getAmplifier() + 1);
+			return new PotionTypeDelegate(effect, this);
 		}
 		return this;
 	}
@@ -248,10 +251,11 @@ public class PotionType extends AbstractPotionType
 	@Override
 	public IPotionType onExtended()
 	{
-		if (this.isExtendable())
+		PotionEffect effect = this.getEffect();
+		if (effect != null)
 		{
-			PotionEffect pe = new PotionEffect(this.getPotionID(), this.getDuration() * 2, this.getAmplifier());
-			return new PotionTypeDelegate(pe, this);
+			effect = new PotionEffect(effect.getPotionID(), effect.getDuration() * 2, effect.getAmplifier());
+			return new PotionTypeDelegate(effect, this);
 		}
 		return this;
 	}
@@ -259,10 +263,11 @@ public class PotionType extends AbstractPotionType
 	@Override
 	public IPotionType onDiluted()
 	{
-		if (this.isDilutable())
+		PotionEffect effect = this.getEffect();
+		if (effect != null)
 		{
-			PotionEffect pe = new PotionEffect(this.getPotionID(), (int) (this.getDuration() * 0.6F), (int) (this.getAmplifier() * 0.8F));
-			return new PotionTypeDelegate(pe, this);
+			effect = new PotionEffect(effect.getPotionID(), (int) (effect.getDuration() * TWO_THIRDS), (int) (effect.getAmplifier() * 0.8F));
+			return new PotionTypeDelegate(effect, this);
 		}
 		return this;
 	}
@@ -270,10 +275,11 @@ public class PotionType extends AbstractPotionType
 	@Override
 	public IPotionType onGunpowderUsed()
 	{
-		if (this.hasEffect())
+		PotionEffect effect = this.getEffect();
+		if (effect != null)
 		{
-			PotionEffect pe = new PotionEffect(this.getPotionID(), (int) (this.getDuration() * 0.75D), this.getAmplifier());
-			return new PotionTypeDelegate(pe, this);
+			effect = new PotionEffect(effect.getPotionID(), (int) (effect.getDuration() * 0.75F), effect.getAmplifier());
+			return new PotionTypeDelegate(effect, this);
 		}
 		return this;
 	}
@@ -281,10 +287,19 @@ public class PotionType extends AbstractPotionType
 	@Override
 	public IPotionType onInverted()
 	{
-		if (this.isInversible())
+		PotionEffect effect = this.getEffect();
+		IPotionType inverted = this.getInverted();
+		if (inverted != null)
 		{
-			PotionEffect pe = new PotionEffect(this.inverted.getPotionID(), (int) (this.getDuration() * 0.75D), this.getAmplifier());
-			return new PotionTypeDelegate(pe, this.inverted);
+			if (effect != null)
+			{
+				effect = new PotionEffect(inverted.getPotionID(), (int) (effect.getDuration() * 0.75F), effect.getAmplifier());
+				return new PotionTypeDelegate(effect, inverted);
+			}
+			else
+			{
+				return new PotionTypeDelegate(effect, inverted);
+			}
 		}
 		return this;
 	}
@@ -584,7 +599,7 @@ public class PotionType extends AbstractPotionType
 		{
 			for (IPotionType pt : potionTypeList)
 			{
-				if (stacksEqual(stack, pt.getIngredient()))
+				if (CSStacks.equals(stack, pt.getIngredient()))
 				{
 					return pt;
 				}
@@ -682,20 +697,5 @@ public class PotionType extends AbstractPotionType
 			return result;
 		}
 		return Collections.EMPTY_LIST;
-	}
-	
-	public static boolean stacksEqual(ItemStack stack1, ItemStack stack2)
-	{
-		if (stack1 == null)
-			return stack2 == null;
-		if (stack2 == null)
-			return stack1 == null;
-		
-		if (stack1.isItemEqual(stack2))
-			return true;
-		if (OreDictionary.itemMatches(stack1, stack2, true))
-			return true;
-		
-		return false;
 	}
 }
