@@ -1,5 +1,6 @@
 package clashsoft.brewingapi.common;
 
+import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.inventory.ContainerBrewingStand2;
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.network.PacketSplashEffect;
@@ -14,11 +15,6 @@ import net.minecraft.world.World;
 
 public class BAPICommonProxy implements IGuiHandler
 {
-	public void registerRenderInformation()
-	{
-		
-	}
-	
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
@@ -59,7 +55,7 @@ public class BAPICommonProxy implements IGuiHandler
 		if (!world.isRemote)
 		{
 			CSPacket packet = new PacketSplashEffect(x, y, z, color, isInstant);
-			
+			BrewingAPI.instance.netHandler.sendToAll(packet);
 		}
 	}
 }

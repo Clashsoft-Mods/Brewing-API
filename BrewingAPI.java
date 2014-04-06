@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import clashsoft.brewingapi.block.BlockBrewingStand2;
-import clashsoft.brewingapi.command.CommandGivePotion;
+import clashsoft.brewingapi.command.CommandPotion;
 import clashsoft.brewingapi.common.BAPICommonProxy;
 import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.item.ItemGlassBottle2;
@@ -21,7 +21,9 @@ import clashsoft.brewingapi.potion.IPotionList;
 import clashsoft.brewingapi.potion.PotionList;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
+import clashsoft.cslib.minecraft.ClashsoftMod;
 import clashsoft.cslib.minecraft.block.CSBlocks;
+import clashsoft.cslib.minecraft.command.CSCommand;
 import clashsoft.cslib.minecraft.item.CSItems;
 import clashsoft.cslib.minecraft.update.CSUpdate;
 import clashsoft.cslib.minecraft.util.CSConfig;
@@ -34,15 +36,12 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
-import net.minecraft.command.ServerCommandManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
@@ -55,21 +54,18 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
 @Mod(modid = BrewingAPI.MODID, name = BrewingAPI.NAME, version = BrewingAPI.VERSION)
-public class BrewingAPI
+public class BrewingAPI extends ClashsoftMod
 {
 	public static final String		MODID					= "brewingapi";
 	public static final String		NAME					= "Brewing API";
 	public static final String		ACRONYM					= "bapi";
-	public static final int			REVISION				= 0;
-	public static final String		VERSION					= CSUpdate.CURRENT_VERSION + "-" + REVISION;
+	public static final String		VERSION					= CSUpdate.CURRENT_VERSION + "-1.0.0";
 	
 	@Instance(MODID)
 	public static BrewingAPI		instance;
 	
 	@SidedProxy(clientSide = "clashsoft.brewingapi.client.BAPIClientProxy", serverSide = "clashsoft.brewingapi.common.BAPICommonProxy")
 	public static BAPICommonProxy	proxy;
-	
-	public static BAPINetHandler	netHandler				= new BAPINetHandler();
 	
 	// API Stuff
 	
@@ -98,11 +94,17 @@ public class BrewingAPI
 		expandPotionList(64);
 	}
 	
-	@EventHandler
-	public void preInit(FMLPreInitializationEvent event)
+	public BrewingAPI()
 	{
-		CSConfig.loadConfig(event.getSuggestedConfigurationFile(), NAME);
-		
+		super(MODID, NAME, ACRONYM, VERSION);
+		this.hasConfig = true;
+		this.netHandlerClass = BAPINetHandler.class;
+		this.url = "https://github.com/Clashsoft/Brewing-API/wiki/";
+	}
+	
+	@Override
+	public void readConfig()
+	{
 		brewingStand2ID = CSConfig.getTileEntity("Brewing Stand", 11);
 		
 		multiPotions = CSConfig.getBool("potions", "MultiPotions", multiPotions);
@@ -110,8 +112,13 @@ public class BrewingAPI
 		showAllBaseTypes = CSConfig.getBool("potions", "Show All Base Potion Types", showAllBaseTypes);
 		defaultAwkwardBrewing = CSConfig.getBool("potions", "Default Awkward Brewing", defaultAwkwardBrewing);
 		potionStackSize = CSConfig.getInt("potions", "PotionStackSize", potionStackSize);
-		
-		CSConfig.saveConfig();
+	}
+	
+	@Override
+	@EventHandler
+	public void preInit(FMLPreInitializationEvent event)
+	{
+		super.preInit(event);
 		
 		brewingStand2 = new BlockBrewingStand2().setBlockName("brewingStand").setHardness(0.5F).setLightLevel(0.125F);
 		brewingStandItem2 = new ItemReed(brewingStand2).setUnlocalizedName("brewingStand").setTextureName("brewing_stand").setCreativeTab(CreativeTabs.tabBrewing);
@@ -124,11 +131,11 @@ public class BrewingAPI
 		CSItems.replaceItem(Items.glass_bottle, glassBottle2);
 	}
 	
+	@Override
 	@EventHandler
-	public void load(FMLInitializationEvent event)
+	public void init(FMLInitializationEvent event)
 	{
-		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
-		netHandler.init();
+		super.init(event);
 		
 		PotionList.init();
 		
@@ -157,23 +164,15 @@ public class BrewingAPI
 		EntityRegistry.registerModEntity(EntityPotion2.class, "SplashPotion2", splashPotion2ID, this, 100, 20, true);
 		
 		BlockDispenser.dispenseBehaviorRegistry.putObject(potion2, new PotionDispenser());
-		proxy.registerRenderInformation();
+		CSCommand.registerCommand(new CommandPotion());
 		proxy.registerRenderers();
 	}
 	
+	@Override
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
-		CSUpdate.updateCheckCS(NAME, ACRONYM, VERSION);
-		
-		netHandler.postInit();
-	}
-	
-	@EventHandler
-	public void serverStart(FMLServerStartingEvent event)
-	{
-		ServerCommandManager command = (ServerCommandManager) event.getServer().getCommandManager();
-		command.registerCommand(new CommandGivePotion());
+		super.postInit(event);
 	}
 	
 	public static boolean isMorePotionsModInstalled()
