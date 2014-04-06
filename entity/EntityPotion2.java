@@ -36,9 +36,6 @@ public class EntityPotion2 extends EntityPotion
 		this.setPotion(stack);
 	}
 	
-	/**
-	 * Gets the amount of gravity to apply to the thrown entity with each tick.
-	 */
 	@Override
 	protected float getGravityVelocity()
 	{
@@ -68,9 +65,6 @@ public class EntityPotion2 extends EntityPotion
 		return this.getDataWatcher().getWatchableObjectItemStack(10);
 	}
 	
-	/**
-	 * Called when this EntityThrowable hits a block or entity.
-	 */
 	@Override
 	protected void onImpact(MovingObjectPosition movingObjectPosition)
 	{

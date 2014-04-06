@@ -38,6 +38,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.util.StringUtils;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -412,11 +413,8 @@ public class ItemPotion2 extends ItemPotion
 				}
 				return result.toString();
 			}
-			else
-			{
-				return super.getItemStackDisplayName(stack);
-			}
 		}
+		return StatCollector.translateToLocal("item.potion.name");
 	}
 	
 	@SideOnly(Side.CLIENT)

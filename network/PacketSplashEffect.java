@@ -4,6 +4,7 @@ import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.cslib.minecraft.network.CSPacket;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 
 public class PacketSplashEffect extends CSPacket
@@ -50,7 +51,7 @@ public class PacketSplashEffect extends CSPacket
 	}
 	
 	@Override
-	public void handleServer(EntityPlayer player)
+	public void handleServer(EntityPlayerMP player)
 	{
 		this.handleClient(player);
 	}
