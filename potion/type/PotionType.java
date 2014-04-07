@@ -7,10 +7,12 @@ import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.potion.IIngredientHandler;
 import clashsoft.brewingapi.potion.PotionList;
 import clashsoft.cslib.minecraft.item.CSStacks;
+import clashsoft.cslib.minecraft.potion.CustomPotion;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.util.Constants;
 
@@ -21,20 +23,20 @@ import net.minecraftforge.common.util.Constants;
  */
 public class PotionType extends AbstractPotionType
 {
-	public static final float TWO_THIRDS = 2F / 3F;
+	public static final float	TWO_THIRDS	= 2F / 3F;
 	
 	/** The effect **/
-	private PotionEffect	effect;
+	private PotionEffect		effect;
 	/** Maximum effect amplifier **/
-	private int				maxAmplifier;
+	private int					maxAmplifier;
 	/** Maximum effect duration **/
-	private int				maxDuration;
+	private int					maxDuration;
 	/** Fermented Spider Eye effect **/
-	private IPotionType		inverted;
+	private IPotionType			inverted;
 	/** The ingredient to brew the potion **/
-	private ItemStack		ingredient;
+	private ItemStack			ingredient;
 	/** Determines the base that is needed to brew the potion **/
-	private PotionBase		base;
+	private PotionBase			base;
 	
 	protected PotionType()
 	{
@@ -128,7 +130,8 @@ public class PotionType extends AbstractPotionType
 	{
 		if (this.hasEffect())
 		{
-			switch (this.getPotionID())
+			Potion potion = this.getPotion();
+			switch (potion.id)
 			{
 				case 2:
 				case 4:
@@ -141,12 +144,9 @@ public class PotionType extends AbstractPotionType
 				case 20:
 					return true;
 			}
-			if (BrewingAPI.isClashsoftLibInstalled())
+			if (potion instanceof CustomPotion)
 			{
-				if (this.getPotion() instanceof clashsoft.cslib.minecraft.potion.CustomPotion)
-				{
-					return ((clashsoft.cslib.minecraft.potion.CustomPotion) this.getPotion()).isBadEffect();
-				}
+				return ((CustomPotion) potion).isBadEffect();
 			}
 		}
 		return false;

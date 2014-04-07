@@ -12,6 +12,7 @@ import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionBase;
 import clashsoft.brewingapi.potion.type.PotionType;
 import clashsoft.cslib.minecraft.lang.I18n;
+import clashsoft.cslib.minecraft.potion.CustomPotion;
 import clashsoft.cslib.util.CSString;
 
 import com.google.common.collect.Multimap;
@@ -505,12 +506,11 @@ public class ItemPotion2 extends ItemPotion
 						String colorLight = "";
 						String colorDark = "";
 						
-						if (BrewingAPI.isClashsoftLibInstalled() && potion instanceof clashsoft.cslib.minecraft.potion.CustomPotion && ((clashsoft.cslib.minecraft.potion.CustomPotion) potion).getCustomColor() != -1)
+						if (potion instanceof CustomPotion && ((CustomPotion) potion).getCustomColor() != -1)
 						{
-							int c = ((clashsoft.cslib.minecraft.potion.CustomPotion) potion).getCustomColor();
+							int c = ((CustomPotion) potion).getCustomColor();
 							colorLight = "\u00a7" + Integer.toHexString((c + 8) & 15);
 							colorDark = "\u00a7" + Integer.toHexString(c);
-							
 						}
 						else if (potionType.isBadEffect())
 						{
@@ -547,7 +547,7 @@ public class ItemPotion2 extends ItemPotion
 				
 				if (BrewingAPI.advancedPotionInfo && Keyboard.isKeyDown(Keyboard.KEY_CAPITAL))
 				{
-					if (potionTypes.size() == 1 && BrewingAPI.isClashsoftLibInstalled() && BrewingAPI.isMorePotionsModInstalled())
+					if (potionTypes.size() == 1 && BrewingAPI.isMorePotionsModInstalled())
 					{
 						for (IPotionType pt : potionTypes)
 						{

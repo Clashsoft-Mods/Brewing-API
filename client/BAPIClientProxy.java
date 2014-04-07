@@ -4,9 +4,9 @@ import java.util.Random;
 
 import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.client.gui.GuiBrewingStand2;
-import clashsoft.brewingapi.common.BAPICommonProxy;
+import clashsoft.brewingapi.client.renderer.RenderPotion2;
+import clashsoft.brewingapi.common.BAPIProxy;
 import clashsoft.brewingapi.entity.EntityPotion2;
-import clashsoft.brewingapi.entity.RenderPotion2;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
@@ -17,7 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
 
-public class BAPIClientProxy extends BAPICommonProxy
+public class BAPIClientProxy extends BAPIProxy
 {
 	public static int	splashpotioncolor;
 	

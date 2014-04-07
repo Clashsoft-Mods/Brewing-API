@@ -1,8 +1,9 @@
-package clashsoft.brewingapi.entity;
+package clashsoft.brewingapi.client.renderer;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.item.ItemPotion2;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
