@@ -9,7 +9,7 @@ import java.util.List;
 
 import clashsoft.brewingapi.block.BlockBrewingStand2;
 import clashsoft.brewingapi.command.CommandPotion;
-import clashsoft.brewingapi.common.BAPICommonProxy;
+import clashsoft.brewingapi.common.BAPIProxy;
 import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.item.ItemGlassBottle2;
 import clashsoft.brewingapi.item.ItemPotion2;
@@ -29,6 +29,7 @@ import clashsoft.cslib.minecraft.update.CSUpdate;
 import clashsoft.cslib.minecraft.util.CSConfig;
 import clashsoft.cslib.reflect.CSReflection;
 import clashsoft.cslib.util.CSLog;
+import clashsoft.cslib.util.CSUtil;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -64,13 +65,12 @@ public class BrewingAPI extends ClashsoftMod
 	@Instance(MODID)
 	public static BrewingAPI		instance;
 	
-	@SidedProxy(clientSide = "clashsoft.brewingapi.client.BAPIClientProxy", serverSide = "clashsoft.brewingapi.common.BAPICommonProxy")
-	public static BAPICommonProxy	proxy;
+	@SidedProxy(clientSide = "clashsoft.brewingapi.client.BAPIClientProxy", serverSide = "clashsoft.brewingapi.common.BAPIProxy")
+	public static BAPIProxy			proxy;
 	
 	// API Stuff
 	
-	private static boolean			MORE_POTIONS_MOD		= false;
-	private static boolean			CLASHSOFT_LIB			= false;
+	private static Boolean			mpmInstalled			= null;
 	
 	public static boolean			multiPotions			= false;
 	public static boolean			advancedPotionInfo		= false;
@@ -96,7 +96,7 @@ public class BrewingAPI extends ClashsoftMod
 	
 	public BrewingAPI()
 	{
-		super(MODID, NAME, ACRONYM, VERSION);
+		super(proxy, MODID, NAME, ACRONYM, VERSION);
 		this.hasConfig = true;
 		this.netHandlerClass = BAPINetHandler.class;
 		this.url = "https://github.com/Clashsoft/Brewing-API/wiki/";
@@ -165,7 +165,6 @@ public class BrewingAPI extends ClashsoftMod
 		
 		BlockDispenser.dispenseBehaviorRegistry.putObject(potion2, new PotionDispenser());
 		CSCommand.registerCommand(new CommandPotion());
-		proxy.registerRenderers();
 	}
 	
 	@Override
@@ -177,38 +176,13 @@ public class BrewingAPI extends ClashsoftMod
 	
 	public static boolean isMorePotionsModInstalled()
 	{
-		if (MORE_POTIONS_MOD)
+		if (mpmInstalled == null)
 		{
-			return true;
+			boolean b = CSUtil.checkClass("clashsoft.mods.morepotions.MorePotionsMod");
+			mpmInstalled = Boolean.valueOf(b);
+			return b;
 		}
-		
-		try
-		{
-			Class.forName("clashsoft.mods.morepotions.MorePotionsMod", false, ClassLoader.getSystemClassLoader());
-			return MORE_POTIONS_MOD = true;
-		}
-		catch (ClassNotFoundException e)
-		{
-			return false;
-		}
-	}
-	
-	public static boolean isClashsoftLibInstalled()
-	{
-		if (CLASHSOFT_LIB)
-		{
-			return true;
-		}
-		
-		try
-		{
-			Class.forName("clashsoft.cslib.util.CSUtil");
-			return CLASHSOFT_LIB = true;
-		}
-		catch (ClassNotFoundException e)
-		{
-			return false;
-		}
+		return mpmInstalled.booleanValue();
 	}
 	
 	// API
