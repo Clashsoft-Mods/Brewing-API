@@ -298,7 +298,7 @@ public class PotionType extends AbstractPotionType
 			}
 			else
 			{
-				return new PotionTypeDelegate(effect, inverted);
+				return new PotionTypeDelegate(inverted.getEffect(), inverted);
 			}
 		}
 		return this;

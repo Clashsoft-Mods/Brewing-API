@@ -33,7 +33,7 @@ public class PotionTypeDelegate extends AbstractPotionType
 	@Override
 	public IPotionType copy()
 	{
-		return new PotionTypeDelegate(this.effect);
+		return new PotionTypeDelegate(this.effect, this.thePotionType);
 	}
 	
 	@Override

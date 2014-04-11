@@ -96,19 +96,22 @@ public abstract class AbstractPotionType implements IPotionType
 	@Override
 	public String getEffectName()
 	{
-		return this.hasEffect() ? this.getEffect().getEffectName() : "";
+		PotionEffect effect = this.getEffect();
+		return effect != null ? effect.getEffectName() : "";
 	}
 	
 	@Override
 	public boolean isImprovable()
 	{
-		return this.hasEffect() && this.getAmplifier() < this.getMaxAmplifier();
+		PotionEffect effect = this.getEffect();
+		return effect != null && effect.getAmplifier() < this.getMaxAmplifier();
 	}
 	
 	@Override
 	public boolean isExtendable()
 	{
-		return this.hasEffect() && this.getDuration() < this.getMaxDuration();
+		PotionEffect effect = this.getEffect();
+		return effect != null && effect.getAmplifier() < this.getMaxAmplifier();
 	}
 	
 	@Override
