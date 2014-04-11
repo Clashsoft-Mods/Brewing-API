@@ -60,7 +60,7 @@ public class BAPIClientProxy extends BAPIProxy
 		float r = (color >> 16 & 255) / 255.0F;
 		float g = (color >> 8 & 255) / 255.0F;
 		float b = (color >> 0 & 255) / 255.0F;
-		String particleName = isInstant ? "instanceSpell" : "spell";
+		String particleName = isInstant ? "instantSpell" : "spell";
 		
 		for (int i = 0; i < 100; ++i)
 		{

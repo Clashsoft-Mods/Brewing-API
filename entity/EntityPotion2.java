@@ -1,6 +1,5 @@
 package clashsoft.brewingapi.entity;
 
-import java.util.Iterator;
 import java.util.List;
 
 import clashsoft.brewingapi.BrewingAPI;
@@ -11,8 +10,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -71,55 +68,29 @@ public class EntityPotion2 extends EntityPotion
 		if (!this.worldObj.isRemote)
 		{
 			ItemStack potion = this.getPotion();
-			List list = ((ItemPotion2) potion.getItem()).getEffects(potion);
+			List<IPotionType> types = ((ItemPotion2) potion.getItem()).getEffects(potion);
 			
-			if (list != null && !list.isEmpty())
+			if (types != null && !types.isEmpty())
 			{
 				AxisAlignedBB axisalignedbb = this.boundingBox.expand(4.0D, 2.0D, 4.0D);
-				List list1 = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
+				List<EntityLivingBase> entities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 				
-				if (list1 != null && !list1.isEmpty())
+				for (EntityLivingBase living : entities)
 				{
-					Iterator iterator = list1.iterator();
+					double d0 = this.getDistanceSqToEntity(living);
 					
-					while (iterator.hasNext())
+					if (d0 < 16.0D)
 					{
-						EntityLivingBase entitylivingbase = (EntityLivingBase) iterator.next();
-						double d0 = this.getDistanceSqToEntity(entitylivingbase);
+						double d1 = 1.0D - Math.sqrt(d0) / 4.0D;
 						
-						if (d0 < 16.0D)
+						if (living == movingObjectPosition.entityHit)
 						{
-							double d1 = 1.0D - Math.sqrt(d0) / 4.0D;
-							
-							if (entitylivingbase == movingObjectPosition.entityHit)
-							{
-								d1 = 1.0D;
-							}
-							
-							Iterator iterator1 = list.iterator();
-							
-							while (iterator1.hasNext())
-							{
-								PotionEffect potioneffect = ((IPotionType) iterator1.next()).getEffect();
-								if (potioneffect != null)
-								{
-									int i = potioneffect.getPotionID();
-									
-									if (Potion.potionTypes[i].isInstant())
-									{
-										Potion.potionTypes[i].affectEntity(this.getThrower(), entitylivingbase, potioneffect.getAmplifier(), d1);
-									}
-									else
-									{
-										int j = (int) (d1 * potioneffect.getDuration() + 0.5D);
-										
-										if (j > 20)
-										{
-											entitylivingbase.addPotionEffect(new PotionEffect(i, j, potioneffect.getAmplifier()));
-										}
-									}
-								}
-							}
+							d1 = 1.0D;
+						}
+						
+						for (IPotionType type : types)
+						{
+							type.apply(this.getThrower(), living, d1);
 						}
 					}
 				}
