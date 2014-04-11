@@ -428,24 +428,45 @@ public class PotionType extends AbstractPotionType
 	/**
 	 * Returns the first PotionType that can be read from the ItemStack NBT
 	 * 
+	 * @deprecated
 	 * @param stack
 	 *            the stack
 	 * @return First PotionType read from ItemStack NBT
 	 */
-	@Deprecated
 	public static IPotionType getFirstPotionType(ItemStack stack)
 	{
 		if (stack != null && stack.hasTagCompound())
 		{
-			NBTTagList list = stack.stackTagCompound.getTagList(COMPOUND_NAME, Constants.NBT.TAG_COMPOUND);
-			if (list != null && list.tagCount() > 0)
+			NBTTagList list = stack.stackTagCompound.getTagList(COMPOUND_NAME, 11);
+			if (list.tagCount() > 0)
 			{
-				NBTTagCompound compound = list.getCompoundTagAt(0);
-				IPotionType potionType = getFromNBT(compound);
+				NBTTagCompound nbt1 = list.getCompoundTagAt(0);
+				IPotionType potionType = getFromNBT(nbt1);
 				return potionType;
 			}
 		}
-		return PotionList.awkward;
+		return null;
+	}
+	
+	public static List<IPotionType> getPotionTypes(ItemStack stack)
+	{
+		if (stack != null && stack.hasTagCompound())
+		{
+			NBTTagList list = stack.stackTagCompound.getTagList(COMPOUND_NAME, 11);
+			int len = list.tagCount();
+			if (len > 0)
+			{
+				List<IPotionType> types = new ArrayList(len);
+				for (int i = 0; i < len; i++)
+				{
+					NBTTagCompound nbt1 = list.getCompoundTagAt(i);
+					IPotionType potionType = getFromNBT(nbt1);
+					types.add(potionType); 
+				}
+				return types;
+			}
+		}
+		return Collections.EMPTY_LIST;
 	}
 	
 	/**

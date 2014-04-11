@@ -34,7 +34,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumChatFormatting;
@@ -42,7 +41,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.StringUtils;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
 
 /**
  * @author Clashsoft
@@ -99,16 +97,7 @@ public class ItemPotion2 extends ItemPotion
 				}
 				else
 				{
-					List<IPotionType> result = new ArrayList();
-					NBTTagList tagList = compound.getTagList("Brewing", Constants.NBT.TAG_COMPOUND);
-					
-					for (int index = 0; index < tagList.tagCount(); ++index)
-					{
-						NBTTagCompound potionTypeNBT = tagList.getCompoundTagAt(index);
-						IPotionType potionType = PotionType.getFromNBT(potionTypeNBT);
-						result.add(potionType);
-					}
-					
+					List<IPotionType> result = PotionType.getPotionTypes(stack);
 					this.effectCache.put(compound, result);
 				}
 			}
