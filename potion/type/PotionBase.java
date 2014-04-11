@@ -15,11 +15,11 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class PotionBase extends AbstractPotionType
 {
-	public static List<PotionBase>			baseList	= new ArrayList();
-	public static Map<String, PotionBase>	baseMap		= new HashMap();
+	public static final List<PotionBase>		baseList	= new ArrayList();
+	public static final Map<String, PotionBase>	baseMap		= new HashMap();
 	
-	private String							name;
-	private ItemStack						ingredient;
+	private String								name;
+	private ItemStack							ingredient;
 	
 	public PotionBase()
 	{
@@ -75,7 +75,7 @@ public class PotionBase extends AbstractPotionType
 	@Override
 	public PotionBase register()
 	{
-		IPotionType.potionTypeList.add(this);
+		potionTypeList.add(this);
 		baseList.add(this);
 		if (this.name != null)
 			baseMap.put(this.name, this);
@@ -122,9 +122,10 @@ public class PotionBase extends AbstractPotionType
 	
 	public boolean matches(PotionBase base)
 	{
-		if (BrewingAPI.defaultAwkwardBrewing)
+		String name = base.getName();
+		if (BrewingAPI.defaultAwkwardBrewing && "awkward".equals(name))
 		{
-			return "awkward".equals(base.getName());
+			return true;
 		}
 		return this.name.equals(base.getName());
 	}
