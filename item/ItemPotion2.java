@@ -63,10 +63,7 @@ public class ItemPotion2 extends ItemPotion
 	@Override
 	public CreativeTabs[] getCreativeTabs()
 	{
-		return new CreativeTabs[] {
-				BrewingAPI.potions,
-				CreativeTabs.tabBrewing,
-				CreativeTabs.tabAllSearch };
+		return new CreativeTabs[] { BrewingAPI.potions, CreativeTabs.tabBrewing, CreativeTabs.tabAllSearch };
 	}
 	
 	public List<IPotionType> getLegacyEffects(ItemStack stack)
@@ -99,6 +96,7 @@ public class ItemPotion2 extends ItemPotion
 				{
 					List<IPotionType> result = PotionType.getPotionTypes(stack);
 					this.effectCache.put(compound, result);
+					return result;
 				}
 			}
 			else
@@ -411,7 +409,10 @@ public class ItemPotion2 extends ItemPotion
 	@Override
 	public FontRenderer getFontRenderer(ItemStack stack)
 	{
-		return /* BrewingAPI.isClashsoftLibInstalled() ? CSFontRenderer.instance : */null;
+		return /*
+				 * BrewingAPI.isClashsoftLibInstalled() ?
+				 * CSFontRenderer.instance :
+				 */null;
 	}
 	
 	private static int	glowPos	= 0;

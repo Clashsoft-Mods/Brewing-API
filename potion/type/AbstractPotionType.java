@@ -163,7 +163,12 @@ public abstract class AbstractPotionType implements IPotionType
 				stack.setTagCompound(new NBTTagCompound());
 			}
 			
-			NBTTagList list = stack.stackTagCompound.getTagList(COMPOUND_NAME, 11);
+			NBTTagList list = (NBTTagList) stack.stackTagCompound.getTag(COMPOUND_NAME);
+			
+			if (list == null)
+			{
+				list = new NBTTagList();
+			}
 			
 			NBTTagCompound nbt1 = new NBTTagCompound();
 			this.writeToNBT(nbt1);
@@ -179,15 +184,18 @@ public abstract class AbstractPotionType implements IPotionType
 	{
 		if (stack != null && stack.hasTagCompound())
 		{
-			NBTTagList list = stack.stackTagCompound.getTagList(COMPOUND_NAME, 11);
+			NBTTagList list = (NBTTagList) stack.stackTagCompound.getTag(COMPOUND_NAME);
 			
-			for (int i = 0; i < list.tagCount(); i++)
+			if (list != null)
 			{
-				NBTTagCompound nbt1 = list.getCompoundTagAt(i);
-				if (this.equals(PotionType.getFromNBT(nbt1)))
+				for (int i = 0; i < list.tagCount(); i++)
 				{
-					list.removeTag(i);
-					break;
+					NBTTagCompound nbt1 = list.getCompoundTagAt(i);
+					if (this.equals(PotionType.getFromNBT(nbt1)))
+					{
+						list.removeTag(i);
+						break;
+					}
 				}
 			}
 			

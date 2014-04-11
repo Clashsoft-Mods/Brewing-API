@@ -439,7 +439,7 @@ public class PotionType extends AbstractPotionType
 	{
 		if (stack != null && stack.hasTagCompound())
 		{
-			NBTTagList list = stack.stackTagCompound.getTagList(COMPOUND_NAME, 11);
+			NBTTagList list = (NBTTagList) stack.stackTagCompound.getTag(COMPOUND_NAME);
 			if (list.tagCount() > 0)
 			{
 				NBTTagCompound nbt1 = list.getCompoundTagAt(0);
@@ -454,18 +454,22 @@ public class PotionType extends AbstractPotionType
 	{
 		if (stack != null && stack.hasTagCompound())
 		{
-			NBTTagList list = stack.stackTagCompound.getTagList(COMPOUND_NAME, 11);
-			int len = list.tagCount();
-			if (len > 0)
+			NBTTagList list = (NBTTagList) stack.stackTagCompound.getTag(COMPOUND_NAME);
+			
+			if (list != null)
 			{
-				List<IPotionType> types = new ArrayList(len);
-				for (int i = 0; i < len; i++)
+				int len = list.tagCount();
+				if (len > 0)
 				{
-					NBTTagCompound nbt1 = list.getCompoundTagAt(i);
-					IPotionType potionType = getFromNBT(nbt1);
-					types.add(potionType); 
+					List<IPotionType> types = new ArrayList(len);
+					for (int i = 0; i < len; i++)
+					{
+						NBTTagCompound nbt1 = list.getCompoundTagAt(i);
+						IPotionType potionType = getFromNBT(nbt1);
+						types.add(potionType);
+					}
+					return types;
 				}
-				return types;
 			}
 		}
 		return Collections.EMPTY_LIST;
