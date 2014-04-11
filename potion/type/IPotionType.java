@@ -226,7 +226,8 @@ public interface IPotionType extends Comparable<IPotionType>
 	public List<IPotionType> getSubTypes();
 	
 	/**
-	 * Applies this potion type to the {@link ItemStack}.
+	 * Applies this potion type to the {@link ItemStack}. The item of the stack
+	 * should be a {@link ItemPotion2}
 	 * 
 	 * @param stack
 	 *            the stack
@@ -234,15 +235,67 @@ public interface IPotionType extends Comparable<IPotionType>
 	 */
 	public ItemStack apply(ItemStack stack);
 	
+	/**
+	 * Removes this potion type from the {@link ItemStack}. The item of the
+	 * stack should be a {@link ItemPotion2}
+	 * 
+	 * @param stack
+	 *            the stack
+	 * @return the stack
+	 */
 	public ItemStack remove(ItemStack stack);
 	
+	/**
+	 * Applies this potion type's effect to the living entity or player.
+	 * 
+	 * @param target
+	 *            the target
+	 */
 	public void apply(EntityLivingBase target);
 	
+	/**
+	 * Applies this potion type's effect to the living entity or player.
+	 * <p>
+	 * This method also calculates a new duration from the distance.<br>
+	 * The formula for this is
+	 * <p>
+	 * <code>
+	 * integer(distance*duration+0.5)</code>
+	 * <p>
+	 * If the effect is {@link Potion#heal} or {@link Potion#harm}, the effect
+	 * is directly applied using
+	 * {@link Potion#performEffect(EntityLivingBase, int)}
+	 * 
+	 * @param thrower
+	 * @param target
+	 * @param distance
+	 */
 	public void apply(EntityLivingBase thrower, EntityLivingBase target, double distance);
 	
+	/**
+	 * Directly applies the given {@link PotionEffect} to the living entity or
+	 * player.
+	 * 
+	 * @param target
+	 *            the target
+	 * @param effect
+	 *            the effect to apply
+	 */
 	public void apply_do(EntityLivingBase target, PotionEffect effect);
 	
+	/**
+	 * Writes this potion type to the {@link NBTTagCompound}.
+	 * 
+	 * @param nbt
+	 *            the NBTTagCompound
+	 */
 	public void writeToNBT(NBTTagCompound nbt);
 	
+	/**
+	 * Reads this potion type from the {@link NBTTagCompound}.
+	 * 
+	 * @param nbt
+	 *            the NBTTagCompound
+	 */
 	public void readFromNBT(NBTTagCompound nbt);
 }
