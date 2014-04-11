@@ -51,14 +51,6 @@ public interface IPotionType extends Comparable<IPotionType>
 	public boolean isBase();
 	
 	/**
-	 * Returns true if the effect of this potion type is a bad effect / debuff
-	 * (red color) or a normal buff (green color)
-	 * 
-	 * @return true, if this has a bad effect
-	 */
-	public boolean isBadEffect();
-	
-	/**
 	 * Returns true if this potion type is combinable with an other potion type.
 	 * 
 	 * @return true, if this is combinable
@@ -112,12 +104,27 @@ public interface IPotionType extends Comparable<IPotionType>
 	public int getPotionID();
 	
 	/**
+	 * Returns true if the effect of this potion type is a bad effect / debuff
+	 * (red color) or a normal buff (green color)
+	 * 
+	 * @return true, if this has a bad effect
+	 */
+	public boolean isBadEffect();
+	
+	/**
 	 * Returns the duration of this potion type's effect. If the effect is
 	 * {@code null}, {@code 0} is returned.
 	 * 
 	 * @return the potion
 	 */
 	public int getDuration();
+	
+	/**
+	 * Returns true if this potion type's effect is instant.
+	 * 
+	 * @return true, if this effect is instant.
+	 */
+	public boolean isInstant();
 	
 	/**
 	 * Returns the amplifier of this potion type's effect. If the effect is

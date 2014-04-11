@@ -208,7 +208,10 @@ public class ItemPotion2 extends ItemPotion
 		boolean flag = true;
 		for (IPotionType b : effects)
 		{
-			flag &= (b.getEffect() != null ? Potion.potionTypes[b.getEffect().getPotionID()].isInstant() : true);
+			if (b.hasEffect())
+			{
+				flag &= b.isInstant();
+			}
 		}
 		return flag;
 	}
