@@ -36,6 +36,12 @@ public class PotionBase extends AbstractPotionType
 		this(name, null);
 	}
 	
+	@Override
+	public String getUUID()
+	{
+		return this.name;
+	}
+	
 	public static PotionBase getFromIngredient(ItemStack ingredient)
 	{
 		for (PotionBase pb : baseList)

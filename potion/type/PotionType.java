@@ -5,7 +5,6 @@ import java.util.*;
 import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.potion.IIngredientHandler;
-import clashsoft.brewingapi.potion.PotionList;
 import clashsoft.cslib.minecraft.item.CSStacks;
 import clashsoft.cslib.minecraft.potion.CustomPotion;
 
@@ -14,7 +13,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraftforge.common.util.Constants;
 
 /**
  * Class that stores all data that the new potion need and all new potion types
@@ -133,16 +131,16 @@ public class PotionType extends AbstractPotionType
 			Potion potion = this.getPotion();
 			switch (potion.id)
 			{
-				case 2:
-				case 4:
-				case 7:
-				case 9:
-				case 15:
-				case 17:
-				case 18:
-				case 19:
-				case 20:
-					return true;
+			case 2:
+			case 4:
+			case 7:
+			case 9:
+			case 15:
+			case 17:
+			case 18:
+			case 19:
+			case 20:
+				return true;
 			}
 			if (potion instanceof CustomPotion)
 			{
@@ -380,12 +378,16 @@ public class PotionType extends AbstractPotionType
 	public String toString()
 	{
 		StringBuilder builder = new StringBuilder();
-		builder.append("PotionType [");
+		String uuid = this.getUUID();
+		builder.append("PotionType");
+		if (uuid != null && !uuid.isEmpty())
+		{
+			builder.append(".").append(uuid);
+		}
+		builder.append(" [");
 		if (this.effect != null)
 		{
-			builder.append("effect=");
-			builder.append(this.effect);
-			builder.append(", ");
+			builder.append("effect=").append(this.effect).append(", ");
 		}
 		if (this.inverted != null)
 		{
@@ -482,7 +484,8 @@ public class PotionType extends AbstractPotionType
 	}
 	
 	/**
-	 * Finds the first registered {@link IIngredientHandler} that can handle the ingredient
+	 * Finds the first registered {@link IIngredientHandler} that can handle the
+	 * ingredient
 	 * 
 	 * @param ingredient
 	 *            the ingredient
@@ -497,7 +500,8 @@ public class PotionType extends AbstractPotionType
 	}
 	
 	/**
-	 * Checks if the ingredient needs an IngredientHandler to be applied to a potion
+	 * Checks if the ingredient needs an IngredientHandler to be applied to a
+	 * potion
 	 * 
 	 * @param ingredient
 	 * @return
@@ -608,8 +612,8 @@ public class PotionType extends AbstractPotionType
 	}
 	
 	/**
-	 * Returns a PotionType that is brewed with the itemstack. it doesn't check for the amount.
-	 * Ignores Special Ingredient Handlers.
+	 * Returns a PotionType that is brewed with the itemstack. it doesn't check
+	 * for the amount. Ignores Special Ingredient Handlers.
 	 * 
 	 * @param stack
 	 * @return PotionType that is brewed with the ItemStack
@@ -649,7 +653,7 @@ public class PotionType extends AbstractPotionType
 	 * 
 	 * @param stack
 	 *            potion
-	 * @return Experience float
+	 * @return the experience
 	 */
 	public static float getExperience(ItemStack stack)
 	{

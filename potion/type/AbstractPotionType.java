@@ -3,8 +3,6 @@ package clashsoft.brewingapi.potion.type;
 import java.util.ArrayList;
 import java.util.List;
 
-import clashsoft.brewingapi.item.ItemPotion2;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -13,6 +11,12 @@ import net.minecraft.potion.PotionEffect;
 
 public abstract class AbstractPotionType implements IPotionType
 {
+	@Override
+	public String getUUID()
+	{
+		return this.getEffectName();
+	}
+	
 	@Override
 	public AbstractPotionType register()
 	{

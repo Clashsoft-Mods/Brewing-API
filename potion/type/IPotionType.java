@@ -21,45 +21,171 @@ public interface IPotionType extends Comparable<IPotionType>
 	public static List<IPotionType>	combinableTypes	= new ArrayList();
 	public static List<IPotionType>	effectTypes		= new ArrayList();
 	
+	/**
+	 * Returns an unique identifier for this potion type.
+	 * 
+	 * @return the UUID
+	 */
+	public String getUUID();
+	
+	/**
+	 * Creates a copy of this potion type. This is usually used to make a
+	 * delegate.
+	 * 
+	 * @return a copy of this potion type
+	 */
 	public IPotionType copy();
 	
 	/**
-	 * Sorts the PotionType in the lists
+	 * Registers a potion type. This is useful to sort the potion types.
 	 * 
-	 * @return PotionType
+	 * @return this
 	 */
 	public IPotionType register();
 	
 	/**
-	 * Determines if the effect is a bad effect (red color)
+	 * Returns true if this is a base potion type.
+	 * 
+	 * @return true, if this is a base potion type
+	 */
+	public boolean isBase();
+	
+	/**
+	 * Returns true if the effect of this potion type is a bad effect / debuff
+	 * (red color) or a normal buff (green color)
+	 * 
+	 * @return true, if this has a bad effect
 	 */
 	public boolean isBadEffect();
 	
+	/**
+	 * Returns true if this potion type is combinable with an other potion type.
+	 * 
+	 * @return true, if this is combinable
+	 */
 	public boolean isCombinable();
 	
+	/**
+	 * Returns the underlying {@link PotionEffect} of this potion type.
+	 * 
+	 * @return the PotionEffect
+	 */
 	public PotionEffect getEffect();
 	
+	/**
+	 * Returns true if this potion type has an effect
+	 * 
+	 * @return true, if this has an effect
+	 */
 	public boolean hasEffect();
 	
-	public Potion getPotion();
-	
-	public int getPotionID();
-	
-	public int getDuration();
-	
-	public int getAmplifier();
-	
-	public int getRedstoneAmount();
-	
-	public int getGlowstoneAmount();
-	
+	/**
+	 * Returns the name of this potion type's effect. If the effect is
+	 * {@code null}, an empty String is returned.
+	 * 
+	 * @return
+	 */
 	public String getEffectName();
 	
+	/**
+	 * Returns the liquid color of this potion type's effect. If the effect is
+	 * {@code null}, 0x0C0CFF is returned.
+	 * 
+	 * @return
+	 */
+	public int getLiquidColor();
+	
+	/**
+	 * Returns the {@link Potion} of this potion type's effect. If the effect is
+	 * {@code null}, {@code null} is returned.
+	 * 
+	 * @return the potion
+	 */
+	public Potion getPotion();
+	
+	/**
+	 * Returns the potion ID of this potion type's effect. If the effect is
+	 * {@code null}, {@code -1} is returned.
+	 * 
+	 * @return the potion ID
+	 */
+	public int getPotionID();
+	
+	/**
+	 * Returns the duration of this potion type's effect. If the effect is
+	 * {@code null}, {@code 0} is returned.
+	 * 
+	 * @return the potion
+	 */
+	public int getDuration();
+	
+	/**
+	 * Returns the amplifier of this potion type's effect. If the effect is
+	 * {@code null}, {@code 0} is returned.
+	 * 
+	 * @return the potion
+	 */
+	public int getAmplifier();
+	
+	/**
+	 * Returns the amount of redstone dust that had to be used to reach the
+	 * duration of this potion effect.
+	 * 
+	 * @return the redstone amount
+	 */
+	public int getRedstoneAmount();
+	
+	/**
+	 * Returns the amount of redstone dust that had to be used to reach the
+	 * amplifier of this potion effect.
+	 * 
+	 * @return the redstone amount
+	 */
+	public int getGlowstoneAmount();
+	
+	/**
+	 * Returns the mximimum amplifier this potion type's effect can reach.
+	 * 
+	 * @return the max amplifier
+	 */
 	public int getMaxAmplifier();
 	
+	/**
+	 * Returns the mximimum duration this potion type's effect can reach.
+	 * 
+	 * @return the max duration
+	 */
 	public int getMaxDuration();
 	
+	/**
+	 * Returns the default duration of this potion type's effect. If this effect
+	 * is {@code null}, {@code 0} is returned.
+	 * 
+	 * @return the default duration
+	 */
 	public int getDefaultDuration();
+	
+	/**
+	 * Returns the base potion type that is required to brew this potion type.
+	 * 
+	 * @return the base potion type
+	 */
+	public PotionBase getBase();
+	
+	/**
+	 * Returns the inverted effect potion type. This is used when a fermented
+	 * spider eye is applied to a potion.
+	 * 
+	 * @return the inverted potion type
+	 */
+	public IPotionType getInverted();
+	
+	/**
+	 * Returns the ingredient that is used to brew this potion type.
+	 * 
+	 * @return the ingredient
+	 */
+	public ItemStack getIngredient();
 	
 	public boolean isImprovable();
 	
@@ -68,16 +194,6 @@ public interface IPotionType extends Comparable<IPotionType>
 	public boolean isDilutable();
 	
 	public boolean isInversible();
-	
-	public IPotionType getInverted();
-	
-	public ItemStack getIngredient();
-	
-	public PotionBase getBase();
-	
-	public boolean isBase();
-	
-	public int getLiquidColor();
 	
 	public IPotionType onImproved();
 	
@@ -89,8 +205,25 @@ public interface IPotionType extends Comparable<IPotionType>
 	
 	public IPotionType onInverted();
 	
+	/**
+	 * Returns a list of sub-types of this potion type.
+	 * <p>
+	 * If this is improvable, the potion type created by
+	 * {@link IPotionType#onImproved()} is added to the list.<br>
+	 * If this is extendable, the potion type created by
+	 * {@link IPotionType#onExtended()} is added to the list.
+	 * 
+	 * @return
+	 */
 	public List<IPotionType> getSubTypes();
 	
+	/**
+	 * Applies this potion type to the {@link ItemStack}.
+	 * 
+	 * @param stack
+	 *            the stack
+	 * @return the stack
+	 */
 	public ItemStack apply(ItemStack stack);
 	
 	public ItemStack remove(ItemStack stack);
