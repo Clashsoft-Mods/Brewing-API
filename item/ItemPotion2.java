@@ -223,11 +223,7 @@ public class ItemPotion2 extends ItemPotion
 		{
 			for (IPotionType potionType : this.getEffects(stack))
 			{
-				PotionEffect effect = potionType.getEffect();
-				if (effect != null)
-				{
-					player.addPotionEffect(new PotionEffect(effect));
-				}
+				potionType.apply(player);
 			}
 		}
 		

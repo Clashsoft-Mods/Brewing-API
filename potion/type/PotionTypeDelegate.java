@@ -1,5 +1,6 @@
 package clashsoft.brewingapi.potion.type;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
@@ -125,6 +126,12 @@ public class PotionTypeDelegate extends AbstractPotionType
 	public IPotionType onInverted()
 	{
 		return this.thePotionType.onInverted();
+	}
+	
+	@Override
+	public void apply_do(EntityLivingBase target, PotionEffect effect)
+	{
+		this.thePotionType.apply_do(target, effect);
 	}
 	
 	@Override

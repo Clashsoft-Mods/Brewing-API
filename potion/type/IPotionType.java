@@ -3,6 +3,7 @@ package clashsoft.brewingapi.potion.type;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
@@ -234,6 +235,12 @@ public interface IPotionType extends Comparable<IPotionType>
 	public ItemStack apply(ItemStack stack);
 	
 	public ItemStack remove(ItemStack stack);
+	
+	public void apply(EntityLivingBase target);
+	
+	public void apply(EntityLivingBase thrower, EntityLivingBase target, double distance);
+	
+	public void apply_do(EntityLivingBase target, PotionEffect effect);
 	
 	public void writeToNBT(NBTTagCompound nbt);
 	

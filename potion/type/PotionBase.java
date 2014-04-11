@@ -7,6 +7,7 @@ import java.util.Map;
 
 import clashsoft.brewingapi.BrewingAPI;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
@@ -216,5 +217,10 @@ public class PotionBase extends AbstractPotionType
 	public IPotionType onInverted()
 	{
 		return this;
+	}
+	
+	@Override
+	public void apply_do(EntityLivingBase target, PotionEffect effect)
+	{
 	}
 }

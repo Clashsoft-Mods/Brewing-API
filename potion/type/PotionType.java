@@ -8,6 +8,7 @@ import clashsoft.brewingapi.potion.IIngredientHandler;
 import clashsoft.cslib.minecraft.item.CSStacks;
 import clashsoft.cslib.minecraft.potion.CustomPotion;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -300,6 +301,15 @@ public class PotionType extends AbstractPotionType
 			}
 		}
 		return this;
+	}
+	
+	@Override
+	public void apply_do(EntityLivingBase target, PotionEffect effect)
+	{
+		if (effect != null)
+		{
+			target.addPotionEffect(effect);
+		}
 	}
 	
 	@Override

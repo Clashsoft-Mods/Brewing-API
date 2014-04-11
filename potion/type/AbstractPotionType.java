@@ -3,6 +3,7 @@ package clashsoft.brewingapi.potion.type;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -209,6 +210,36 @@ public abstract class AbstractPotionType implements IPotionType
 			stack.stackTagCompound.setTag(COMPOUND_NAME, list);
 		}
 		return stack;
+	}
+	
+	@Override
+	public void apply(EntityLivingBase target)
+	{
+		this.apply_do(target, this.getEffect());
+	}
+	
+	@Override
+	public void apply(EntityLivingBase thrower, EntityLivingBase target, double distance)
+	{
+		PotionEffect effect = this.getEffect();
+		if (effect != null)
+		{
+			int id = effect.getPotionID();
+			
+			if (id == Potion.heal.id || id == Potion.harm.id)
+			{
+				Potion.potionTypes[id].affectEntity(thrower, target, effect.getAmplifier(), distance);
+			}
+			else
+			{
+				int j = (int) (distance * effect.getDuration() + 0.5D);
+				
+				if (j > 20)
+				{
+					this.apply_do(target, new PotionEffect(id, j, effect.getAmplifier()));
+				}
+			}
+		}
 	}
 	
 	@Override
