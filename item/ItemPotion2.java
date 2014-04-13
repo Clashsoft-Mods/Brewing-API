@@ -126,7 +126,7 @@ public class ItemPotion2 extends ItemPotion
 	@SideOnly(Side.CLIENT)
 	public static IIcon getPotionIcon(String iconName)
 	{
-		return iconName.equals("bottle_drinkable") ? BrewingAPI.potion2.bottle : (iconName.equals("bottle_splash") ? BrewingAPI.potion2.splashbottle : (iconName.equals("overlay") ? BrewingAPI.potion2.liquid : null));
+		return iconName.equals("bottle_drinkable") ? BrewingAPI.potion2.bottle : iconName.equals("bottle_splash") ? BrewingAPI.potion2.splashbottle : iconName.equals("overlay") ? BrewingAPI.potion2.liquid : null;
 	}
 	
 	/**
@@ -179,7 +179,9 @@ public class ItemPotion2 extends ItemPotion
 		List<IPotionType> effects = this.getEffects(stack);
 		
 		if (effects.isEmpty())
+		{
 			return 0x0C0CFF;
+		}
 		
 		int[] colors = new int[effects.size()];
 		
@@ -484,9 +486,13 @@ public class ItemPotion2 extends ItemPotion
 					}
 					
 					if (potionType.getAmplifier() > 0)
+					{
 						builder.append(" ").append(CSString.convertToRoman(potionType.getAmplifier() + 1));
+					}
 					if (potionType.getDuration() > 20)
+					{
 						builder.append(" (").append(potionType.getDuration() >= 1000000 ? I18n.getString("potion.infinite") : Potion.getDurationString(potionType.getEffect())).append(")");
+					}
 					
 					int glowPosInt = glowPos / 2;
 					
@@ -498,7 +504,7 @@ public class ItemPotion2 extends ItemPotion
 						if (potion instanceof CustomPotion && ((CustomPotion) potion).getCustomColor() != -1)
 						{
 							int c = ((CustomPotion) potion).getCustomColor();
-							colorLight = "\u00a7" + Integer.toHexString((c + 8) & 15);
+							colorLight = "\u00a7" + Integer.toHexString(c + 8 & 15);
 							colorDark = "\u00a7" + Integer.toHexString(c);
 						}
 						else if (potionType.isBadEffect())
@@ -763,8 +769,8 @@ public class ItemPotion2 extends ItemPotion
 				--stack.stackSize;
 			}
 			
-			world.playSoundAtEntity((entity), "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-			Entity e = new EntityPotion2(world, ((EntityPlayer) entity), stack);
+			world.playSoundAtEntity(entity, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+			Entity e = new EntityPotion2(world, (EntityPlayer) entity, stack);
 			
 			if (!world.isRemote)
 			{

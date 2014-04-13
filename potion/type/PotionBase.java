@@ -48,9 +48,13 @@ public class PotionBase extends AbstractPotionType
 		for (PotionBase pb : baseList)
 		{
 			if (OreDictionary.itemMatches(pb.getIngredient(), ingredient, true))
+			{
 				return pb;
+			}
 			if (pb.getIngredient().getItem() == ingredient.getItem() && pb.getIngredient().getItemDamage() == ingredient.getItemDamage())
+			{
 				return pb;
+			}
 		}
 		return null;
 	}
@@ -78,7 +82,9 @@ public class PotionBase extends AbstractPotionType
 		potionTypeList.add(this);
 		baseList.add(this);
 		if (this.name != null)
+		{
 			baseMap.put(this.name, this);
+		}
 		
 		return this;
 	}
@@ -115,7 +121,7 @@ public class PotionBase extends AbstractPotionType
 		if (o instanceof PotionBase)
 		{
 			PotionBase base = (PotionBase) o;
-			return (this.name != null && base.name != null) ? this.name.compareTo(base.name) : 0;
+			return this.name != null && base.name != null ? this.name.compareTo(base.name) : 0;
 		}
 		return 0;
 	}

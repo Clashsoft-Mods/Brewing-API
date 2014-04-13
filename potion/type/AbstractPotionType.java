@@ -155,9 +155,13 @@ public abstract class AbstractPotionType implements IPotionType
 		List<IPotionType> list = new ArrayList();
 		list.add(this);
 		if (this.isImprovable())
+		{
 			list.add(this.onImproved());
+		}
 		if (this.isExtendable())
+		{
 			list.add(this.onExtended());
+		}
 		return list;
 	}
 	
@@ -246,6 +250,6 @@ public abstract class AbstractPotionType implements IPotionType
 	@Override
 	public int compareTo(IPotionType o)
 	{
-		return (this.hasEffect() && o.hasEffect()) ? Integer.compare(this.getPotionID(), o.getPotionID()) : 0;
+		return this.hasEffect() && o.hasEffect() ? Integer.compare(this.getPotionID(), o.getPotionID()) : 0;
 	}
 }

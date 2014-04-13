@@ -101,21 +101,11 @@ public class CommandPotion extends CommandBase
 		
 		if (splash)
 		{
-			notifyAdmins(sender, "commands.potion.give.splash.success", new Object[] {
-					new ChatComponentText(potioneffect.getEffectName()),
-					Integer.valueOf(id),
-					Integer.valueOf(duration),
-					Integer.valueOf(amplifier),
-					name });
+			notifyAdmins(sender, "commands.potion.give.splash.success", new Object[] { new ChatComponentText(potioneffect.getEffectName()), Integer.valueOf(id), Integer.valueOf(duration), Integer.valueOf(amplifier), name });
 		}
 		else
 		{
-			notifyAdmins(sender, "commands.potion.give.success", new Object[] {
-					new ChatComponentText(potioneffect.getEffectName()),
-					Integer.valueOf(id),
-					Integer.valueOf(duration),
-					Integer.valueOf(amplifier),
-					name });
+			notifyAdmins(sender, "commands.potion.give.success", new Object[] { new ChatComponentText(potioneffect.getEffectName()), Integer.valueOf(id), Integer.valueOf(duration), Integer.valueOf(amplifier), name });
 		}
 	}
 	

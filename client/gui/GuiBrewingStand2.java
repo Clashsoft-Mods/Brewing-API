@@ -56,26 +56,26 @@ public class GuiBrewingStand2 extends GuiContainer
 			
 			switch (bubbles)
 			{
-				case 0:
-					progress = 29;
-					break;
-				case 1:
-					progress = 24;
-					break;
-				case 2:
-					progress = 20;
-					break;
-				case 3:
-					progress = 16;
-					break;
-				case 4:
-					progress = 11;
-					break;
-				case 5:
-					progress = 6;
-					break;
-				case 6:
-					progress = 0;
+			case 0:
+				progress = 29;
+				break;
+			case 1:
+				progress = 24;
+				break;
+			case 2:
+				progress = 20;
+				break;
+			case 3:
+				progress = 16;
+				break;
+			case 4:
+				progress = 11;
+				break;
+			case 5:
+				progress = 6;
+				break;
+			case 6:
+				progress = 0;
 			}
 			
 			if (progress > 0)

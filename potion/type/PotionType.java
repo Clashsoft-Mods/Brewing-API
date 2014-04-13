@@ -330,10 +330,10 @@ public class PotionType extends AbstractPotionType
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((this.base == null) ? 0 : this.base.hashCode());
-		result = prime * result + ((this.effect == null) ? 0 : this.effect.hashCode());
-		result = prime * result + ((this.ingredient == null) ? 0 : this.ingredient.hashCode());
-		result = prime * result + ((this.inverted == null) ? 0 : this.inverted.hashCode());
+		result = prime * result + (this.base == null ? 0 : this.base.hashCode());
+		result = prime * result + (this.effect == null ? 0 : this.effect.hashCode());
+		result = prime * result + (this.ingredient == null ? 0 : this.ingredient.hashCode());
+		result = prime * result + (this.inverted == null ? 0 : this.inverted.hashCode());
 		result = prime * result + this.maxAmplifier;
 		result = prime * result + this.maxDuration;
 		return result;
@@ -343,44 +343,70 @@ public class PotionType extends AbstractPotionType
 	public boolean equals(Object obj)
 	{
 		if (this == obj)
+		{
 			return true;
+		}
 		if (obj == null)
+		{
 			return false;
+		}
 		if (this.getClass() != obj.getClass())
+		{
 			return false;
+		}
 		PotionType other = (PotionType) obj;
 		if (this.base == null)
 		{
 			if (other.base != null)
+			{
 				return false;
+			}
 		}
 		else if (!this.base.equals(other.base))
+		{
 			return false;
+		}
 		if (this.effect == null)
 		{
 			if (other.effect != null)
+			{
 				return false;
+			}
 		}
 		else if (!this.effect.equals(other.effect))
+		{
 			return false;
+		}
 		if (this.ingredient == null)
 		{
 			if (other.ingredient != null)
+			{
 				return false;
+			}
 		}
 		else if (!this.ingredient.equals(other.ingredient))
+		{
 			return false;
+		}
 		if (this.inverted == null)
 		{
 			if (other.inverted != null)
+			{
 				return false;
+			}
 		}
 		else if (!this.inverted.equals(other.inverted))
+		{
 			return false;
+		}
 		if (this.maxAmplifier != other.maxAmplifier)
+		{
 			return false;
+		}
 		if (this.maxDuration != other.maxDuration)
+		{
 			return false;
+		}
 		return true;
 	}
 	
@@ -445,6 +471,7 @@ public class PotionType extends AbstractPotionType
 	 *            the stack
 	 * @return First PotionType read from ItemStack NBT
 	 */
+	@Deprecated
 	public static IPotionType getFirstPotionType(ItemStack stack)
 	{
 		if (stack != null && stack.hasTagCompound())
@@ -508,8 +535,12 @@ public class PotionType extends AbstractPotionType
 	public static IIngredientHandler getIngredientHandler(ItemStack ingredient)
 	{
 		for (IIngredientHandler handler : BrewingAPI.ingredientHandlers)
+		{
 			if (handler.canHandleIngredient(ingredient))
+			{
 				return handler;
+			}
+		}
 		return null;
 	}
 	
@@ -538,7 +569,9 @@ public class PotionType extends AbstractPotionType
 	{
 		IIngredientHandler handler = getIngredientHandler(ingredient);
 		if (handler != null && handler.canApplyIngredient(ingredient, potion))
+		{
 			return handler.applyIngredient(ingredient, potion);
+		}
 		
 		IPotionType potionType = getFromIngredient(ingredient);
 		if (potionType != null)
@@ -653,9 +686,13 @@ public class PotionType extends AbstractPotionType
 		{
 			IPotionType result;
 			if (nbt.hasKey("BaseName"))
+			{
 				result = new PotionBase();
+			}
 			else
+			{
 				result = new PotionTypeDelegate();
+			}
 			result.readFromNBT(nbt);
 			return result;
 		}
@@ -673,7 +710,7 @@ public class PotionType extends AbstractPotionType
 	{
 		if (stack != null && stack.getItem() instanceof ItemPotion2)
 		{
-			ItemPotion2 item = ((ItemPotion2) stack.getItem());
+			ItemPotion2 item = (ItemPotion2) stack.getItem();
 			List<IPotionType> effects = item.getEffects(stack);
 			float value = item.isSplashDamage(stack.getItemDamage()) ? 0.3F : 0.2F;
 			for (IPotionType b : effects)
@@ -681,7 +718,7 @@ public class PotionType extends AbstractPotionType
 				if (b.hasEffect())
 				{
 					float f1 = b.isBadEffect() ? 0.2F : 0.3F;
-					value += f1 + (b.getAmplifier() * 0.1F) + (b.getEffect().getDuration() / 600);
+					value += f1 + b.getAmplifier() * 0.1F + b.getEffect().getDuration() / 600;
 				}
 			}
 			return value;
@@ -706,7 +743,9 @@ public class PotionType extends AbstractPotionType
 					}
 				}
 				if (!duplicate)
+				{
 					result.add(b);
+				}
 			}
 			Collections.sort(result);
 			return result;
@@ -731,7 +770,9 @@ public class PotionType extends AbstractPotionType
 					}
 				}
 				if (!duplicate)
+				{
 					result.add(b);
+				}
 			}
 			return result;
 		}

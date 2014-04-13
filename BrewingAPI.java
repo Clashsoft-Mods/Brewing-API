@@ -137,8 +137,8 @@ public class BrewingAPI extends ClashsoftMod
 		
 		brewingStand2 = new BlockBrewingStand2().setBlockName("brewingStand").setHardness(0.5F).setLightLevel(0.125F);
 		brewingStandItem2 = new ItemReed(brewingStand2).setUnlocalizedName("brewingStand").setTextureName("brewing_stand").setCreativeTab(CreativeTabs.tabBrewing);
-		potion2 = (ItemPotion2) (new ItemPotion2()).setUnlocalizedName("potion");
-		glassBottle2 = (ItemGlassBottle2) (new ItemGlassBottle2()).setUnlocalizedName("glassBottle").setTextureName("potion_bottle_empty");
+		potion2 = (ItemPotion2) new ItemPotion2().setUnlocalizedName("potion");
+		glassBottle2 = (ItemGlassBottle2) new ItemGlassBottle2().setUnlocalizedName("glassBottle").setTextureName("potion_bottle_empty");
 		
 		CSBlocks.replaceBlock(Blocks.brewing_stand, brewingStand2);
 		CSItems.replaceItem(Items.brewing_stand, brewingStandItem2);

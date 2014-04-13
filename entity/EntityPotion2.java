@@ -131,6 +131,8 @@ public class EntityPotion2 extends EntityPotion
 		ItemStack item = this.getDataWatcher().getWatchableObjectItemStack(10);
 		
 		if (item == null || item.stackSize <= 0)
+		{
 			this.setDead();
+		}
 	}
 }
