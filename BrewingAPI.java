@@ -1,7 +1,5 @@
 package clashsoft.brewingapi;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -21,10 +19,12 @@ import clashsoft.brewingapi.potion.IPotionList;
 import clashsoft.brewingapi.potion.PotionList;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
+import clashsoft.cslib.minecraft.CSLib;
 import clashsoft.cslib.minecraft.ClashsoftMod;
 import clashsoft.cslib.minecraft.block.CSBlocks;
 import clashsoft.cslib.minecraft.command.CSCommand;
 import clashsoft.cslib.minecraft.item.CSItems;
+import clashsoft.cslib.minecraft.potion.CustomPotion;
 import clashsoft.cslib.minecraft.update.CSUpdate;
 import clashsoft.cslib.minecraft.util.CSConfig;
 import clashsoft.cslib.reflect.CSReflection;
@@ -49,7 +49,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemReed;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
@@ -106,7 +105,7 @@ public class BrewingAPI extends ClashsoftMod
 	
 	static
 	{
-		expandPotionList(64);
+		CustomPotion.expandPotionList(64);
 	}
 	
 	public BrewingAPI()
@@ -257,23 +256,5 @@ public class BrewingAPI extends ClashsoftMod
 			}
 		}
 	}
-	
-	public static void expandPotionList(int size)
-	{
-		if (Potion.potionTypes.length < size)
-		{
-			try
-			{
-				Field f = CSReflection.getField(Potion.class, 0);
-				CSReflection.setModifier(f, Modifier.FINAL, false);
-				Potion[] potionTypes = new Potion[size];
-				System.arraycopy(Potion.potionTypes, 0, potionTypes, 0, Potion.potionTypes.length);
-				f.set(null, potionTypes);
-			}
-			catch (Exception e)
-			{
-				CSLog.error(e);
-			}
-		}
-	}
+
 }
