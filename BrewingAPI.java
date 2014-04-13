@@ -99,6 +99,7 @@ public class BrewingAPI extends ClashsoftMod
 		super(proxy, MODID, NAME, ACRONYM, VERSION);
 		this.hasConfig = true;
 		this.netHandlerClass = BAPINetHandler.class;
+		this.eventHandler = this;
 		this.url = "https://github.com/Clashsoft/Brewing-API/wiki/";
 	}
 	
