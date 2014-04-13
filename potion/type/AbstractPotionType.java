@@ -215,7 +215,8 @@ public abstract class AbstractPotionType implements IPotionType
 	@Override
 	public void apply(EntityLivingBase target)
 	{
-		this.apply_do(target, this.getEffect());
+		PotionEffect pe = new PotionEffect(this.getEffect());
+		this.apply_do(target, pe);
 	}
 	
 	@Override
