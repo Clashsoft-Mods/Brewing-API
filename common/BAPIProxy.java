@@ -10,7 +10,6 @@ import clashsoft.cslib.minecraft.network.CSPacket;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class BAPIProxy extends BaseProxy
@@ -18,9 +17,10 @@ public class BAPIProxy extends BaseProxy
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
-		if (tileEntity instanceof TileEntityBrewingStand2)
-			return new ContainerBrewingStand2(player.inventory, (TileEntityBrewingStand2) tileEntity);
+		if (ID == BrewingAPI.brewingStand2ID)
+		{
+			return new ContainerBrewingStand2(player.inventory, (TileEntityBrewingStand2) world.getTileEntity(x, y, z));
+		}
 		return null;
 	}
 	

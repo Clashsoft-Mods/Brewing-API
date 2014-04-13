@@ -30,10 +30,9 @@ import clashsoft.cslib.minecraft.util.CSConfig;
 import clashsoft.cslib.reflect.CSReflection;
 import clashsoft.cslib.util.CSLog;
 import clashsoft.cslib.util.CSUtil;
-import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -67,6 +66,21 @@ public class BrewingAPI extends ClashsoftMod
 	
 	@SidedProxy(clientSide = "clashsoft.brewingapi.client.BAPIClientProxy", serverSide = "clashsoft.brewingapi.common.BAPIProxy")
 	public static BAPIProxy			proxy;
+	
+	static
+	{
+		if (proxy == null)
+		{
+			if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+			{
+				proxy = CSReflection.createInstance("clashsoft.brewingapi.client.BAPIClientProxy");
+			}
+			else
+			{
+				proxy = new BAPIProxy();
+			}
+		}
+	}
 	
 	// API Stuff
 	
