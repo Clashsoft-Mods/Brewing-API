@@ -58,7 +58,7 @@ public class BrewingAPI extends ClashsoftMod
 	public static final String		MODID					= "brewingapi";
 	public static final String		NAME					= "Brewing API";
 	public static final String		ACRONYM					= "bapi";
-	public static final String		VERSION					= CSUpdate.CURRENT_VERSION + "-1.0.0";
+	public static final String		VERSION					= CSUpdate.CURRENT_VERSION + "-1.0.1";
 	public static final String		DEPENDENCIES			= CSLib.DEPENDENCY;
 	
 	@Instance(MODID)
