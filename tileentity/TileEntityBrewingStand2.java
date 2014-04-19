@@ -88,7 +88,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 				{
 					ItemPotion2 potion = (ItemPotion2) potionStack.getItem();
 					boolean water = potion.isWater(potionStack);
-					List<IPotionType> types = potion.getEffects(potionStack);
+					List<IPotionType> types = potion.getPotionTypes(potionStack);
 					
 					if (item == Items.glowstone_dust && !water)
 					{
@@ -150,7 +150,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 				ItemPotion2 potionItem = (ItemPotion2) stack.getItem();
 				int damage = stack.getItemDamage();
 				boolean water = potionItem.isWater(stack);
-				List<IPotionType> types = potionItem.getEffects(stack);
+				List<IPotionType> types = potionItem.getPotionTypes(stack);
 				List<IPotionType> newTypes = new ArrayList(types.size());
 				
 				boolean flag = false;

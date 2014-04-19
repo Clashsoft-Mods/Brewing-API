@@ -66,50 +66,73 @@ public class ItemPotion2 extends ItemPotion
 		return new CreativeTabs[] { BrewingAPI.potions, CreativeTabs.tabBrewing, CreativeTabs.tabAllSearch };
 	}
 	
+	@Override
+	public List<PotionEffect> getEffects(ItemStack stack)
+	{
+		if (stack == null || this.isWater(stack))
+		{
+			return Collections.EMPTY_LIST;
+		}
+		
+		List<PotionEffect> effects = new LinkedList();
+		List<IPotionType> types = this.getPotionTypes(stack);
+		
+		for (IPotionType type : types)
+		{
+			PotionEffect effect = type.getEffect();
+			if (effect != null)
+			{
+				effects.add(effect);
+			}
+		}
+		
+		return effects;
+	}
+	
 	public List<IPotionType> getLegacyEffects(ItemStack stack)
 	{
-		List<PotionEffect> effects = Items.potionitem.getEffects(stack);
-		List<IPotionType> potionTypes = new ArrayList(effects.size());
+		List<PotionEffect> effects = super.getEffects(stack);
+		List<IPotionType> types = new LinkedList();
 		for (PotionEffect effect : effects)
 		{
-			potionTypes.add(PotionType.getFromEffect(effect));
+			types.add(PotionType.getFromEffect(effect));
 		}
-		return potionTypes;
+		return types;
 	}
 	
 	/**
 	 * Returns a list of potion effects for the specified itemstack.
 	 */
-	@Override
-	public List<IPotionType> getEffects(ItemStack stack)
+	public List<IPotionType> getPotionTypes(ItemStack stack)
 	{
-		if (stack != null && !this.isWater(stack))
+		if (stack == null || this.isWater(stack))
 		{
-			NBTTagCompound compound = stack.getTagCompound();
-			if (compound != null)
+			return Collections.EMPTY_LIST;
+		}
+		
+		NBTTagCompound compound = stack.getTagCompound();
+		if (compound != null)
+		{
+			if (this.effectCache.containsKey(compound))
 			{
-				if (this.effectCache.containsKey(compound))
-				{
-					return this.effectCache.get(compound);
-				}
-				else
-				{
-					List<IPotionType> result = PotionType.getPotionTypes(stack);
-					this.effectCache.put(compound, result);
-					return result;
-				}
+				return this.effectCache.get(compound);
 			}
 			else
 			{
-				return this.getLegacyEffects(stack);
+				List<IPotionType> result = PotionType.getPotionTypes(stack);
+				this.effectCache.put(compound, result);
+				return result;
 			}
 		}
-		return Collections.EMPTY_LIST;
+		else
+		{
+			return this.getLegacyEffects(stack);
+		}
 	}
 	
 	public boolean hasEffects(ItemStack stack)
 	{
-		List<IPotionType> effects = this.getEffects(stack);
+		List<IPotionType> effects = this.getPotionTypes(stack);
 		return effects != null && !effects.isEmpty();
 	}
 	
@@ -176,7 +199,7 @@ public class ItemPotion2 extends ItemPotion
 			return 0x0C0CFF;
 		}
 		
-		List<IPotionType> effects = this.getEffects(stack);
+		List<IPotionType> effects = this.getPotionTypes(stack);
 		
 		if (effects.isEmpty())
 		{
@@ -202,7 +225,7 @@ public class ItemPotion2 extends ItemPotion
 	 */
 	public boolean isEffectInstant(ItemStack stack)
 	{
-		List<IPotionType> effects = this.getEffects(stack);
+		List<IPotionType> effects = this.getPotionTypes(stack);
 		if (effects.size() == 0)
 		{
 			return false;
@@ -223,7 +246,7 @@ public class ItemPotion2 extends ItemPotion
 	{
 		if (!world.isRemote)
 		{
-			for (IPotionType potionType : this.getEffects(stack))
+			for (IPotionType potionType : this.getPotionTypes(stack))
 			{
 				potionType.apply(player);
 			}
@@ -328,7 +351,7 @@ public class ItemPotion2 extends ItemPotion
 		}
 		else
 		{
-			List<IPotionType> potionTypes = this.getEffects(stack);
+			List<IPotionType> potionTypes = this.getPotionTypes(stack);
 			List<IPotionType> effects = new ArrayList();
 			List<PotionBase> bases = new ArrayList();
 			
@@ -424,7 +447,7 @@ public class ItemPotion2 extends ItemPotion
 	{
 		if (!this.isWater(stack))
 		{
-			List<IPotionType> potionTypes = this.getEffects(stack);
+			List<IPotionType> potionTypes = this.getPotionTypes(stack);
 			Multimap<String, AttributeModifier> hashmultimap = TreeMultimap.create(String.CASE_INSENSITIVE_ORDER, AttributeModifierComparator.instance);
 			int size = potionTypes.size();
 			
@@ -662,7 +685,7 @@ public class ItemPotion2 extends ItemPotion
 	{
 		if (pass == 0 && stack.getItemDamage() > 0)
 		{
-			List<IPotionType> list = this.getEffects(stack);
+			List<IPotionType> list = this.getPotionTypes(stack);
 			return list != null && !list.isEmpty() && list.get(0).getEffect() != null;
 		}
 		return false;

@@ -579,7 +579,7 @@ public class PotionType extends AbstractPotionType
 			PotionBase requiredBase = potionType.getBase();
 			boolean flag = false;
 			
-			List<IPotionType> potionTypes = ((ItemPotion2) potion.getItem()).getEffects(potion);
+			List<IPotionType> potionTypes = ((ItemPotion2) potion.getItem()).getPotionTypes(potion);
 			
 			if (requiredBase == null)
 			{
@@ -619,7 +619,7 @@ public class PotionType extends AbstractPotionType
 			IPotionType type = getFromIngredient(ingredient);
 			if (type != null)
 			{
-				List<IPotionType> potionTypes = ((ItemPotion2) potion.getItem()).getEffects(potion);
+				List<IPotionType> potionTypes = ((ItemPotion2) potion.getItem()).getPotionTypes(potion);
 				return hasBase(type, potionTypes);
 			}
 		}
@@ -711,7 +711,7 @@ public class PotionType extends AbstractPotionType
 		if (stack != null && stack.getItem() instanceof ItemPotion2)
 		{
 			ItemPotion2 item = (ItemPotion2) stack.getItem();
-			List<IPotionType> effects = item.getEffects(stack);
+			List<IPotionType> effects = item.getPotionTypes(stack);
 			float value = item.isSplashDamage(stack.getItemDamage()) ? 0.3F : 0.2F;
 			for (IPotionType b : effects)
 			{

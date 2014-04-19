@@ -68,7 +68,7 @@ public class EntityPotion2 extends EntityPotion
 		if (!this.worldObj.isRemote)
 		{
 			ItemStack potion = this.getPotion();
-			List<IPotionType> types = ((ItemPotion2) potion.getItem()).getEffects(potion);
+			List<IPotionType> types = ((ItemPotion2) potion.getItem()).getPotionTypes(potion);
 			
 			if (types != null && !types.isEmpty())
 			{
