@@ -61,12 +61,6 @@ public class ItemPotion2 extends ItemPotion
 	}
 	
 	@Override
-	public CreativeTabs[] getCreativeTabs()
-	{
-		return new CreativeTabs[] { BrewingAPI.potions, CreativeTabs.tabBrewing, CreativeTabs.tabAllSearch };
-	}
-	
-	@Override
 	public List<PotionEffect> getEffects(ItemStack stack)
 	{
 		if (stack == null || this.isWater(stack))
@@ -692,10 +686,16 @@ public class ItemPotion2 extends ItemPotion
 	}
 	
 	@Override
+	public CreativeTabs[] getCreativeTabs()
+	{
+		return new CreativeTabs[] { BrewingAPI.potions, CreativeTabs.tabBrewing };
+	}
+	
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List list)
 	{
-		if (tab == CreativeTabs.tabBrewing || tab == CreativeTabs.tabAllSearch)
+		if (tab == CreativeTabs.tabBrewing || tab == null)
 		{
 			list.add(new ItemStack(this, 1, 0));
 			
