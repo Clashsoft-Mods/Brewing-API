@@ -23,6 +23,7 @@ import clashsoft.cslib.minecraft.CSLib;
 import clashsoft.cslib.minecraft.ClashsoftMod;
 import clashsoft.cslib.minecraft.block.CSBlocks;
 import clashsoft.cslib.minecraft.command.CSCommand;
+import clashsoft.cslib.minecraft.entity.CSEntities;
 import clashsoft.cslib.minecraft.item.CSItems;
 import clashsoft.cslib.minecraft.potion.CustomPotion;
 import clashsoft.cslib.minecraft.update.CSUpdate;
@@ -175,11 +176,10 @@ public class BrewingAPI extends ClashsoftMod
 		}
 		
 		GameRegistry.registerTileEntity(TileEntityBrewingStand2.class, "BrewingStand2");
-		EntityRegistry.registerGlobalEntityID(EntityPotion2.class, "SplashPotion2", splashPotion2ID);
-		EntityRegistry.registerModEntity(EntityPotion2.class, "SplashPotion2", splashPotion2ID, this, 100, 20, true);
+		CSEntities.replace("ThrownPotion", 16, EntityPotion2.class);
 		
-		BlockDispenser.dispenseBehaviorRegistry.putObject(potion2, new PotionDispenser());
 		CSCommand.registerCommand(new CommandPotion());
+		BlockDispenser.dispenseBehaviorRegistry.putObject(potion2, new PotionDispenser());
 	}
 	
 	@Override
