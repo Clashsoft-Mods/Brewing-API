@@ -1,0 +1,63 @@
+1.7.2-1.0.1
+
+* Fixed witch crash
+* Fixed potion not showing up in the creative search
+
+1.7.2-1.0.0
+
+! Update to 1.7.2
+* Structure changes
+* Performance improvements
+* Rewritten the PotionType class
+* Fixed MANY bugs
+* Renamed /givepotion command to "/potion give"
+
+1.6.4-5
+
+* Structure changes
+* Fixed many bugs
+* Improved potion item description
+
+1.6.4-4
+
++ Added /givepotion command
+
+1.6.4-3
+
++ Added automatic updates
+
+1.6.4-2
+
++ Added update checking
+
+1.6.4-1
+
+! Update to 1.6.4
+
+1.6.2-6
+
+* Fixed some bugs
+
+1.6.2-5
+
+* Fixed brewing crash
+
+1.6.2-4
+
+* Fixed some bugs
+* Fixed crash
+
+1.6.2-3
+
+* Fixed some bugs
+- Removed Clashsoft API dependency
+
+1.6.2-2
+
+* Fixed crash
+
+1.6.2-1
+
++ Added ability to register custom potions
++ Added hooks for custom potion effects
++ Added hooks for custom ingredient handlers
