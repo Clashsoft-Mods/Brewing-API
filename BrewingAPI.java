@@ -72,14 +72,7 @@ public class BrewingAPI extends ClashsoftMod
 	{
 		if (proxy == null)
 		{
-			if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-			{
-				proxy = CSReflection.createInstance("clashsoft.brewingapi.client.BAPIClientProxy");
-			}
-			else
-			{
-				proxy = new BAPIProxy();
-			}
+			proxy = createProxy("clashsoft.brewingapi.client.BAPIClientProxy", "clashsoft.brewingapi.common.BAPIProxy");
 		}
 	}
 	
