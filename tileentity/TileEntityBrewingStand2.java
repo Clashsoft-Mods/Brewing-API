@@ -153,8 +153,6 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 				List<IPotionType> types = potionItem.getPotionTypes(stack);
 				List<IPotionType> newTypes = new ArrayList(types.size());
 				
-				boolean flag = false;
-				
 				if (item == Items.gunpowder)
 				{
 					damage = potionItem.setSplash(stack, true);

@@ -610,7 +610,7 @@ public class ItemPotion2 extends ItemPotion
 						list.add(builder.toString());
 						
 						builder.delete(4, builder.length());
-						builder.append(I18n.getString("potion.maxamplifier")).append(": ").append(CSString.convertToRoman(averageAmplifier));
+						builder.append(I18n.getString("potion.maxamplifier")).append(": ").append(CSString.convertToRoman(maxAmplifier));
 						list.add(builder.toString());
 						
 						builder.delete(4, builder.length());
