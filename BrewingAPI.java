@@ -19,13 +19,12 @@ import clashsoft.brewingapi.potion.IPotionList;
 import clashsoft.brewingapi.potion.PotionList;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.tileentity.TileEntityBrewingStand2;
-import clashsoft.cslib.minecraft.CSLib;
-import clashsoft.cslib.minecraft.ClashsoftMod;
 import clashsoft.cslib.minecraft.block.CSBlocks;
 import clashsoft.cslib.minecraft.command.CSCommand;
 import clashsoft.cslib.minecraft.entity.CSEntities;
+import clashsoft.cslib.minecraft.init.CSLib;
+import clashsoft.cslib.minecraft.init.ClashsoftMod;
 import clashsoft.cslib.minecraft.item.CSItems;
-import clashsoft.cslib.minecraft.potion.CustomPotion;
 import clashsoft.cslib.minecraft.update.CSUpdate;
 import clashsoft.cslib.minecraft.util.CSConfig;
 import clashsoft.cslib.util.CSLog;
@@ -96,11 +95,6 @@ public class BrewingAPI extends ClashsoftMod
 	
 	public static ItemPotion2		potion2;
 	public static ItemGlassBottle2	glassBottle2;
-	
-	static
-	{
-		CustomPotion.expandPotionList(64);
-	}
 	
 	public BrewingAPI()
 	{
