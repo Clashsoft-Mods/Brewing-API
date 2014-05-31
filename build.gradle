@@ -1,0 +1,92 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+    }
+}
+
+apply plugin: 'forge'
+version = "1.7.2"
+group = "clashsoft.brewingapi"
+archivesBaseName = "Brewing API"
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+minecraft
+{
+    version = "1.7.2-10.12.1.1103"
+
+    if(file('../run').exists())
+    {
+        assetDir = "../run/assets/"
+    }
+    else
+    {
+        assetDir = "eclipse/assets"
+    }
+}
+
+task update(dependsOn:['eclipse', 'setupDevWorkspace'])
+
+task deobfJar(type:Jar, dependsOn:'classes')
+deobfJar
+{
+    classifier = 'deobf'
+    archiveName = "${archivesBaseName} ${minecraft.version}-deobf.jar"
+    from ('build/classes/main')
+    {
+        include('clashsoft/brewingapi/**')
+    }
+    from ('build/resources/main')
+    {
+        include('assets/brewingapi/**')
+    }
+}
+
+task sourceJar(type:Jar, dependsOn:'classes')
+sourceJar
+{
+    classifier = 'sources'
+    archiveName = "${archivesBaseName} ${minecraft.version}-sources.jar"
+    from ('build/sources/java')
+    {
+        include('clashsoft/brewingapi/**')
+    }
+    from ('build/resources/main')
+    {
+        include('assets/brewingapi/**')
+    }
+}
+
+task buildApi(dependsOn:['build', 'sourceJar', 'deobfJar'])
+
+processResources
+{
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}

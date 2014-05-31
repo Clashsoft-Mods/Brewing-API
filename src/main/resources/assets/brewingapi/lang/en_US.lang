@@ -1,0 +1,47 @@
+itemGroup.mixedpotions=Mixed Potions
+
+commands.potion.usage=/potion <sub-command> <player> [args...]
+commands.potion.give.usage=/potion give <player> <effect> [seconds] [amplifier] [splash]
+commands.potion.give.success=Given Potion (%1$s (ID %2$d) level %4$d for %3$d seconds) to %5$s.
+commands.potion.give.success.splash=Given Splash Potion (%1$s (ID %2$d) level %4$d for %3$d seconds) to %5$s.
+
+potion.goodeffects=Good Effects
+potion.negativeEffects=Bad Effects
+potion.potionof=Potion of
+potion.effects=Effects
+potion.and=and
+potion.useto=Used to make
+potion.infinite=Infinite
+potion.description.missing=Description not available
+
+potion.highestamplifier=Highest Amplifier
+potion.averageamplifier=Average Amplifier
+potion.highestduration=Highest Duration
+potion.averageduration=Average Duration
+potion.value=Value
+
+potion.alleffects.postfix=Potion of all Effects
+
+potion.regeneration.description=Regenerates life.
+potion.moveSpeed.description=Allows you to move Faster.
+potion.moveSlowdown.description=Slows you down.
+potion.digSpeed.description=Allows you to move your arms faster and dig faster.
+potion.digSlowDown.description=Slows down your arms and your digging.
+potion.fireResistance.description=Prevents you from getting fire and lava damage.
+potion.waterBreathing.description=Lets you breathe underwater.
+potion.heal.description=Gives you some hearts.
+potion.harm.description=Deals some damage.
+potion.healthBoost.description=Gives you some extra hearts.
+potion.absorption.description=Gives you some extra hearts.
+potion.poison.description=Poisons you.
+potion.hunger.description=Makes your hunger bar go down faster.
+potion.wither.description=Withers you as you would be hit by a wither skeleton.
+potion.confusion.description=Makes you dizzy.
+potion.nightVision.description=Lets you see everything in the dark.
+potion.invisibility.description=Makes you invisible.
+potion.blindness.description=Makes you blind.
+potion.damageBoost.description=Allows you to deal more damage.
+potion.weakness.description=Decreases your delt damage.
+potion.jump.description=Lets you jump higher.
+potion.resistance.description=Makes you get less damage when getting hit.
+potion.saturation.description=Fills up your hunger bar.

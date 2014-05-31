@@ -1,0 +1,45 @@
+itemGroup.mixedpotions=Vermischte Tränke
+
+commands.potion.usage=/potion <sub-command> <player> [args...]
+commands.potion.give.usage=/potion give <player> <effect> [seconds] [amplifier] [splash]
+commands.potion.give.success=Trank (%1$s (ID %2$d) level %4$d for %3$d seconds) an %5$s gegeben.
+commands.potion.give.success.splash=Werfbaren Trank (%1$s (ID %2$d) level %4$d for %3$d seconds) an %5$s gegeben.
+
+potion.regeneration.description=Regeneriert Leben.
+potion.moveSpeed.description=Erlaubt es, sich schneller zu bewegen.
+potion.moveSlowdown.description=Verlangsamt.
+potion.digSpeed.description=Erlaubt es, die Arme schneller zu bewegen und schneller zu graben.
+potion.digSlowDown.description=Verlangsamt Arme und Graben.
+potion.fireResistance.description=Verhindert Feuer- und Lavaschaden.
+potion.waterBreathing.description=Lässt dich unter Wasser atmen.
+potion.heal.description=Gibt dir ein paar Leben.
+potion.harm.description=Fügt dir Schaden zu.
+potion.healthBoost.description=Gibt dir ein paar Extraherzen.
+potion.absorption.description=Gibt dir ein paar Extraherzen.
+potion.poison.description=Vergiftet dich.
+potion.hunger.description=Lässt deine Hungeranzeige schneller sinken.
+potion.wither.description=Withert dich als würdest du von einem Witherskelett geschlagen werden.
+potion.confusion.description=Macht dich schwindelig.
+potion.nightVision.description=Lässt dich im Dunkeln alles sehen.
+potion.invisibility.description=Macht dich unsichtbar für Spieler und Mobs.
+potion.blindness.description=Macht dicht blind.
+potion.damageBoost.description=Lässt dich mehr Schaden austeilen.
+potion.weakness.description=Verringert den Schaden, den du machst.
+potion.jump.description=Lässt dich höher springen.
+potion.resistance.description=Verringert den Schaden, den du bekommst.
+potion.saturation.description=Füllt deine Hungerleiste auf.
+
+potion.goodeffects=Gute Effekte
+potion.negativeEffects=Schlechte Effekte
+potion.potionof=Trank von
+potion.effects=Effekten
+potion.and=und
+potion.useto=Benutzt für
+potion.infinite=Unendlich
+potion.description.missing=Keine Beschreibung gefunden
+
+potion.highestamplifier=Größter Level
+potion.averageamplifier=Durchschnittlicher Level
+potion.highestduration=Höchste Dauer
+potion.averageduration=Durchschnittliche Dauer
+potion.value=Wert
