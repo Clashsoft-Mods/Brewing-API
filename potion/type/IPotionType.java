@@ -9,6 +9,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
+/**
+ * @author Clashsoft
+ */
 public interface IPotionType extends Comparable<IPotionType>
 {
 	/** Name of the tag compound that stores the potion type list */

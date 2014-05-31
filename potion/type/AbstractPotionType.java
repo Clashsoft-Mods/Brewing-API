@@ -10,6 +10,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
+/**
+ * @author Clashsoft
+ */
 public abstract class AbstractPotionType implements IPotionType
 {
 	@Override

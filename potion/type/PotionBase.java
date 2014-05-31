@@ -13,6 +13,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.oredict.OreDictionary;
 
+/**
+ * @author Clashsoft
+ */
 public class PotionBase extends AbstractPotionType
 {
 	public static final List<PotionBase>		baseList	= new ArrayList();

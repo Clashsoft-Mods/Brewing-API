@@ -16,8 +16,6 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
 /**
- * Class that stores all data that the new potion need and all new potion types
- * 
  * @author Clashsoft
  */
 public class PotionType extends AbstractPotionType

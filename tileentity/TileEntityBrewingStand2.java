@@ -35,7 +35,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	
 	public void spawnXP()
 	{
-		if (this.thePlayer != null && !this.thePlayer.worldObj.isRemote)
+		if (!this.getWorldObj().isRemote)
 		{
 			float f = 0F;
 			for (int i = 0; i < 3; i++)
@@ -53,7 +53,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 			{
 				j = EntityXPOrb.getXPSplit(i);
 				i -= j;
-				this.thePlayer.worldObj.spawnEntityInWorld(new EntityXPOrb(this.thePlayer.worldObj, this.thePlayer.posX, this.thePlayer.posY + 0.5D, this.thePlayer.posZ + 0.5D, j));
+				this.getWorldObj().spawnEntityInWorld(new EntityXPOrb(this.getWorldObj(), this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D, j));
 			}
 		}
 	}
