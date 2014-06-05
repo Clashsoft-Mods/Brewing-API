@@ -57,7 +57,6 @@ public class ItemPotion2 extends ItemPotion
 	{
 		this.setMaxStackSize(BrewingAPI.potionStackSize);
 		this.setHasSubtypes(true);
-		this.setCreativeTab(CreativeTabs.tabBrewing);
 	}
 	
 	@Override
