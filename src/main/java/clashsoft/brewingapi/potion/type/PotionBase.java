@@ -93,6 +93,12 @@ public class PotionBase extends AbstractPotionType
 	}
 	
 	@Override
+	public boolean isCombinable()
+	{
+		return false;
+	}
+	
+	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		PotionBase base = baseMap.get(nbt.getString("BaseName"));

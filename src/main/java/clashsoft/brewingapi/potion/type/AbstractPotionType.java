@@ -41,7 +41,7 @@ public abstract class AbstractPotionType implements IPotionType
 	@Override
 	public boolean isCombinable()
 	{
-		return !this.isBase();
+		return true;
 	}
 	
 	@Override
@@ -175,15 +175,10 @@ public abstract class AbstractPotionType implements IPotionType
 		{
 			if (stack.stackTagCompound == null)
 			{
-				stack.setTagCompound(new NBTTagCompound());
+				stack.stackTagCompound = new NBTTagCompound();
 			}
 			
 			NBTTagList list = (NBTTagList) stack.stackTagCompound.getTag(COMPOUND_NAME);
-			
-			if (list == null)
-			{
-				list = new NBTTagList();
-			}
 			
 			NBTTagCompound nbt1 = new NBTTagCompound();
 			this.writeToNBT(nbt1);
