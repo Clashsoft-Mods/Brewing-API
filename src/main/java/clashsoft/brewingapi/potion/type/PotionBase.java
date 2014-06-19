@@ -145,7 +145,11 @@ public class PotionBase extends AbstractPotionType
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		PotionBase other = (PotionBase) obj;
+		return this.matches((PotionBase) obj);
+	}
+	
+	public final boolean matches(PotionBase other)
+	{
 		if (this.name == null)
 		{
 			if (other.name != null)
