@@ -11,7 +11,17 @@ public class PotionUtils
 {
 	public static int getGoodEffects(List<IPotionType> potion)
 	{
-		return potion.size() - getBadEffects(potion);
+		int goodEffects = 0;
+		
+		for (IPotionType pt : potion)
+		{
+			if (!pt.isBadEffect())
+			{
+				goodEffects++;
+			}
+		}
+		
+		return goodEffects;
 	}
 	
 	public static int getBadEffects(List<IPotionType> potion)
@@ -37,7 +47,7 @@ public class PotionUtils
 			averageAmplifier += pt.getAmplifier() + 1;
 		}
 		
-		averageAmplifier = averageAmplifier / potion.size() - 1;
+		averageAmplifier = (averageAmplifier / potion.size()) - 1;
 		return averageAmplifier;
 	}
 	
@@ -80,7 +90,7 @@ public class PotionUtils
 	
 	public static float getValue(ItemStack potion)
 	{
-		return PotionType.getExperience(potion) * 100 / 223.9F;
+		return PotionType.getExperience(potion) * 2.25F;
 	}
 	
 	public static int combineColors(int... colors)
