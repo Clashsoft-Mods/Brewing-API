@@ -5,7 +5,7 @@ import java.util.*;
 import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.potion.IIngredientHandler;
-import clashsoft.cslib.minecraft.item.CSStacks;
+import clashsoft.brewingapi.potion.PotionRecipe;
 import clashsoft.cslib.minecraft.potion.CustomPotion;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -30,8 +30,6 @@ public class PotionType extends AbstractPotionType
 	private int					maxDuration;
 	/** Fermented Spider Eye effect **/
 	private IPotionType			inverted;
-	/** The ingredient to brew the potion **/
-	private ItemStack			ingredient;
 	/** Determines the base that is needed to brew the potion **/
 	private PotionBase			base;
 	
@@ -111,8 +109,9 @@ public class PotionType extends AbstractPotionType
 		this.maxAmplifier = maxAmplifier;
 		this.maxDuration = maxDuration;
 		this.inverted = inverted;
-		this.ingredient = ingredient;
 		this.base = base;
+		
+		PotionRecipe.registerRecipe(new PotionRecipe(ingredient, this));
 	}
 	
 	@Override
@@ -180,12 +179,6 @@ public class PotionType extends AbstractPotionType
 	}
 	
 	@Override
-	public ItemStack getIngredient()
-	{
-		return this.ingredient;
-	}
-	
-	@Override
 	public PotionBase getBase()
 	{
 		return this.base;
@@ -218,12 +211,6 @@ public class PotionType extends AbstractPotionType
 	public IPotionType setInverted(IPotionType opposite)
 	{
 		this.inverted = opposite;
-		return this;
-	}
-	
-	public IPotionType setIngredient(ItemStack ingredient)
-	{
-		this.ingredient = ingredient;
 		return this;
 	}
 	
@@ -330,7 +317,6 @@ public class PotionType extends AbstractPotionType
 		int result = 1;
 		result = prime * result + (this.base == null ? 0 : this.base.hashCode());
 		result = prime * result + (this.effect == null ? 0 : this.effect.hashCode());
-		result = prime * result + (this.ingredient == null ? 0 : this.ingredient.hashCode());
 		result = prime * result + (this.inverted == null ? 0 : this.inverted.hashCode());
 		result = prime * result + this.maxAmplifier;
 		result = prime * result + this.maxDuration;
@@ -375,17 +361,6 @@ public class PotionType extends AbstractPotionType
 		{
 			return false;
 		}
-		if (this.ingredient == null)
-		{
-			if (other.ingredient != null)
-			{
-				return false;
-			}
-		}
-		else if (!this.ingredient.equals(other.ingredient))
-		{
-			return false;
-		}
 		if (this.inverted == null)
 		{
 			if (other.inverted != null)
@@ -426,10 +401,6 @@ public class PotionType extends AbstractPotionType
 		if (this.inverted != null)
 		{
 			builder.append("inverted=").append(this.inverted).append(", ");
-		}
-		if (this.ingredient != null)
-		{
-			builder.append("ingredient=").append(this.ingredient).append(", ");
 		}
 		if (this.base != null)
 		{
@@ -555,53 +526,29 @@ public class PotionType extends AbstractPotionType
 	}
 	
 	/**
-	 * Applys an ingredient to a potion
+	 * Applies the given {@link ItemStack} {@code ingredient} to the given
+	 * {@link ItemStack} {@code potionStack}.
 	 * 
 	 * @param ingredient
 	 *            Ingredient
-	 * @param potion
-	 *            Potion
-	 * @return Potion with applied ingredients
+	 * @param potionStack
+	 *            the potion ItemStack
+	 * @return the potion with applied ingredients
 	 */
-	public static ItemStack applyIngredient(ItemStack ingredient, ItemStack potion)
+	public static ItemStack applyIngredient(ItemStack ingredient, ItemStack potionStack)
 	{
 		IIngredientHandler handler = getIngredientHandler(ingredient);
-		if (handler != null && handler.canApplyIngredient(ingredient, potion))
+		if (handler != null && handler.canApplyIngredient(ingredient, potionStack))
 		{
-			return handler.applyIngredient(ingredient, potion);
+			return handler.applyIngredient(ingredient, potionStack);
 		}
 		
-		IPotionType potionType = getFromIngredient(ingredient);
-		if (potionType != null)
+		PotionRecipe recipe = PotionRecipe.get(ingredient);
+		if (recipe != null)
 		{
-			PotionBase requiredBase = potionType.getBase();
-			boolean flag = false;
-			
-			List<IPotionType> potionTypes = ((ItemPotion2) potion.getItem()).getPotionTypes(potion);
-			
-			if (requiredBase == null)
-			{
-				flag = potionTypes.isEmpty();
-			}
-			else
-			{
-				for (IPotionType pt : potionTypes)
-				{
-					if (pt instanceof PotionBase && ((PotionBase) pt).equals(requiredBase))
-					{
-						flag = true;
-						pt.remove(potion);
-						break;
-					}
-				}
-			}
-			
-			if (flag)
-			{
-				return potionType.apply(potion);
-			}
+			return recipe.apply(potionStack);
 		}
-		return potion;
+		return potionStack;
 	}
 	
 	public static boolean canApplyIngredient(ItemStack ingredient, ItemStack potion)
@@ -665,15 +612,10 @@ public class PotionType extends AbstractPotionType
 	 */
 	public static IPotionType getFromIngredient(ItemStack stack)
 	{
-		if (stack != null)
+		PotionRecipe recipe = PotionRecipe.get(stack);
+		if (recipe != null)
 		{
-			for (IPotionType pt : potionTypeList)
-			{
-				if (CSStacks.equals(stack, pt.getIngredient()))
-				{
-					return pt;
-				}
-			}
+			return recipe.getOutput();
 		}
 		return null;
 	}

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import clashsoft.brewingapi.BrewingAPI;
+import clashsoft.brewingapi.potion.PotionRecipe;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -22,22 +23,21 @@ public class PotionBase extends AbstractPotionType
 	public static final Map<String, PotionBase>	baseMap		= new HashMap();
 	
 	private String								name;
-	private ItemStack							ingredient;
 	
 	public PotionBase()
 	{
 		super();
 	}
 	
-	public PotionBase(String name, ItemStack ingredient)
-	{
-		this.name = name;
-		this.ingredient = ingredient;
-	}
-	
 	public PotionBase(String name)
 	{
-		this(name, null);
+		this.name = name;
+	}
+	
+	public PotionBase(String name, ItemStack ingredient)
+	{
+		this(name);
+		PotionRecipe.registerRecipe(new PotionRecipe(ingredient, this));
 	}
 	
 	@Override
@@ -105,7 +105,6 @@ public class PotionBase extends AbstractPotionType
 		if (base != null)
 		{
 			this.name = base.name;
-			this.ingredient = base.ingredient;
 		}
 	}
 	
@@ -119,8 +118,7 @@ public class PotionBase extends AbstractPotionType
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder("PotionBase [");
-		result.append("Name:\"").append(this.name).append("\", ");
-		result.append("Ingredient:[").append(this.ingredient).append("]]");
+		result.append("Name:\"").append(this.name).append("]");
 		return result.toString();
 	}
 	
@@ -148,7 +146,7 @@ public class PotionBase extends AbstractPotionType
 	@Override
 	public IPotionType copy()
 	{
-		return new PotionBase(this.name, this.ingredient);
+		return this;
 	}
 	
 	@Override
@@ -185,12 +183,6 @@ public class PotionBase extends AbstractPotionType
 	public IPotionType getInverted()
 	{
 		return null;
-	}
-	
-	@Override
-	public ItemStack getIngredient()
-	{
-		return this.ingredient;
 	}
 	
 	@Override

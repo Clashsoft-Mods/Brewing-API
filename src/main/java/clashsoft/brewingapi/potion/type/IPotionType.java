@@ -1,7 +1,12 @@
 package clashsoft.brewingapi.potion.type;
 
+import gnu.trove.map.TIntObjectMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import clashsoft.brewingapi.item.ItemPotion2;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -21,6 +26,7 @@ public interface IPotionType extends Comparable<IPotionType>
 	public static final String		NBT_VERSION		= "1.1";
 	
 	/** List that stores ALL PotionTypes, also PotionBase types **/
+	public static TIntObjectMap		potionTypes		= new TIntObjectHashMap();
 	public static List<IPotionType>	potionTypeList	= new ArrayList();
 	public static List<IPotionType>	combinableTypes	= new ArrayList();
 	public static List<IPotionType>	effectTypes		= new ArrayList();
@@ -194,6 +200,7 @@ public interface IPotionType extends Comparable<IPotionType>
 	/**
 	 * Returns the ingredient that is used to brew this potion type.
 	 * 
+	 * @deprecated DO NOT USE
 	 * @return the ingredient
 	 */
 	public ItemStack getIngredient();

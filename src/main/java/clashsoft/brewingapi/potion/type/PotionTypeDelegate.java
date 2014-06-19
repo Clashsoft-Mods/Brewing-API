@@ -1,7 +1,6 @@
 package clashsoft.brewingapi.potion.type;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 
@@ -77,13 +76,6 @@ public class PotionTypeDelegate extends AbstractPotionType
 	public IPotionType getInverted()
 	{
 		return this.thePotionType.getInverted();
-	}
-	
-	@Override
-	public ItemStack getIngredient()
-	{
-		ItemStack ingredient = this.thePotionType.getIngredient();
-		return ingredient == null ? null : ingredient.copy();
 	}
 	
 	@Override

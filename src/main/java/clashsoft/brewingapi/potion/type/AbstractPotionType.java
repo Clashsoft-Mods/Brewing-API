@@ -3,6 +3,8 @@ package clashsoft.brewingapi.potion.type;
 import java.util.ArrayList;
 import java.util.List;
 
+import clashsoft.cslib.logging.CSLog;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,7 +16,7 @@ import net.minecraft.potion.PotionEffect;
  * @author Clashsoft
  */
 public abstract class AbstractPotionType implements IPotionType
-{
+{	
 	@Override
 	public String getUUID()
 	{
@@ -24,6 +26,16 @@ public abstract class AbstractPotionType implements IPotionType
 	@Override
 	public AbstractPotionType register()
 	{
+		int potionID = this.getPotionID();
+		if (potionID != -1)
+		{
+			if (potionTypes.containsKey(potionID))
+			{
+				CSLog.warning("Registering duplicate potion ID " + potionID);
+			}
+			potionTypes.put(potionID, this);
+		}
+		
 		potionTypeList.add(this);
 		
 		if (this.isCombinable())
@@ -113,6 +125,12 @@ public abstract class AbstractPotionType implements IPotionType
 	{
 		PotionEffect effect = this.getEffect();
 		return effect != null ? effect.getEffectName() : "";
+	}
+	
+	@Override
+	public final ItemStack getIngredient()
+	{
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
