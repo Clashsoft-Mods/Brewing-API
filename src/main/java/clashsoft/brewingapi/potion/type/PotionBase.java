@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import clashsoft.brewingapi.BrewingAPI;
-import clashsoft.brewingapi.potion.PotionRecipe;
+import clashsoft.brewingapi.potion.recipe.PotionRecipe;
+import clashsoft.brewingapi.potion.recipe.PotionRecipes;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -37,7 +38,7 @@ public class PotionBase extends AbstractPotionType
 	{
 		this(name);
 		
-		PotionRecipe.addRecipe(ingredient, null, this);
+		PotionRecipes.addRecipe(ingredient, null, this);
 	}
 	
 	@Override
@@ -48,7 +49,7 @@ public class PotionBase extends AbstractPotionType
 	
 	public static PotionBase getFromIngredient(ItemStack ingredient)
 	{
-		PotionRecipe recipe = PotionRecipe.get(ingredient);
+		PotionRecipe recipe = PotionRecipes.get(ingredient);
 		IPotionType pt = recipe.getOutput();
 		if (pt instanceof PotionBase)
 			return (PotionBase) pt;

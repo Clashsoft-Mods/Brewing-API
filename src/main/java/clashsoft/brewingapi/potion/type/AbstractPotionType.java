@@ -3,7 +3,8 @@ package clashsoft.brewingapi.potion.type;
 import java.util.ArrayList;
 import java.util.List;
 
-import clashsoft.brewingapi.potion.PotionRecipe;
+import clashsoft.brewingapi.potion.recipe.PotionRecipe;
+import clashsoft.brewingapi.potion.recipe.PotionRecipes;
 import clashsoft.cslib.logging.CSLog;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -67,21 +68,21 @@ public abstract class AbstractPotionType implements IPotionType
 	public Potion getPotion()
 	{
 		PotionEffect pe = this.getEffect();
-		return pe != null ? Potion.potionTypes[pe.getPotionID()] : null;
+		return pe == null ? null : Potion.potionTypes[pe.getPotionID()];
 	}
 	
 	@Override
 	public int getPotionID()
 	{
 		PotionEffect pe = this.getEffect();
-		return pe != null ? pe.getPotionID() : -1;
+		return pe == null ? -1 : pe.getPotionID();
 	}
 	
 	@Override
 	public int getDuration()
 	{
 		PotionEffect pe = this.getEffect();
-		return pe != null ? pe.getDuration() : -1;
+		return pe == null ? -1 : pe.getDuration();
 	}
 	
 	@Override
@@ -95,7 +96,7 @@ public abstract class AbstractPotionType implements IPotionType
 	public int getAmplifier()
 	{
 		PotionEffect pe = this.getEffect();
-		return pe != null ? pe.getAmplifier() : -1;
+		return pe == null ? -1 : pe.getAmplifier();
 	}
 	
 	@Override
@@ -125,20 +126,20 @@ public abstract class AbstractPotionType implements IPotionType
 	public String getEffectName()
 	{
 		PotionEffect effect = this.getEffect();
-		return effect != null ? effect.getEffectName() : "";
+		return effect == null ? "" : effect.getEffectName();
 	}
 	
 	@Override
 	public ItemStack getIngredient()
 	{
-		PotionRecipe recipe = PotionRecipe.get(this);
+		PotionRecipe recipe = PotionRecipes.get(this);
 		return recipe == null ? null : recipe.getInput();
 	}
 	
 	@Override
 	public PotionBase getBase()
 	{
-		PotionRecipe recipe = PotionRecipe.get(this);
+		PotionRecipe recipe = PotionRecipes.get(this);
 		return recipe == null ? null : recipe.getBase();
 	}
 	
@@ -172,11 +173,7 @@ public abstract class AbstractPotionType implements IPotionType
 	public int getLiquidColor()
 	{
 		Potion potion = this.getPotion();
-		if (potion != null)
-		{
-			return potion.getLiquidColor();
-		}
-		return 0x0C0CFF;
+		return potion == null ? 0x0C0CFF : potion.getLiquidColor();
 	}
 	
 	@Override
