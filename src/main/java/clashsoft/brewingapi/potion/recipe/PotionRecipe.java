@@ -3,6 +3,7 @@ package clashsoft.brewingapi.potion.recipe;
 import java.util.List;
 
 import clashsoft.brewingapi.item.ItemPotion2;
+import clashsoft.brewingapi.potion.PotionList;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionBase;
 
@@ -13,6 +14,21 @@ public class PotionRecipe
 	private IPotionType	output;
 	private PotionBase	base;
 	private ItemStack	input;
+	
+	/**
+	 * Constructs a new {@link PotionRecipe} from the given {@link ItemStack}
+	 * {@code input} the given {@link IPotionType} {@code output}. The required
+	 * base potion is set to awkward.
+	 * 
+	 * @param input
+	 *            the input stack
+	 * @param output
+	 *            the output potion type
+	 */
+	public PotionRecipe(ItemStack input, IPotionType output)
+	{
+		this(input, PotionList.awkward, output);
+	}
 	
 	/**
 	 * Constructs a new {@link PotionRecipe} from the given {@link ItemStack}

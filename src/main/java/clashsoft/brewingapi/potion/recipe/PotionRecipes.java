@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import clashsoft.brewingapi.potion.PotionList;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionBase;
 import clashsoft.brewingapi.potion.type.PotionType;
@@ -98,7 +99,7 @@ public class PotionRecipes
 	 */
 	public static void addRecipe(ItemStack ingredient, IPotionType potionType)
 	{
-		addRecipe(ingredient, null, potionType);
+		addRecipe(ingredient, PotionList.awkward, potionType);
 	}
 	
 	/**
@@ -132,7 +133,7 @@ public class PotionRecipes
 	 */
 	public static void addRecipe(ItemStack ingredient, PotionEffect effect)
 	{
-		addRecipe(ingredient, null, effect);
+		addRecipe(ingredient, PotionList.awkward, effect);
 	}
 	
 	/**
