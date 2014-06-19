@@ -388,17 +388,20 @@ public class PotionType extends AbstractPotionType
 	
 	public static IPotionType getFromEffect(PotionEffect effect)
 	{
+		if (effect == null)
+			return null;
+		
 		IPotionType potionType = getFromEffect_(effect);
 		if (potionType != null)
 		{
 			return new PotionTypeDelegate(effect, potionType);
 		}
-		return effect == null ? null : new PotionType(effect, effect.getAmplifier(), effect.getDuration());
+		return new PotionType(effect, effect.getAmplifier(), effect.getDuration());
 	}
 	
 	protected static IPotionType getFromEffect_(PotionEffect effect)
 	{
-		return effect == null ? null : (IPotionType) getFromID(effect.getPotionID());
+		return effect == null ? null : getFromID(effect.getPotionID());
 	}
 	
 	/**
@@ -560,16 +563,9 @@ public class PotionType extends AbstractPotionType
 		return false;
 	}
 	
-	public static PotionType getFromID(int potionID)
+	public static IPotionType getFromID(int potionID)
 	{
-		for (IPotionType pt : potionTypeList)
-		{
-			if (pt.getPotionID() == potionID)
-			{
-				return (PotionType) pt;
-			}
-		}
-		return null;
+		return potionTypes.get(potionID);
 	}
 	
 	/**

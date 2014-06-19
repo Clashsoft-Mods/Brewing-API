@@ -20,16 +20,16 @@ import net.minecraft.potion.PotionEffect;
 public interface IPotionType extends Comparable<IPotionType>
 {
 	/** Name of the tag compound that stores the potion type list */
-	public static final String		COMPOUND_NAME	= "Brewing";
+	public static final String					COMPOUND_NAME	= "Brewing";
 	
 	/** Version identifier for NBTs. **/
-	public static final String		NBT_VERSION		= "1.1";
+	public static final String					NBT_VERSION		= "1.1";
 	
 	/** List that stores ALL PotionTypes, also PotionBase types **/
-	public static TIntObjectMap		potionTypes		= new TIntObjectHashMap();
-	public static List<IPotionType>	potionTypeList	= new ArrayList();
-	public static List<IPotionType>	combinableTypes	= new ArrayList();
-	public static List<IPotionType>	effectTypes		= new ArrayList();
+	public static TIntObjectMap<IPotionType>	potionTypes		= new TIntObjectHashMap();
+	public static List<IPotionType>				potionTypeList	= new ArrayList();
+	public static List<IPotionType>				combinableTypes	= new ArrayList();
+	public static List<IPotionType>				effectTypes		= new ArrayList();
 	
 	/**
 	 * Returns an unique identifier for this potion type.

@@ -1,15 +1,18 @@
 package clashsoft.brewingapi.potion.recipe;
 
+import gnu.trove.map.hash.TCustomHashMap;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import gnu.trove.map.hash.TCustomHashMap;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionBase;
+import clashsoft.brewingapi.potion.type.PotionType;
 import clashsoft.cslib.minecraft.util.ItemStackHashingStrategy;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
 
 public class PotionRecipes
 {
@@ -86,7 +89,7 @@ public class PotionRecipes
 	/**
 	 * Creates and registers a new {@link PotionRecipe} from the given
 	 * {@link ItemStack} {@code input} and the given {@link IPotionType}
-	 * {@code output}.
+	 * {@code potionType}.
 	 * 
 	 * @param input
 	 *            the input stack
@@ -101,7 +104,7 @@ public class PotionRecipes
 	/**
 	 * Creates and registers a new {@link PotionRecipe} from the given
 	 * {@link ItemStack} {@code input}, the given {@link PotionBase}
-	 * {@code base} and the given {@link IPotionType} {@code output}.
+	 * {@code base} and the given {@link IPotionType} {@code potionType}.
 	 * 
 	 * @param input
 	 *            the input stack
@@ -114,5 +117,40 @@ public class PotionRecipes
 	{
 		if (ingredient != null)
 			registerRecipe(new PotionRecipe(ingredient, base, potionType));
+	}
+	
+	/**
+	 * Creates and registers a new {@link PotionRecipe} from the given
+	 * {@link ItemStack} {@code input} and the given {@link PotionEffect}
+	 * {@code effect}.This automatically finds a {@link PotionType} for the
+	 * effect.
+	 * 
+	 * @param input
+	 *            the input stack
+	 * @param effect
+	 *            the output effect
+	 */
+	public static void addRecipe(ItemStack ingredient, PotionEffect effect)
+	{
+		addRecipe(ingredient, null, effect);
+	}
+	
+	/**
+	 * Creates and registers a new {@link PotionRecipe} from the given
+	 * {@link ItemStack} {@code input}, the given {@link PotionBase}
+	 * {@code base} and the given {@link PotionEffect} {@code effect}. This
+	 * automatically finds a {@link PotionType} for the effect.
+	 * 
+	 * @param input
+	 *            the input stack
+	 * @param base
+	 *            the required potion base
+	 * @param effect
+	 *            the output effect
+	 */
+	public static void addRecipe(ItemStack ingredient, PotionBase base, PotionEffect effect)
+	{
+		if (ingredient != null)
+			registerRecipe(new PotionRecipe(ingredient, base, PotionType.getFromEffect(effect)));
 	}
 }
