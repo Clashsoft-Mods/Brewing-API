@@ -30,8 +30,6 @@ public class PotionType extends AbstractPotionType
 	private int					maxDuration;
 	/** Fermented Spider Eye effect **/
 	private IPotionType			inverted;
-	/** Determines the base that is needed to brew the potion **/
-	private PotionBase			base;
 	
 	protected PotionType()
 	{
@@ -108,9 +106,8 @@ public class PotionType extends AbstractPotionType
 		this.maxAmplifier = maxAmplifier;
 		this.maxDuration = maxDuration;
 		this.inverted = inverted;
-		this.base = base;
 		
-		PotionRecipe.addRecipe(ingredient, this);
+		PotionRecipe.addRecipe(ingredient, base, this);
 	}
 	
 	@Override
@@ -178,12 +175,6 @@ public class PotionType extends AbstractPotionType
 	}
 	
 	@Override
-	public PotionBase getBase()
-	{
-		return this.base;
-	}
-	
-	@Override
 	public boolean isBase()
 	{
 		return false;
@@ -210,12 +201,6 @@ public class PotionType extends AbstractPotionType
 	public IPotionType setInverted(IPotionType opposite)
 	{
 		this.inverted = opposite;
-		return this;
-	}
-	
-	public IPotionType setBase(PotionBase base)
-	{
-		this.base = base;
 		return this;
 	}
 	
@@ -314,7 +299,6 @@ public class PotionType extends AbstractPotionType
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (this.base == null ? 0 : this.base.hashCode());
 		result = prime * result + (this.effect == null ? 0 : this.effect.hashCode());
 		result = prime * result + (this.inverted == null ? 0 : this.inverted.hashCode());
 		result = prime * result + this.maxAmplifier;
@@ -338,17 +322,6 @@ public class PotionType extends AbstractPotionType
 			return false;
 		}
 		PotionType other = (PotionType) obj;
-		if (this.base == null)
-		{
-			if (other.base != null)
-			{
-				return false;
-			}
-		}
-		else if (!this.base.equals(other.base))
-		{
-			return false;
-		}
 		if (this.effect == null)
 		{
 			if (other.effect != null)
@@ -400,10 +373,6 @@ public class PotionType extends AbstractPotionType
 		if (this.inverted != null)
 		{
 			builder.append("inverted=").append(this.inverted).append(", ");
-		}
-		if (this.base != null)
-		{
-			builder.append("base=").append(this.base).append(", ");
 		}
 		builder.append("maxAmplifier=").append(this.maxAmplifier);
 		builder.append(", maxDuration=").append(this.maxDuration);
@@ -572,8 +541,8 @@ public class PotionType extends AbstractPotionType
 	
 	public static boolean hasBase(IPotionType type, List<IPotionType> types)
 	{
-		PotionBase base = type.getBase();
-		if (base == null)
+		PotionBase requiredBase = type.getBase();
+		if (requiredBase == null)
 		{
 			return true;
 		}
@@ -581,7 +550,7 @@ public class PotionType extends AbstractPotionType
 		{
 			for (IPotionType pt : types)
 			{
-				if (pt instanceof PotionBase && base.matches((PotionBase) pt))
+				if (requiredBase.equals(pt))
 				{
 					return true;
 				}

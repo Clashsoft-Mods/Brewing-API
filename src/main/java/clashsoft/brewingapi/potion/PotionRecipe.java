@@ -18,20 +18,23 @@ public class PotionRecipe
 	public static final TCustomHashMap<ItemStack, PotionRecipe>	potionRecipes	= new TCustomHashMap(ItemStackHashingStrategy.instance);
 	
 	private IPotionType											output;
+	private PotionBase											base;
 	private ItemStack											input;
 	
 	/**
 	 * Constructs a new {@link PotionRecipe} from the given {@link ItemStack}
-	 * {@code input} and the given {@link IPotionType} {@code output}.
+	 * {@code input}, the given {@link PotionBase} {@code base} and the given
+	 * {@link IPotionType} {@code output}.
 	 * 
 	 * @param input
 	 *            the input stack
 	 * @param output
 	 *            the output potion type
 	 */
-	public PotionRecipe(ItemStack input, IPotionType output)
+	public PotionRecipe(ItemStack input, PotionBase base, IPotionType output)
 	{
 		this.input = input;
+		this.base = base;
 		this.output = output;
 	}
 	
@@ -56,13 +59,14 @@ public class PotionRecipe
 	 *            the potion type
 	 * @return the ingredient
 	 */
-	public static ItemStack getIngredient(IPotionType potionType)
+	public static PotionRecipe get(IPotionType potionType)
 	{
 		for (Map.Entry entry : potionRecipes.entrySet())
 		{
-			if (potionType.equals(entry.getValue()))
+			PotionRecipe recipe = (PotionRecipe) entry.getValue();
+			if (potionType.equals(recipe.output))
 			{
-				return (ItemStack) entry.getKey();
+				return recipe;
 			}
 		}
 		return null;
@@ -76,15 +80,16 @@ public class PotionRecipe
 	 *            the potion type
 	 * @return the ingredient
 	 */
-	public static List<ItemStack> getIngredients(IPotionType type)
+	public static List<PotionRecipe> getAll(IPotionType potionType)
 	{
 		List list = new ArrayList();
 		
 		for (Map.Entry entry : potionRecipes.entrySet())
 		{
-			if (type.equals(entry.getValue()))
+			PotionRecipe recipe = (PotionRecipe) entry.getValue();
+			if (potionType.equals(recipe.output))
 			{
-				list.add(entry.getKey());
+				list.add(recipe);
 			}
 		}
 		return list;
@@ -113,8 +118,25 @@ public class PotionRecipe
 	 */
 	public static void addRecipe(ItemStack ingredient, IPotionType potionType)
 	{
+		addRecipe(ingredient, null, potionType);
+	}
+	
+	/**
+	 * Creates and registers a new {@link PotionRecipe} from the given
+	 * {@link ItemStack} {@code input}, the given {@link PotionBase}
+	 * {@code base} and the given {@link IPotionType} {@code output}.
+	 * 
+	 * @param input
+	 *            the input stack
+	 * @param base
+	 *            the required potion base
+	 * @param potionType
+	 *            the output potion type
+	 */
+	public static void addRecipe(ItemStack ingredient, PotionBase base, IPotionType potionType)
+	{
 		if (ingredient != null)
-			registerRecipe(new PotionRecipe(ingredient, potionType));
+			registerRecipe(new PotionRecipe(ingredient, base, potionType));
 	}
 	
 	/**
@@ -125,6 +147,16 @@ public class PotionRecipe
 	public ItemStack getInput()
 	{
 		return this.input;
+	}
+	
+	/**
+	 * Gets the base potion of this {@link PotionRecipe}.
+	 * 
+	 * @return the base potion
+	 */
+	public PotionBase getBase()
+	{
+		return this.base;
 	}
 	
 	/**
@@ -155,7 +187,7 @@ public class PotionRecipe
 	 */
 	public ItemStack apply(ItemStack potionStack)
 	{
-		PotionBase requiredBase = this.output.getBase();
+		PotionBase requiredBase = this.base;
 		boolean flag = false;
 		
 		List<IPotionType> potionTypes = ((ItemPotion2) potionStack.getItem()).getPotionTypes(potionStack);
@@ -168,10 +200,13 @@ public class PotionRecipe
 		{
 			for (IPotionType pt : potionTypes)
 			{
-				if (pt instanceof PotionBase && ((PotionBase) pt).equals(requiredBase))
+				if (pt instanceof PotionBase)
 				{
-					flag = true;
-					pt.remove(potionStack);
+					if (requiredBase.equals(pt))
+					{
+						flag = true;
+						pt.remove(potionStack);
+					}
 				}
 			}
 		}

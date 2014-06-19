@@ -129,9 +129,17 @@ public abstract class AbstractPotionType implements IPotionType
 	}
 	
 	@Override
-	public final ItemStack getIngredient()
+	public ItemStack getIngredient()
 	{
-		return PotionRecipe.getIngredient(this);
+		PotionRecipe recipe = PotionRecipe.get(this);
+		return recipe == null ? null : recipe.getInput();
+	}
+	
+	@Override
+	public PotionBase getBase()
+	{
+		PotionRecipe recipe = PotionRecipe.get(this);
+		return recipe == null ? null : recipe.getBase();
 	}
 	
 	@Override

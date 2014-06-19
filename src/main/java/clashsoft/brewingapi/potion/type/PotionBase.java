@@ -37,7 +37,7 @@ public class PotionBase extends AbstractPotionType
 	{
 		this(name);
 		
-		PotionRecipe.addRecipe(ingredient, this);
+		PotionRecipe.addRecipe(ingredient, null, this);
 	}
 	
 	@Override
@@ -126,14 +126,33 @@ public class PotionBase extends AbstractPotionType
 		return 0;
 	}
 	
-	public boolean matches(PotionBase base)
+	@Override
+	public int hashCode()
 	{
-		String name = base.getName();
-		if (BrewingAPI.defaultAwkwardBrewing && "awkward".equals(name))
-		{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
 			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PotionBase other = (PotionBase) obj;
+		if (this.name == null)
+		{
+			if (other.name != null)
+				return false;
 		}
-		return this.name.equals(base.getName());
+		else if (!this.name.equals(other.name) || (BrewingAPI.defaultAwkwardBrewing && "awkward".equals(other.name)))
+			return false;
+		return true;
 	}
 	
 	@Override
