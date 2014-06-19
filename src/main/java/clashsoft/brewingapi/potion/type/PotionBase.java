@@ -12,7 +12,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
-import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * @author Clashsoft
@@ -37,7 +36,8 @@ public class PotionBase extends AbstractPotionType
 	public PotionBase(String name, ItemStack ingredient)
 	{
 		this(name);
-		PotionRecipe.registerRecipe(new PotionRecipe(ingredient, this));
+		
+		PotionRecipe.addRecipe(ingredient, this);
 	}
 	
 	@Override
@@ -48,17 +48,10 @@ public class PotionBase extends AbstractPotionType
 	
 	public static PotionBase getFromIngredient(ItemStack ingredient)
 	{
-		for (PotionBase pb : baseList)
-		{
-			if (OreDictionary.itemMatches(pb.getIngredient(), ingredient, true))
-			{
-				return pb;
-			}
-			if (pb.getIngredient().getItem() == ingredient.getItem() && pb.getIngredient().getItemDamage() == ingredient.getItemDamage())
-			{
-				return pb;
-			}
-		}
+		PotionRecipe recipe = PotionRecipe.get(ingredient);
+		IPotionType pt = recipe.getOutput();
+		if (pt instanceof PotionBase)
+			return (PotionBase) pt;
 		return null;
 	}
 	

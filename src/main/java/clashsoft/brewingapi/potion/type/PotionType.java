@@ -35,7 +35,6 @@ public class PotionType extends AbstractPotionType
 	
 	protected PotionType()
 	{
-		
 	}
 	
 	/**
@@ -111,13 +110,13 @@ public class PotionType extends AbstractPotionType
 		this.inverted = inverted;
 		this.base = base;
 		
-		PotionRecipe.registerRecipe(new PotionRecipe(ingredient, this));
+		PotionRecipe.addRecipe(ingredient, this);
 	}
 	
 	@Override
 	public PotionType copy()
 	{
-		PotionType potionType = new PotionType(this.getEffect(), this.getMaxAmplifier(), this.getMaxDuration(), this.getInverted(), this.getIngredient(), this.getBase());
+		PotionType potionType = new PotionType(this.getEffect(), this.getMaxAmplifier(), this.getMaxDuration(), this.getInverted(), null, this.getBase());
 		return potionType;
 	}
 	

@@ -2,7 +2,9 @@ package clashsoft.brewingapi.potion;
 
 import gnu.trove.map.hash.TCustomHashMap;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.potion.type.IPotionType;
@@ -47,6 +49,48 @@ public class PotionRecipe
 	}
 	
 	/**
+	 * Returns the ingredient that can be used to brew the given
+	 * {@link IPotionType} {@code potionType}.
+	 * 
+	 * @param potionType
+	 *            the potion type
+	 * @return the ingredient
+	 */
+	public static ItemStack getIngredient(IPotionType potionType)
+	{
+		for (Map.Entry entry : potionRecipes.entrySet())
+		{
+			if (potionType.equals(entry.getValue()))
+			{
+				return (ItemStack) entry.getKey();
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns all ingredients that can be used to brew the given
+	 * {@link IPotionType} {@code potionType} in a list.
+	 * 
+	 * @param potionType
+	 *            the potion type
+	 * @return the ingredient
+	 */
+	public static List<ItemStack> getIngredients(IPotionType type)
+	{
+		List list = new ArrayList();
+		
+		for (Map.Entry entry : potionRecipes.entrySet())
+		{
+			if (type.equals(entry.getValue()))
+			{
+				list.add(entry.getKey());
+			}
+		}
+		return list;
+	}
+	
+	/**
 	 * Registers a new {@link PotionRecipe}.
 	 * 
 	 * @param recipe
@@ -69,7 +113,8 @@ public class PotionRecipe
 	 */
 	public static void addRecipe(ItemStack ingredient, IPotionType potionType)
 	{
-		registerRecipe(new PotionRecipe(ingredient, potionType));
+		if (ingredient != null)
+			registerRecipe(new PotionRecipe(ingredient, potionType));
 	}
 	
 	/**
@@ -104,7 +149,8 @@ public class PotionRecipe
 	 * If it doesn't have a required base, the output potion type gets applied
 	 * if the potion stack has no other potion types applied to it.
 	 * 
-	 * @param potionStack the potion stack
+	 * @param potionStack
+	 *            the potion stack
 	 * @return the potion stack
 	 */
 	public ItemStack apply(ItemStack potionStack)

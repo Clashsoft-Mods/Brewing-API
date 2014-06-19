@@ -200,7 +200,6 @@ public interface IPotionType extends Comparable<IPotionType>
 	/**
 	 * Returns the ingredient that is used to brew this potion type.
 	 * 
-	 * @deprecated DO NOT USE
 	 * @return the ingredient
 	 */
 	public ItemStack getIngredient();

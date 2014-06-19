@@ -3,6 +3,7 @@ package clashsoft.brewingapi.potion.type;
 import java.util.ArrayList;
 import java.util.List;
 
+import clashsoft.brewingapi.potion.PotionRecipe;
 import clashsoft.cslib.logging.CSLog;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -130,7 +131,7 @@ public abstract class AbstractPotionType implements IPotionType
 	@Override
 	public final ItemStack getIngredient()
 	{
-		throw new UnsupportedOperationException();
+		return PotionRecipe.getIngredient(this);
 	}
 	
 	@Override
