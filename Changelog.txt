@@ -1,3 +1,11 @@
+1.7.2-2.0.0
+
+! Update to latest Clashsoft Lib
++ Added a new potion recipe system
+* Fixed potions not showing up in the creative search
+* Documentation
+* Bugfixes
+
 1.7.2-1.0.1
 
 * Fixed witch crash
