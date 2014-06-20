@@ -2,6 +2,7 @@
 
 ! Update to latest Clashsoft Lib
 + Added a new potion recipe system
++ Added "/potion add" and "/potion give" commands
 * Fixed potions not showing up in the creative search
 * Documentation
 * Bugfixes
