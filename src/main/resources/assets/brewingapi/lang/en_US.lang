@@ -4,6 +4,9 @@ commands.potion.usage=/potion <sub-command> <player> [args...]
 commands.potion.give.usage=/potion give <player> <effect> [seconds] [amplifier] [splash]
 commands.potion.give.success=Given Potion (%1$s (ID %2$d) level %4$d for %3$d seconds) to %5$s.
 commands.potion.give.success.splash=Given Splash Potion (%1$s (ID %2$d) level %4$d for %3$d seconds) to %5$s.
+commands.potion.add.success=Added Potion (%1$s (ID %2$d) level %4$d for %3$d seconds) to %5$s.
+commands.potion.remove.success=Removed Potion (%1$s (ID %2$d) level %4$d for %3$d seconds) from %5$s.
+commands.potion.effect.notFound=Effect could not be found.
 
 potion.goodeffects=Good Effects
 potion.negativeEffects=Bad Effects

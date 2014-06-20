@@ -1,22 +1,22 @@
 package clashsoft.brewingapi.command;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import clashsoft.brewingapi.BrewingAPI;
+import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionType;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandNotFoundException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
 
 public class CommandPotion extends CommandBase
 {
@@ -56,56 +56,82 @@ public class CommandPotion extends CommandBase
 	@Override
 	public void processCommand(ICommandSender sender, String[] args)
 	{
-		if ("give".equals(args[0]))
+		if (!"give".equals(args[0]) && !"add".equals(args[0]) && !"remove".equals(args[0]))
+			throw new CommandNotFoundException("commans.potion.notFound");
+		
+		int index = 1;
+		int id = this.getPotionID(args[index]);
+		
+		if (id == -1)
 		{
-			this.givePotion(sender, Arrays.copyOfRange(args, 2, args.length));
+			sender = sender.getEntityWorld().getPlayerEntityByName(args[index]);
+			
+			index++;
+			id = this.getPotionID(args[index]);
 		}
-	}
-	
-	public void givePotion(ICommandSender sender, String[] args)
-	{
-		int id = this.getPotionID(args[0]);
+		String name = sender.getCommandSenderName();
+		EntityPlayer player = getCommandSenderAsPlayer(sender);
+		
 		int duration = 600;
 		int amplifier = 0;
 		boolean splash = false;
 		
 		if (id < 0 || id >= Potion.potionTypes.length || Potion.potionTypes[id] == null)
 		{
-			throw new NumberInvalidException("commands.effect.notFound", new Object[] { Integer.valueOf(id) });
+			throw new NumberInvalidException("commands.potion.effect.notFound", new Object[] { Integer.valueOf(id) });
 		}
 		
-		if (args.length >= 2)
-		{
-			duration = parseIntBounded(sender, args[1], 0, 1000000) * 20;
-		}
 		if (Potion.potionTypes[id].isInstant())
 		{
 			duration = 1;
 		}
+		else if (args.length >= 2)
+		{
+			duration = parseIntBounded(sender, args[index + 1], 0, 1000000) * 20;
+		}
+		
 		if (args.length >= 3)
 		{
-			amplifier = parseIntBounded(sender, args[2], 1, 256) - 1;
+			amplifier = parseIntBounded(sender, args[index + 2], 1, 256) - 1;
 		}
 		if (args.length >= 4)
 		{
-			splash = Boolean.parseBoolean(args[3]);
+			splash = Boolean.parseBoolean(args[index + 3]);
 		}
 		
 		PotionEffect potioneffect = new PotionEffect(id, duration, amplifier);
-		ItemStack stack = new ItemStack(BrewingAPI.potion2, 1, splash ? 2 : 1);
-		PotionType.getFromEffect(potioneffect).apply(stack);
+		IPotionType potionType = PotionType.getFromEffect(potioneffect);
 		
-		EntityItem entityitem = ((EntityPlayerMP) sender).dropPlayerItemWithRandomChoice(stack, false);
-		entityitem.delayBeforeCanPickup = 0;
-		String name = sender.getCommandSenderName();
-		
-		if (splash)
+		if ("give".equals(args[0]))
 		{
-			notifyAdmins(sender, "commands.potion.give.splash.success", new Object[] { new ChatComponentText(potioneffect.getEffectName()), Integer.valueOf(id), Integer.valueOf(duration), Integer.valueOf(amplifier), name });
+			ItemStack stack = new ItemStack(BrewingAPI.potion2, 1, splash ? 2 : 1);
+			potionType.apply(stack);
+			
+			EntityItem entityitem = player.dropPlayerItemWithRandomChoice(stack, false);
+			entityitem.delayBeforeCanPickup = 0;
+			
+			if (splash)
+			{
+				notifyAdmins(sender, "commands.potion.give.splash.success", potioneffect.getEffectName(), id, duration, amplifier, name);
+			}
+			else
+			{
+				notifyAdmins(sender, "commands.potion.give.success", potioneffect.getEffectName(), id, duration, amplifier, name);
+			}
 		}
-		else
+		else if ("remove".equals(args[0]))
 		{
-			notifyAdmins(sender, "commands.potion.give.success", new Object[] { new ChatComponentText(potioneffect.getEffectName()), Integer.valueOf(id), Integer.valueOf(duration), Integer.valueOf(amplifier), name });
+			ItemStack stack = player.getHeldItem();
+			potionType.remove(stack);
+			
+			notifyAdmins(sender, "command.potion.remove.success", potioneffect.getEffectName(), id, duration, amplifier, name);
+		}
+		else if ("add".equals(args[0]))
+		{
+			ItemStack stack = player.getHeldItem();
+			potionType.apply(stack);
+			
+			notifyAdmins(sender, "command.potion.remove.success", potioneffect.getEffectName(), id, duration, amplifier, name);
 		}
 	}
 	
@@ -132,7 +158,7 @@ public class CommandPotion extends CommandBase
 	{
 		if (args.length == 1)
 		{
-			return getListOfStringsMatchingLastWord(args, "give");
+			return getListOfStringsMatchingLastWord(args, "give", "add", "remove");
 		}
 		else if (args.length == 2)
 		{

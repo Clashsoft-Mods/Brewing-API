@@ -2,8 +2,11 @@ itemGroup.mixedpotions=Vermischte Tränke
 
 commands.potion.usage=/potion <sub-command> <player> [args...]
 commands.potion.give.usage=/potion give <player> <effect> [seconds] [amplifier] [splash]
-commands.potion.give.success=Trank (%1$s (ID %2$d) level %4$d for %3$d seconds) an %5$s gegeben.
-commands.potion.give.success.splash=Werfbaren Trank (%1$s (ID %2$d) level %4$d for %3$d seconds) an %5$s gegeben.
+commands.potion.give.success=Trank (%1$s (ID %2$d) Level %4$d für %3$d Sekunden) an %5$s gegeben.
+commands.potion.give.success.splash=Werfbaren Trank (%1$s (ID %2$d) Level %4$d für %3$d Sekunden) an %5$s gegeben.
+commands.potion.add.success=Trankeffekt (%1$s (ID %2$d) Level %4$d für %3$d Sekunden) an %5$s gegeben.
+commands.potion.remove.success=Trankeffekt (%1$s (ID %2$d) Level %4$d für %3$d Sekunden) von %5$s entfernt.
+commands.potion.effect.notFound=Effekt konnte nicht gefunden werden.
 
 potion.regeneration.description=Regeneriert Leben.
 potion.moveSpeed.description=Erlaubt es, sich schneller zu bewegen.
