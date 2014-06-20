@@ -56,15 +56,17 @@ public class CommandPotion extends CommandBase
 	@Override
 	public void processCommand(ICommandSender sender, String[] args)
 	{
-		if (!"give".equals(args[0]) && !"add".equals(args[0]) && !"remove".equals(args[0]))
-			throw new CommandNotFoundException("commans.potion.notFound");
+		if (args.length == 0 || !"give".equals(args[0]) && !"add".equals(args[0]) && !"remove".equals(args[0]))
+			throw new CommandNotFoundException("commands.potion.notFound");
 		
 		int index = 1;
 		int id = this.getPotionID(args[index]);
 		
 		if (id == -1)
 		{
-			sender = sender.getEntityWorld().getPlayerEntityByName(args[index]);
+			ICommandSender sender1 = sender.getEntityWorld().getPlayerEntityByName(args[index]);
+			if (sender1 != null)
+				sender = sender1;
 			
 			index++;
 			id = this.getPotionID(args[index]);
@@ -85,16 +87,16 @@ public class CommandPotion extends CommandBase
 		{
 			duration = 1;
 		}
-		else if (args.length >= 2)
+		else if (args.length >= index + 1)
 		{
 			duration = parseIntBounded(sender, args[index + 1], 0, 1000000) * 20;
 		}
 		
-		if (args.length >= 3)
+		if (args.length >= index + 2)
 		{
 			amplifier = parseIntBounded(sender, args[index + 2], 1, 256) - 1;
 		}
-		if (args.length >= 4)
+		if (args.length >= index + 3)
 		{
 			splash = Boolean.parseBoolean(args[index + 3]);
 		}
@@ -119,17 +121,17 @@ public class CommandPotion extends CommandBase
 				notifyAdmins(sender, "commands.potion.give.success", potioneffect.getEffectName(), id, duration, amplifier, name);
 			}
 		}
-		else if ("remove".equals(args[0]))
-		{
-			ItemStack stack = player.getHeldItem();
-			potionType.remove(stack);
-			
-			notifyAdmins(sender, "command.potion.remove.success", potioneffect.getEffectName(), id, duration, amplifier, name);
-		}
 		else if ("add".equals(args[0]))
 		{
 			ItemStack stack = player.getHeldItem();
 			potionType.apply(stack);
+			
+			notifyAdmins(sender, "command.potion.remove.success", potioneffect.getEffectName(), id, duration, amplifier, name);
+		}
+		else if ("remove".equals(args[0]))
+		{
+			ItemStack stack = player.getHeldItem();
+			potionType.remove(stack);
 			
 			notifyAdmins(sender, "command.potion.remove.success", potioneffect.getEffectName(), id, duration, amplifier, name);
 		}
