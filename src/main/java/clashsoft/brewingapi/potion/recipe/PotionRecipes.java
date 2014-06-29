@@ -1,7 +1,5 @@
 package clashsoft.brewingapi.potion.recipe;
 
-import gnu.trove.map.hash.TCustomHashMap;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,14 +8,14 @@ import clashsoft.brewingapi.potion.PotionList;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionBase;
 import clashsoft.brewingapi.potion.type.PotionType;
-import clashsoft.cslib.minecraft.util.ItemStackHashingStrategy;
+import clashsoft.cslib.minecraft.util.ItemStackHashMap;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 
 public class PotionRecipes
 {
-	public static final TCustomHashMap<ItemStack, PotionRecipe>	potionRecipes	= new TCustomHashMap(ItemStackHashingStrategy.instance);
+	public static final Map<ItemStack, PotionRecipe>	potionRecipes	= new ItemStackHashMap();
 	
 	/**
 	 * Gets a {@link PotionRecipe} from the given {@link ItemStack}
