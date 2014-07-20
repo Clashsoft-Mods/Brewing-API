@@ -8,7 +8,7 @@ import clashsoft.brewingapi.potion.PotionList;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionBase;
 import clashsoft.brewingapi.potion.type.PotionType;
-import clashsoft.cslib.minecraft.util.ItemStackHashMap;
+import clashsoft.cslib.minecraft.stack.ItemStackHashMap;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
@@ -115,7 +115,9 @@ public class PotionRecipes
 	public static void addRecipe(ItemStack ingredient, PotionBase base, IPotionType potionType)
 	{
 		if (ingredient != null)
+		{
 			registerRecipe(new PotionRecipe(ingredient, base, potionType));
+		}
 	}
 	
 	/**
@@ -150,6 +152,8 @@ public class PotionRecipes
 	public static void addRecipe(ItemStack ingredient, PotionBase base, PotionEffect effect)
 	{
 		if (ingredient != null)
+		{
 			registerRecipe(new PotionRecipe(ingredient, base, PotionType.getFromEffect(effect)));
+		}
 	}
 }

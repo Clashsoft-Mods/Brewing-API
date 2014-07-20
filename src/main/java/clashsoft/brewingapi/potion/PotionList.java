@@ -3,7 +3,7 @@ package clashsoft.brewingapi.potion;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionBase;
 import clashsoft.brewingapi.potion.type.PotionType;
-import clashsoft.cslib.minecraft.item.CSStacks;
+import clashsoft.cslib.minecraft.stack.CSStacks;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;

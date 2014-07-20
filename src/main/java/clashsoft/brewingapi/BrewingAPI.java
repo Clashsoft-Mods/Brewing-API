@@ -28,7 +28,8 @@ import clashsoft.cslib.minecraft.entity.CSEntities;
 import clashsoft.cslib.minecraft.init.CSLib;
 import clashsoft.cslib.minecraft.init.ClashsoftMod;
 import clashsoft.cslib.minecraft.item.CSItems;
-import clashsoft.cslib.minecraft.item.CSStacks;
+import clashsoft.cslib.minecraft.stack.CSStacks;
+import clashsoft.cslib.minecraft.stack.StackFactory;
 import clashsoft.cslib.minecraft.update.CSUpdate;
 import clashsoft.cslib.util.CSUtil;
 import cpw.mods.fml.common.Mod;
@@ -128,8 +129,8 @@ public class BrewingAPI extends ClashsoftMod
 		CSItems.replaceItem(Items.potionitem, potion2);
 		CSItems.replaceItem(Items.glass_bottle, glassBottle2);
 		
-		CSCrafting.addRecipe(new ItemStack(brewingStandItem2), " b ", "SSS", 'b', Items.blaze_rod, 'S', Blocks.cobblestone);
-		CSCrafting.addRecipe(new ItemStack(glassBottle2, 3), "G G", " G ", 'G', CSStacks.glass_block);
+		CSCrafting.addRecipe(StackFactory.create(brewingStandItem2), " b ", "SSS", 'b', Items.blaze_rod, 'S', Blocks.cobblestone);
+		CSCrafting.addRecipe(StackFactory.create(glassBottle2, 3), "G G", " G ", 'G', CSStacks.glass_block);
 	}
 	
 	@Override
@@ -241,5 +242,4 @@ public class BrewingAPI extends ClashsoftMod
 			}
 		}
 	}
-	
 }
