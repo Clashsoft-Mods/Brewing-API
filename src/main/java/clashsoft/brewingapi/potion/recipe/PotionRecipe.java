@@ -2,10 +2,10 @@ package clashsoft.brewingapi.potion.recipe;
 
 import java.util.List;
 
-import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.potion.PotionList;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionBase;
+import clashsoft.brewingapi.potion.type.PotionType;
 
 import net.minecraft.item.ItemStack;
 
@@ -100,7 +100,7 @@ public class PotionRecipe implements IPotionRecipe
 		PotionBase requiredBase = this.base;
 		boolean flag = false;
 		
-		List<IPotionType> potionTypes = ((ItemPotion2) potion.getItem()).getPotionTypes(potion);
+		List<IPotionType> potionTypes = PotionType.getPotionTypes(potion);
 		
 		if (requiredBase == null)
 		{

@@ -112,7 +112,7 @@ public class ItemPotion2 extends ItemPotion
 			}
 			else
 			{
-				List<IPotionType> result = PotionType.getPotionTypes(stack);
+				List<IPotionType> result = PotionType.getPotionTypes_(stack);
 				this.effectCache.put(compound, result);
 				return result;
 			}

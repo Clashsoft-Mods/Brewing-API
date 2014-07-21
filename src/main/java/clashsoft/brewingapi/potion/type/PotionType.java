@@ -420,7 +420,12 @@ public class PotionType extends AbstractPotionType
 		return null;
 	}
 	
-	public static List<IPotionType> getPotionTypes(ItemStack stack)
+	public static List<IPotionType> getPotionTypes(ItemStack potion)
+	{
+		return ((ItemPotion2) potion.getItem()).getPotionTypes(potion);
+	}
+	
+	public static List<IPotionType> getPotionTypes_(ItemStack stack)
 	{
 		if (stack != null && stack.hasTagCompound())
 		{
