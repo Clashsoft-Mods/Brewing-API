@@ -178,6 +178,38 @@ public abstract class AbstractPotionType implements IPotionType
 		return this.getInverted() != null;
 	}
 	
+	public static PotionEffect improve(PotionEffect effect)
+	{
+		return new PotionEffect(effect.getPotionID(), (int) (effect.getDuration() * 2F / 3F), effect.getAmplifier() + 1);
+	}
+	
+	public static PotionEffect extend(PotionEffect effect)
+	{
+		return new PotionEffect(effect.getPotionID(), effect.getDuration() * 2, effect.getAmplifier());
+	}
+	
+	public static PotionEffect dilute(PotionEffect effect)
+	{
+		return new PotionEffect(effect.getPotionID(), (int) (effect.getDuration() * 2F / 3F), (int) (effect.getAmplifier() * 0.8F));
+	}
+	
+	public static PotionEffect useGunpowder(PotionEffect effect)
+	{
+		return new PotionEffect(effect.getPotionID(), (int) (effect.getDuration() * 0.75F), effect.getAmplifier());
+	}
+	
+	public static PotionEffect invert(PotionEffect effect, PotionEffect inverted)
+	{
+		if (effect != null)
+		{
+			return new PotionEffect(inverted.getPotionID(), (int) (effect.getDuration() * 0.75F), effect.getAmplifier());
+		}
+		else
+		{
+			return inverted;
+		}
+	}
+	
 	@Override
 	public void setAttributes(List<IPotionAttribute> attributes)
 	{

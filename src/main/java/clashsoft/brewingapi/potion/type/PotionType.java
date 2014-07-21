@@ -21,16 +21,14 @@ import net.minecraft.potion.PotionEffect;
  */
 public class PotionType extends AbstractPotionType
 {
-	public static final float	TWO_THIRDS	= 2F / 3F;
-	
 	/** The effect **/
-	private PotionEffect		effect;
+	private PotionEffect	effect;
 	/** Maximum effect amplifier **/
-	private int					maxAmplifier;
+	private int				maxAmplifier;
 	/** Maximum effect duration **/
-	private int					maxDuration;
+	private int				maxDuration;
 	/** Fermented Spider Eye effect **/
-	private IPotionType			inverted;
+	private IPotionType		inverted;
 	
 	protected PotionType()
 	{
@@ -211,7 +209,7 @@ public class PotionType extends AbstractPotionType
 		PotionEffect effect = this.getEffect();
 		if (effect != null)
 		{
-			effect = new PotionEffect(effect.getPotionID(), (int) (effect.getDuration() * TWO_THIRDS), effect.getAmplifier() + 1);
+			effect = improve(effect);
 			return new PotionTypeDelegate(effect, this);
 		}
 		return this;
@@ -223,7 +221,7 @@ public class PotionType extends AbstractPotionType
 		PotionEffect effect = this.getEffect();
 		if (effect != null)
 		{
-			effect = new PotionEffect(effect.getPotionID(), effect.getDuration() * 2, effect.getAmplifier());
+			effect = extend(effect);
 			return new PotionTypeDelegate(effect, this);
 		}
 		return this;
@@ -235,7 +233,7 @@ public class PotionType extends AbstractPotionType
 		PotionEffect effect = this.getEffect();
 		if (effect != null)
 		{
-			effect = new PotionEffect(effect.getPotionID(), (int) (effect.getDuration() * TWO_THIRDS), (int) (effect.getAmplifier() * 0.8F));
+			effect = dilute(effect);
 			return new PotionTypeDelegate(effect, this);
 		}
 		return this;
@@ -247,7 +245,7 @@ public class PotionType extends AbstractPotionType
 		PotionEffect effect = this.getEffect();
 		if (effect != null)
 		{
-			effect = new PotionEffect(effect.getPotionID(), (int) (effect.getDuration() * 0.75F), effect.getAmplifier());
+			effect = useGunpowder(effect);
 			return new PotionTypeDelegate(effect, this);
 		}
 		return this;
@@ -260,15 +258,8 @@ public class PotionType extends AbstractPotionType
 		IPotionType inverted = this.getInverted();
 		if (inverted != null)
 		{
-			if (effect != null)
-			{
-				effect = new PotionEffect(inverted.getPotionID(), (int) (effect.getDuration() * 0.75F), effect.getAmplifier());
-				return new PotionTypeDelegate(effect, inverted);
-			}
-			else
-			{
-				return new PotionTypeDelegate(inverted.getEffect(), inverted);
-			}
+			effect = invert(effect, inverted.getEffect());
+			return new PotionTypeDelegate(effect, inverted);
 		}
 		return this;
 	}
