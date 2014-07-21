@@ -8,6 +8,7 @@ import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.lib.AttributeModifierComparator;
 import clashsoft.brewingapi.potion.PotionUtils;
+import clashsoft.brewingapi.potion.attribute.IPotionAttribute;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionBase;
 import clashsoft.brewingapi.potion.type.PotionType;
@@ -530,6 +531,11 @@ public class ItemPotion2 extends ItemPotion
 			}
 			
 			list.add(builder.toString());
+			
+			for (IPotionAttribute attribute : potionType.getAttributes())
+			{
+				list.add(attribute.getDisplayName(potionType));
+			}
 		}
 		
 		if (BrewingAPI.advancedPotionInfo && Keyboard.isKeyDown(Keyboard.KEY_CAPITAL))

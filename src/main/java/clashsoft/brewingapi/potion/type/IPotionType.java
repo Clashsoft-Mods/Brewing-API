@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import clashsoft.brewingapi.item.ItemPotion2;
+import clashsoft.brewingapi.potion.attribute.IPotionAttribute;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -91,7 +92,7 @@ public interface IPotionType extends Comparable<IPotionType>
 	
 	/**
 	 * Returns the liquid color of this potion type's effect. If the effect is
-	 * {@code null}, 0x0C0CFF is returned.
+	 * {@code null}, 0x0C0CFF is returned, which is the color of a Bottle of Water.
 	 * 
 	 * @return
 	 */
@@ -221,6 +222,14 @@ public interface IPotionType extends Comparable<IPotionType>
 	public IPotionType onGunpowderUsed();
 	
 	public IPotionType onInverted();
+	
+	public void setAttributes(List<IPotionAttribute> attributes);
+	
+	public List<IPotionAttribute> getAttributes();
+	
+	public boolean hasAttributes();
+	
+	public void addAttribute(IPotionAttribute attribute);
 	
 	/**
 	 * Returns a list of sub-types of this potion type.

@@ -1,13 +1,20 @@
 package clashsoft.brewingapi.potion.type;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import clashsoft.brewingapi.potion.attribute.IPotionAttribute;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.PotionEffect;
 
 public class PotionTypeDelegate extends AbstractPotionType
 {
-	private PotionEffect	effect;
-	private IPotionType		thePotionType;
+	private PotionEffect			effect;
+	private IPotionType				thePotionType;
+	private List<IPotionAttribute>	attributes	= new ArrayList();
 	
 	public PotionTypeDelegate()
 	{
@@ -51,6 +58,15 @@ public class PotionTypeDelegate extends AbstractPotionType
 	@Override
 	public PotionEffect getEffect()
 	{
+		if (this.hasAttributes())
+		{
+			PotionEffect effect = this.getEffect();
+			for (IPotionAttribute attribute : this.getAttributes())
+			{
+				effect = attribute.getModdedEffect(this, effect);
+			}
+			return effect;
+		}
 		return this.effect;
 	}
 	
@@ -121,6 +137,30 @@ public class PotionTypeDelegate extends AbstractPotionType
 	}
 	
 	@Override
+	public void setAttributes(List<IPotionAttribute> attributes)
+	{
+		this.attributes = attributes;
+	}
+	
+	@Override
+	public List<IPotionAttribute> getAttributes()
+	{
+		return this.attributes;
+	}
+	
+	@Override
+	public boolean hasAttributes()
+	{
+		return this.attributes != null && !this.attributes.isEmpty();
+	}
+	
+	@Override
+	public void addAttribute(IPotionAttribute attribute)
+	{
+		this.attributes.add(attribute);
+	}
+	
+	@Override
 	public void apply_do(EntityLivingBase target, PotionEffect effect)
 	{
 		this.thePotionType.apply_do(target, effect);
@@ -132,6 +172,16 @@ public class PotionTypeDelegate extends AbstractPotionType
 		NBTTagCompound effect = new NBTTagCompound();
 		this.effect.writeCustomPotionEffectToNBT(effect);
 		nbt.setTag("Effect", effect);
+		
+		if (this.hasAttributes())
+		{
+			NBTTagList attributes = new NBTTagList();
+			for (IPotionAttribute attribute : this.attributes)
+			{
+				NBTTagCompound compound = new NBTTagCompound();
+				compound.setString("Name", attribute.getName());
+			}
+		}
 	}
 	
 	@Override
@@ -149,6 +199,18 @@ public class PotionTypeDelegate extends AbstractPotionType
 			int amplifier = nbt.getInteger("PotionAmplifier");
 			
 			this.effect = new PotionEffect(id, duration, amplifier);
+		}
+		
+		if (nbt.hasKey("Attributes"))
+		{
+			NBTTagList attributes = (NBTTagList) nbt.getTag("Attributes");
+			for (int i = 0; i < attributes.tagCount(); i++)
+			{
+				NBTTagCompound compound = attributes.getCompoundTagAt(i);
+				String name = compound.getString("Name");
+				IPotionAttribute attribute = IPotionAttribute.attributes.get(name);
+				this.addAttribute(attribute);
+			}
 		}
 	}
 }

@@ -1,8 +1,10 @@
 package clashsoft.brewingapi.potion.type;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import clashsoft.brewingapi.potion.attribute.IPotionAttribute;
 import clashsoft.brewingapi.potion.recipe.PotionRecipe;
 import clashsoft.brewingapi.potion.recipe.PotionRecipes;
 import clashsoft.cslib.logging.CSLog;
@@ -18,7 +20,7 @@ import net.minecraft.potion.PotionEffect;
  * @author Clashsoft
  */
 public abstract class AbstractPotionType implements IPotionType
-{	
+{
 	@Override
 	public String getUUID()
 	{
@@ -76,6 +78,13 @@ public abstract class AbstractPotionType implements IPotionType
 	{
 		PotionEffect pe = this.getEffect();
 		return pe == null ? -1 : pe.getPotionID();
+	}
+	
+	@Override
+	public int getLiquidColor()
+	{
+		Potion potion = this.getPotion();
+		return potion == null ? 0x0C0CFF : potion.getLiquidColor();
 	}
 	
 	@Override
@@ -170,10 +179,25 @@ public abstract class AbstractPotionType implements IPotionType
 	}
 	
 	@Override
-	public int getLiquidColor()
+	public void setAttributes(List<IPotionAttribute> attributes)
 	{
-		Potion potion = this.getPotion();
-		return potion == null ? 0x0C0CFF : potion.getLiquidColor();
+	}
+	
+	@Override
+	public List<IPotionAttribute> getAttributes()
+	{
+		return Collections.EMPTY_LIST;
+	}
+	
+	@Override
+	public boolean hasAttributes()
+	{
+		return false;
+	}
+	
+	@Override
+	public void addAttribute(IPotionAttribute attribute)
+	{
 	}
 	
 	@Override
