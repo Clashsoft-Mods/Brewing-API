@@ -92,7 +92,8 @@ public interface IPotionType extends Comparable<IPotionType>
 	
 	/**
 	 * Returns the liquid color of this potion type's effect. If the effect is
-	 * {@code null}, 0x0C0CFF is returned, which is the color of a Bottle of Water.
+	 * {@code null}, 0x0C0CFF is returned, which is the color of a Bottle of
+	 * Water.
 	 * 
 	 * @return
 	 */
@@ -205,30 +206,100 @@ public interface IPotionType extends Comparable<IPotionType>
 	 */
 	public ItemStack getIngredient();
 	
+	/**
+	 * Returns true if this potion type is improvable with Glowstone.
+	 * 
+	 * @return true, if this potion type is improvable
+	 */
 	public boolean isImprovable();
 	
+	/**
+	 * Returns true if this potion type is extendable with Redstone.
+	 * 
+	 * @return true, if this potion type is extendable
+	 */
 	public boolean isExtendable();
 	
+	/**
+	 * Returns true if this potion type is dilutable.
+	 * 
+	 * @return true, if this potion type is dilutable
+	 */
 	public boolean isDilutable();
 	
+	/**
+	 * Returns true if this potion type is inversible with a Fermented Spider
+	 * Eye.
+	 * 
+	 * @return true, if this potion type is inversible
+	 */
 	public boolean isInversible();
 	
+	/**
+	 * Returns the Glowstone-improved version of this potion type.
+	 * 
+	 * @return the improved version
+	 */
 	public IPotionType onImproved();
 	
+	/**
+	 * Returns the Redstone-extended version of this potion type.
+	 * 
+	 * @return the extended version
+	 */
 	public IPotionType onExtended();
 	
+	/**
+	 * Returns the diluted version of this potion type.
+	 * 
+	 * @return the diluted version
+	 */
 	public IPotionType onDiluted();
 	
+	/**
+	 * Returns the splash version of this potion type.
+	 * 
+	 * @return the splash version
+	 */
 	public IPotionType onGunpowderUsed();
 	
+	/**
+	 * Returns the Fermented Spider Eye-inverted version of this potion type.
+	 * 
+	 * @return the inverted version
+	 */
 	public IPotionType onInverted();
 	
+	/**
+	 * Sets the attributes of this potion type to the given {@link List} of
+	 * {@link IPotionAttribute} {@code attributes}.
+	 * 
+	 * @param attributes
+	 *            the attributes
+	 */
 	public void setAttributes(List<IPotionAttribute> attributes);
 	
+	/**
+	 * Returns a {@link List} of {@link IPotionAttribute} of this potion type's
+	 * attributes.
+	 * 
+	 * @return the attributes
+	 */
 	public List<IPotionAttribute> getAttributes();
 	
+	/**
+	 * Returns true if this potion type has any attributes.
+	 * 
+	 * @return true, if this potion type has attributes
+	 */
 	public boolean hasAttributes();
 	
+	/**
+	 * A the given {@link IPotionAttribute} {@code attribute} to this potion
+	 * type's attributes
+	 * 
+	 * @param attribute
+	 */
 	public void addAttribute(IPotionAttribute attribute);
 	
 	/**

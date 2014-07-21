@@ -17,7 +17,7 @@ public class PotionRecipe implements IPotionRecipe
 	
 	/**
 	 * Constructs a new {@link PotionRecipe} from the given {@link ItemStack}
-	 * {@code input} the given {@link IPotionType} {@code output}. The required
+	 * {@code input} and the given {@link IPotionType} {@code output}. The required
 	 * base potion is set to awkward.
 	 * 
 	 * @param input
@@ -47,11 +47,6 @@ public class PotionRecipe implements IPotionRecipe
 		this.output = output;
 	}
 	
-	/**
-	 * Gets the input stack of this {@link PotionRecipe}.
-	 * 
-	 * @return the input stack
-	 */
 	@Override
 	public ItemStack getInput()
 	{
@@ -80,7 +75,7 @@ public class PotionRecipe implements IPotionRecipe
 	
 	/**
 	 * Applies this {@link PotionRecipe} to the given {@link ItemStack}
-	 * {@code potionStack}.
+	 * {@code potion}.
 	 * <p>
 	 * If the output potion type of this has a required {@link PotionBase}, it
 	 * searches the existent {@link IPotionType PotionTypes} of the potion stack

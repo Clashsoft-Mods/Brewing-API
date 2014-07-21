@@ -13,6 +13,16 @@ public class PotionRecipeAttribute implements IPotionRecipe
 	private ItemStack			input;
 	private IPotionAttribute	attribute;
 	
+	/**
+	 * Constructs a new {@link PotionRecipeAttribute} from the given
+	 * {@link ItemStack} {@code input} and the given {@link IPotionAttribute}
+	 * {@code attribute}.
+	 * 
+	 * @param input
+	 *            the input stack
+	 * @param attribute
+	 *            the attribute
+	 */
 	public PotionRecipeAttribute(ItemStack input, IPotionAttribute attribute)
 	{
 		this.input = input;
