@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import clashsoft.brewingapi.BrewingAPI;
-import clashsoft.brewingapi.potion.recipe.PotionRecipe;
 import clashsoft.brewingapi.potion.recipe.PotionRecipes;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -49,10 +48,11 @@ public class PotionBase extends AbstractPotionType
 	
 	public static PotionBase getFromIngredient(ItemStack ingredient)
 	{
-		PotionRecipe recipe = PotionRecipes.get(ingredient);
-		IPotionType pt = recipe.getOutput();
-		if (pt instanceof PotionBase)
-			return (PotionBase) pt;
+		IPotionType potionType = PotionType.getFromIngredient(ingredient);
+		if (potionType instanceof PotionBase)
+		{
+			return (PotionBase) potionType;
+		}
 		return null;
 	}
 	

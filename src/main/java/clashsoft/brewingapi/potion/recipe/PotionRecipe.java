@@ -9,7 +9,7 @@ import clashsoft.brewingapi.potion.type.PotionBase;
 
 import net.minecraft.item.ItemStack;
 
-public class PotionRecipe
+public class PotionRecipe implements IPotionRecipe
 {
 	private IPotionType	output;
 	private PotionBase	base;
@@ -52,6 +52,7 @@ public class PotionRecipe
 	 * 
 	 * @return the input stack
 	 */
+	@Override
 	public ItemStack getInput()
 	{
 		return this.input;
@@ -89,16 +90,17 @@ public class PotionRecipe
 	 * If it doesn't have a required base, the output potion type gets applied
 	 * if the potion stack has no other potion types applied to it.
 	 * 
-	 * @param potionStack
+	 * @param potion
 	 *            the potion stack
 	 * @return the potion stack
 	 */
-	public ItemStack apply(ItemStack potionStack)
+	@Override
+	public ItemStack apply(ItemStack potion)
 	{
 		PotionBase requiredBase = this.base;
 		boolean flag = false;
 		
-		List<IPotionType> potionTypes = ((ItemPotion2) potionStack.getItem()).getPotionTypes(potionStack);
+		List<IPotionType> potionTypes = ((ItemPotion2) potion.getItem()).getPotionTypes(potion);
 		
 		if (requiredBase == null)
 		{
@@ -113,7 +115,7 @@ public class PotionRecipe
 					if (requiredBase.equals(pt))
 					{
 						flag = true;
-						pt.remove(potionStack);
+						pt.remove(potion);
 					}
 				}
 			}
@@ -121,8 +123,8 @@ public class PotionRecipe
 		
 		if (flag)
 		{
-			return this.output.apply(potionStack);
+			return this.output.apply(potion);
 		}
-		return potionStack;
+		return potion;
 	}
 }

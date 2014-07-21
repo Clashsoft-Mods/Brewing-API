@@ -15,7 +15,7 @@ import net.minecraft.potion.PotionEffect;
 
 public class PotionRecipes
 {
-	public static final Map<ItemStack, PotionRecipe>	potionRecipes	= new ItemStackHashMap();
+	public static final Map<ItemStack, IPotionRecipe>	potionRecipes	= new ItemStackHashMap();
 	
 	/**
 	 * Gets a {@link PotionRecipe} from the given {@link ItemStack}
@@ -25,7 +25,7 @@ public class PotionRecipes
 	 *            the input stack
 	 * @return the potion recipe
 	 */
-	public static PotionRecipe get(ItemStack input)
+	public static IPotionRecipe get(ItemStack input)
 	{
 		return potionRecipes.get(input);
 	}
@@ -80,7 +80,7 @@ public class PotionRecipes
 	 * @param recipe
 	 *            the recipe
 	 */
-	public static void registerRecipe(PotionRecipe recipe)
+	public static void registerRecipe(IPotionRecipe recipe)
 	{
 		potionRecipes.put(recipe.getInput(), recipe);
 	}

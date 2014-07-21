@@ -5,6 +5,7 @@ import java.util.*;
 import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.potion.IIngredientHandler;
+import clashsoft.brewingapi.potion.recipe.IPotionRecipe;
 import clashsoft.brewingapi.potion.recipe.PotionRecipe;
 import clashsoft.brewingapi.potion.recipe.PotionRecipes;
 import clashsoft.cslib.minecraft.potion.CustomPotion;
@@ -506,7 +507,7 @@ public class PotionType extends AbstractPotionType
 			return handler.applyIngredient(ingredient, potionStack);
 		}
 		
-		PotionRecipe recipe = PotionRecipes.get(ingredient);
+		IPotionRecipe recipe = PotionRecipes.get(ingredient);
 		if (recipe != null)
 		{
 			return recipe.apply(potionStack);
@@ -568,10 +569,10 @@ public class PotionType extends AbstractPotionType
 	 */
 	public static IPotionType getFromIngredient(ItemStack stack)
 	{
-		PotionRecipe recipe = PotionRecipes.get(stack);
-		if (recipe != null)
+		IPotionRecipe recipe = PotionRecipes.get(stack);
+		if (recipe instanceof PotionRecipe)
 		{
-			return recipe.getOutput();
+			return ((PotionRecipe) recipe).getOutput();
 		}
 		return null;
 	}
