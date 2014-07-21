@@ -38,12 +38,6 @@ public class PotionTypeDelegate extends AbstractPotionType
 	}
 	
 	@Override
-	public String getUUID()
-	{
-		return this.getEffectName();
-	}
-	
-	@Override
 	public IPotionType copy()
 	{
 		PotionTypeDelegate delegate = new PotionTypeDelegate(this.effect, this.thePotionType);
@@ -111,31 +105,52 @@ public class PotionTypeDelegate extends AbstractPotionType
 	@Override
 	public IPotionType onImproved()
 	{
-		return this.thePotionType.onImproved();
+		if (this.effect != null)
+		{
+			this.effect = improve(this.effect);
+		}
+		return this;
 	}
 	
 	@Override
 	public IPotionType onExtended()
 	{
-		return this.thePotionType.onExtended();
+		if (this.effect != null)
+		{
+			this.effect = extend(this.effect);
+		}
+		return this;
 	}
 	
 	@Override
 	public IPotionType onDiluted()
 	{
-		return this.thePotionType.onDiluted();
+		if (this.effect != null)
+		{
+			this.effect = dilute(this.effect);
+		}
+		return this;
 	}
 	
 	@Override
 	public IPotionType onGunpowderUsed()
 	{
-		return this.thePotionType.onGunpowderUsed();
+		if (this.effect != null)
+		{
+			this.effect = useGunpowder(this.effect);
+		}
+		return this;
 	}
 	
 	@Override
 	public IPotionType onInverted()
 	{
-		return this.thePotionType.onInverted();
+		IPotionType inverted = this.getInverted();
+		if (inverted != null)
+		{
+			this.effect = invert(this.effect, inverted.getEffect());
+		}
+		return this;
 	}
 	
 	@Override
