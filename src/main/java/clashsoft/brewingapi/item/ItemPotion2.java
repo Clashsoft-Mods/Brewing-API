@@ -21,7 +21,6 @@ import com.google.common.collect.TreeMultimap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -342,94 +341,82 @@ public class ItemPotion2 extends ItemPotion
 		{
 			return I18n.getString("item.emptyPotion.name");
 		}
+		
+		List<IPotionType> potionTypes = this.getPotionTypes(stack);
+		List<IPotionType> effects = new ArrayList();
+		List<PotionBase> bases = new ArrayList();
+		
+		StringBuilder result = new StringBuilder(potionTypes.size() * 20);
+		
+		if (this.isSplash(stack))
+		{
+			result.append(I18n.getString("potion.prefix.grenade")).append(" ");
+		}
+		
+		if (potionTypes.isEmpty())
+		{
+			return StatCollector.translateToLocal("item.potion.name");
+		}
+		
+		if (potionTypes.size() == IPotionType.combinableTypes.size())
+		{
+			result.insert(0, EnumChatFormatting.BLUE.toString()).append(I18n.getString("potion.alleffects.postfix"));
+			return result.toString();
+		}
+		
+		for (IPotionType pt : potionTypes)
+		{
+			if (pt.isBase())
+			{
+				bases.add((PotionBase) pt);
+			}
+			else
+			{
+				effects.add(pt);
+			}
+		}
+		
+		for (PotionBase base : bases)
+		{
+			result.append(I18n.getString(base.getEffectName())).append(" ");
+		}
+		if (effects.isEmpty())
+		{
+			result.append(I18n.getString(this.getUnlocalizedName() + ".name"));
+		}
+		else if (effects.size() > 4)
+		{
+			result.append(I18n.getString("potion.potionof")).append(" ").append(effects.size()).append(" ").append(I18n.getString("potion.effects"));
+		}
 		else
 		{
-			List<IPotionType> potionTypes = this.getPotionTypes(stack);
-			List<IPotionType> effects = new ArrayList();
-			List<PotionBase> bases = new ArrayList();
-			
-			StringBuilder result = new StringBuilder(potionTypes.size() * 20);
-			
-			if (this.isSplash(stack))
+			int size = effects.size();
+			for (int i = 0; i < size; i++)
 			{
-				result.append(I18n.getString("potion.prefix.grenade")).append(" ");
-			}
-			
-			if (!potionTypes.isEmpty())
-			{
-				if (potionTypes.size() == IPotionType.combinableTypes.size())
+				IPotionType type = effects.get(i);
+				
+				boolean hasPrevious = i > 0;
+				boolean isLast = i == size - 1;
+				
+				if (!hasPrevious)
 				{
-					result.insert(0, EnumChatFormatting.BLUE.toString()).append(I18n.getString("potion.alleffects.postfix"));
+					result.append(I18n.getString(type.getEffectName() + ".postfix"));
 				}
 				else
 				{
-					for (IPotionType pt : potionTypes)
+					if (isLast)
 					{
-						if (pt.isBase())
-						{
-							bases.add((PotionBase) pt);
-						}
-						else
-						{
-							effects.add(pt);
-						}
-					}
-					
-					for (PotionBase base : bases)
-					{
-						result.append(I18n.getString(base.getEffectName())).append(" ");
-					}
-					if (effects.isEmpty())
-					{
-						result.append(I18n.getString(this.getUnlocalizedName() + ".name"));
-					}
-					else if (effects.size() > 4)
-					{
-						result.append(I18n.getString("potion.potionof")).append(" ").append(effects.size()).append(" ").append(I18n.getString("potion.effects"));
+						result.append(" ").append(I18n.getString("potion.and")).append(" ");
 					}
 					else
 					{
-						int size = effects.size();
-						for (int i = 0; i < size; i++)
-						{
-							IPotionType type = effects.get(i);
-							
-							boolean hasPrevious = i > 0;
-							boolean isLast = i == size - 1;
-							
-							if (!hasPrevious)
-							{
-								result.append(I18n.getString(type.getEffectName() + ".postfix"));
-							}
-							else
-							{
-								if (isLast)
-								{
-									result.append(" ").append(I18n.getString("potion.and")).append(" ");
-								}
-								else
-								{
-									result.append(", ");
-								}
-								result.append(I18n.getString(type.getEffectName()));
-							}
-						}
+						result.append(", ");
 					}
+					result.append(I18n.getString(type.getEffectName()));
 				}
-				return result.toString();
 			}
 		}
-		return StatCollector.translateToLocal("item.potion.name");
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public FontRenderer getFontRenderer(ItemStack stack)
-	{
-		return /*
-				 * BrewingAPI.isClashsoftLibInstalled() ?
-				 * CSFontRenderer.instance :
-				 */null;
+		return result.toString();
 	}
 	
 	private static int	glowPos	= 0;
@@ -438,236 +425,219 @@ public class ItemPotion2 extends ItemPotion
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean flag)
 	{
-		if (!this.isWater(stack))
+		if (this.isWater(stack))
 		{
-			List<IPotionType> potionTypes = this.getPotionTypes(stack);
-			Multimap<String, AttributeModifier> hashmultimap = TreeMultimap.create(String.CASE_INSENSITIVE_ORDER, AttributeModifierComparator.instance);
-			int size = potionTypes.size();
+			return;
+		}
+		
+		List<IPotionType> potionTypes = this.getPotionTypes(stack);
+		Multimap<String, AttributeModifier> hashmultimap = TreeMultimap.create(String.CASE_INSENSITIVE_ORDER, AttributeModifierComparator.instance);
+		int size = potionTypes.size();
+		
+		if (size == 0)
+		{
+			String empty = I18n.getString("potion.empty").trim();
+			list.add("\u00a77" + empty);
+			return;
+		}
+		
+		glowPos++;
+		if (glowPos > 100)
+		{
+			glowPos = 0;
+		}
+		
+		if (size > 5)
+		{
+			glowPos = -1;
+		}
+		
+		for (IPotionType potionType : potionTypes)
+		{
+			Potion potion = potionType.getPotion();
 			
-			if (size > 0)
+			if (potionType.isBase() || potion == null)
 			{
-				glowPos++;
-				if (glowPos > 100)
+				if (size == 1)
 				{
-					glowPos = 0;
+					list.add(EnumChatFormatting.GRAY + I18n.getString("potion.empty"));
 				}
-				
-				if (size > 5)
+				continue;
+			}
+			
+			StringBuilder builder = new StringBuilder(I18n.getString(potionType.getEffectName()));
+			
+			Map map = potion.func_111186_k();
+			if (map != null && map.size() > 0)
+			{
+				for (Object object : map.keySet())
 				{
-					glowPos = -1;
-				}
-				
-				for (int i = 0; i < size; i++)
-				{
-					IPotionType potionType = potionTypes.get(i);
-					Potion potion = potionType.getPotion();
-					
-					boolean isNormalEffect = !potionType.isBase();
-					String effectName;
-					
-					if (!isNormalEffect)
+					AttributeModifier attributemodifier = (AttributeModifier) map.get(object);
+					if (attributemodifier != null)
 					{
-						if (size > 1)
+						AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.func_111183_a(potionType.getEffect().getAmplifier(), attributemodifier), attributemodifier.getOperation());
+						hashmultimap.put(((BaseAttribute) object).getAttributeUnlocalizedName(), attributemodifier1);
+					}
+				}
+			}
+			
+			if (potionType.getAmplifier() > 0)
+			{
+				builder.append(" ").append(CSString.convertToRoman(potionType.getAmplifier() + 1));
+			}
+			if (potionType.getDuration() > 20)
+			{
+				builder.append(" (").append(potionType.getDuration() >= 1000000 ? I18n.getString("potion.infinite") : Potion.getDurationString(potionType.getEffect())).append(")");
+			}
+			
+			int glowPosInt = glowPos / 2;
+			String colorLight = "";
+			String colorDark = "";
+			
+			if (potion instanceof CustomPotion && ((CustomPotion) potion).getCustomColor() != -1)
+			{
+				int c = ((CustomPotion) potion).getCustomColor();
+				colorLight = "\u00a7" + Integer.toHexString(c + 8 & 15);
+				colorDark = "\u00a7" + Integer.toHexString(c);
+			}
+			else if (potionType.isBadEffect())
+			{
+				colorLight = EnumChatFormatting.RED.toString();
+				colorDark = EnumChatFormatting.DARK_RED.toString();
+			}
+			else
+			{
+				colorLight = EnumChatFormatting.GREEN.toString();
+				colorDark = EnumChatFormatting.DARK_GREEN.toString();
+			}
+			
+			builder.insert(0, colorDark);
+			
+			if (glowPos >= 0)
+			{
+				glowPosInt += colorDark.length();
+				
+				if (glowPosInt < builder.length())
+				{
+					builder.insert(glowPosInt, colorLight);
+				}
+				
+				glowPosInt += colorLight.length() + 1;
+				if (glowPosInt < builder.length())
+				{
+					builder.insert(glowPosInt, colorDark);
+				}
+			}
+			
+			list.add(builder.toString());
+		}
+		
+		if (BrewingAPI.advancedPotionInfo && Keyboard.isKeyDown(Keyboard.KEY_CAPITAL))
+		{
+			if (potionTypes.size() == 1 && BrewingAPI.isMorePotionsModInstalled())
+			{
+				for (IPotionType pt : potionTypes)
+				{
+					if (pt.hasEffect())
+					{
+						String description = pt.getEffectName() + ".description";
+						String localizedDescription = I18n.getString(description);
+						if (localizedDescription != description)
 						{
-							continue;
+							localizedDescription = CSString.cutString(localizedDescription, stack.getDisplayName().length());
+							for (String line : CSString.lineArray(localizedDescription))
+							{
+								list.add(EnumChatFormatting.BLUE.toString() + EnumChatFormatting.ITALIC.toString() + line);
+							}
 						}
 						else
 						{
-							effectName = EnumChatFormatting.GRAY + I18n.getString("potion.empty");
-						}
-					}
-					else
-					{
-						effectName = I18n.getString(potionType.getEffectName());
-					}
-					
-					StringBuilder builder = new StringBuilder(effectName);
-					
-					if (potion != null)
-					{
-						Map map = potion.func_111186_k();
-						
-						if (map != null && map.size() > 0)
-						{
-							for (Object object : map.keySet())
-							{
-								AttributeModifier attributemodifier = (AttributeModifier) map.get(object);
-								if (attributemodifier != null)
-								{
-									AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.func_111183_a(potionType.getEffect().getAmplifier(), attributemodifier), attributemodifier.getOperation());
-									hashmultimap.put(((BaseAttribute) object).getAttributeUnlocalizedName(), attributemodifier1);
-								}
-							}
-						}
-					}
-					
-					if (potionType.getAmplifier() > 0)
-					{
-						builder.append(" ").append(CSString.convertToRoman(potionType.getAmplifier() + 1));
-					}
-					if (potionType.getDuration() > 20)
-					{
-						builder.append(" (").append(potionType.getDuration() >= 1000000 ? I18n.getString("potion.infinite") : Potion.getDurationString(potionType.getEffect())).append(")");
-					}
-					
-					int glowPosInt = glowPos / 2;
-					
-					if (isNormalEffect)
-					{
-						String colorLight = "";
-						String colorDark = "";
-						
-						if (potion instanceof CustomPotion && ((CustomPotion) potion).getCustomColor() != -1)
-						{
-							int c = ((CustomPotion) potion).getCustomColor();
-							colorLight = "\u00a7" + Integer.toHexString(c + 8 & 15);
-							colorDark = "\u00a7" + Integer.toHexString(c);
-						}
-						else if (potionType.isBadEffect())
-						{
-							colorLight = EnumChatFormatting.RED.toString();
-							colorDark = EnumChatFormatting.DARK_RED.toString();
-						}
-						else
-						{
-							colorLight = EnumChatFormatting.GREEN.toString();
-							colorDark = EnumChatFormatting.DARK_GREEN.toString();
-						}
-						
-						builder.insert(0, colorDark);
-						
-						if (glowPos >= 0)
-						{
-							glowPosInt += colorDark.length();
-							
-							if (glowPosInt < builder.length())
-							{
-								builder.insert(glowPosInt, colorLight);
-							}
-							
-							glowPosInt += colorLight.length() + 1;
-							if (glowPosInt < builder.length())
-							{
-								builder.insert(glowPosInt, colorDark);
-							}
-						}
-						
-					}
-					list.add(builder.toString());
-				}
-				
-				if (BrewingAPI.advancedPotionInfo && Keyboard.isKeyDown(Keyboard.KEY_CAPITAL))
-				{
-					if (potionTypes.size() == 1 && BrewingAPI.isMorePotionsModInstalled())
-					{
-						for (IPotionType pt : potionTypes)
-						{
-							if (pt.hasEffect())
-							{
-								String description = pt.getEffectName() + ".description";
-								String localizedDescription = I18n.getString(description);
-								if (localizedDescription != description)
-								{
-									localizedDescription = CSString.cutString(localizedDescription, stack.getDisplayName().length());
-									for (String line : CSString.lineArray(localizedDescription))
-									{
-										list.add(EnumChatFormatting.BLUE.toString() + EnumChatFormatting.ITALIC.toString() + line);
-									}
-								}
-								else
-								{
-									list.add(EnumChatFormatting.RED.toString() + EnumChatFormatting.ITALIC.toString() + I18n.getString("potion.description.missing"));
-								}
-							}
-						}
-					}
-					if (potionTypes.size() > 1)
-					{
-						int goodEffects = PotionUtils.getGoodEffects(potionTypes);
-						float goodEffectsPercentage = (float) goodEffects / (float) potionTypes.size() * 100;
-						int badEffects = PotionUtils.getBadEffects(potionTypes);
-						float badEffectsPercentage = (float) badEffects / (float) potionTypes.size() * 100;
-						int averageAmplifier = PotionUtils.getAverageAmplifier(potionTypes);
-						int averageDuration = PotionUtils.getAverageDuration(potionTypes);
-						int maxAmplifier = PotionUtils.getMaxAmplifier(potionTypes);
-						int maxDuration = PotionUtils.getMaxDuration(potionTypes);
-						
-						StringBuilder builder = new StringBuilder(20);
-						builder.append(EnumChatFormatting.GRAY).append(EnumChatFormatting.ITALIC);
-						
-						builder.append(I18n.getString("potion.goodeffects")).append(": ").append(EnumChatFormatting.GREEN).append(goodEffects);
-						builder.append(" (").append(String.format("%.2f", goodEffectsPercentage)).append("%)");
-						list.add(builder.toString());
-						
-						builder.delete(4, builder.length());
-						builder.append(I18n.getString("potion.badeffects")).append(": ").append(EnumChatFormatting.RED).append(badEffects);
-						builder.append(" (").append(String.format("%.2f", badEffectsPercentage)).append("%)");
-						list.add(builder.toString());
-						
-						builder.delete(4, builder.length());
-						builder.append(I18n.getString("potion.averageamplifier")).append(": ").append(CSString.convertToRoman(averageAmplifier));
-						list.add(builder.toString());
-						
-						builder.delete(4, builder.length());
-						builder.append(I18n.getString("potion.maxamplifier")).append(": ").append(CSString.convertToRoman(maxAmplifier));
-						list.add(builder.toString());
-						
-						builder.delete(4, builder.length());
-						builder.append(I18n.getString("potion.averageduration")).append(": ").append(StringUtils.ticksToElapsedTime(averageDuration));
-						list.add(builder.toString());
-						
-						builder.delete(4, builder.length());
-						builder.append(I18n.getString("potion.maxduration")).append(": ").append(StringUtils.ticksToElapsedTime(maxDuration));
-						list.add(builder.toString());
-						
-					}
-					if (PotionType.getExperience(stack) > 0.3F)
-					{
-						StringBuilder value = new StringBuilder(20);
-						value.append(EnumChatFormatting.GRAY).append(EnumChatFormatting.ITALIC);
-						value.append(I18n.getString("potion.value"));
-						value.append(": ");
-						value.append(EnumChatFormatting.YELLOW).append(EnumChatFormatting.ITALIC);
-						value.append(ItemStack.field_111284_a.format(PotionUtils.getValue(stack)));
-						
-						list.add(value.toString());
-					}
-				}
-				
-				if (!hashmultimap.isEmpty())
-				{
-					list.add("");
-					list.add(EnumChatFormatting.DARK_PURPLE + I18n.getString("potion.effects.whenDrank"));
-					
-					for (String key : hashmultimap.keys())
-					{
-						for (AttributeModifier modifier : hashmultimap.get(key))
-						{
-							int operation = modifier.getOperation();
-							double amount = modifier.getAmount();
-							
-							if (operation == 1 || operation == 2)
-							{
-								amount *= 100.0D;
-							}
-							
-							if (amount > 0.0D)
-							{
-								list.add(EnumChatFormatting.BLUE + I18n.getStringParams("attribute.modifier.plus." + operation, ItemStack.field_111284_a.format(amount), I18n.getString("attribute.name." + key)));
-							}
-							else if (amount < 0.0D)
-							{
-								amount = -amount;
-								list.add(EnumChatFormatting.RED + I18n.getStringParams("attribute.modifier.take." + operation, ItemStack.field_111284_a.format(amount), I18n.getString("attribute.name." + key)));
-							}
+							list.add(EnumChatFormatting.RED.toString() + EnumChatFormatting.ITALIC.toString() + I18n.getString("potion.description.missing"));
 						}
 					}
 				}
 			}
-			else
+			if (potionTypes.size() > 1)
 			{
-				String empty = I18n.getString("potion.empty").trim();
-				list.add("\u00a77" + empty);
+				int goodEffects = PotionUtils.getGoodEffects(potionTypes);
+				float goodEffectsPercentage = (float) goodEffects / (float) potionTypes.size() * 100;
+				int badEffects = PotionUtils.getBadEffects(potionTypes);
+				float badEffectsPercentage = (float) badEffects / (float) potionTypes.size() * 100;
+				int averageAmplifier = PotionUtils.getAverageAmplifier(potionTypes);
+				int averageDuration = PotionUtils.getAverageDuration(potionTypes);
+				int maxAmplifier = PotionUtils.getMaxAmplifier(potionTypes);
+				int maxDuration = PotionUtils.getMaxDuration(potionTypes);
+				
+				StringBuilder builder = new StringBuilder(20);
+				builder.append(EnumChatFormatting.GRAY).append(EnumChatFormatting.ITALIC);
+				
+				builder.append(I18n.getString("potion.goodeffects")).append(": ").append(EnumChatFormatting.GREEN).append(goodEffects);
+				builder.append(" (").append(String.format("%.2f", goodEffectsPercentage)).append("%)");
+				list.add(builder.toString());
+				
+				builder.delete(4, builder.length());
+				builder.append(I18n.getString("potion.badeffects")).append(": ").append(EnumChatFormatting.RED).append(badEffects);
+				builder.append(" (").append(String.format("%.2f", badEffectsPercentage)).append("%)");
+				list.add(builder.toString());
+				
+				builder.delete(4, builder.length());
+				builder.append(I18n.getString("potion.averageamplifier")).append(": ").append(CSString.convertToRoman(averageAmplifier));
+				list.add(builder.toString());
+				
+				builder.delete(4, builder.length());
+				builder.append(I18n.getString("potion.maxamplifier")).append(": ").append(CSString.convertToRoman(maxAmplifier));
+				list.add(builder.toString());
+				
+				builder.delete(4, builder.length());
+				builder.append(I18n.getString("potion.averageduration")).append(": ").append(StringUtils.ticksToElapsedTime(averageDuration));
+				list.add(builder.toString());
+				
+				builder.delete(4, builder.length());
+				builder.append(I18n.getString("potion.maxduration")).append(": ").append(StringUtils.ticksToElapsedTime(maxDuration));
+				list.add(builder.toString());
+				
+			}
+			float f = PotionUtils.getValue(stack);
+			if (f > 1F)
+			{
+				StringBuilder value = new StringBuilder(20);
+				value.append(EnumChatFormatting.GRAY).append(EnumChatFormatting.ITALIC);
+				value.append(I18n.getString("potion.value"));
+				value.append(": ");
+				value.append(EnumChatFormatting.YELLOW).append(EnumChatFormatting.ITALIC);
+				value.append(ItemStack.field_111284_a.format(f));
+				
+				list.add(value.toString());
+			}
+		}
+		
+		if (!hashmultimap.isEmpty())
+		{
+			list.add("");
+			list.add(EnumChatFormatting.DARK_PURPLE + I18n.getString("potion.effects.whenDrank"));
+			
+			for (String key : hashmultimap.keys())
+			{
+				for (AttributeModifier modifier : hashmultimap.get(key))
+				{
+					int operation = modifier.getOperation();
+					double amount = modifier.getAmount();
+					
+					if (operation == 1 || operation == 2)
+					{
+						amount *= 100.0D;
+					}
+					
+					if (amount > 0.0D)
+					{
+						list.add(EnumChatFormatting.BLUE + I18n.getStringParams("attribute.modifier.plus." + operation, ItemStack.field_111284_a.format(amount), I18n.getString("attribute.name." + key)));
+					}
+					else if (amount < 0.0D)
+					{
+						amount = -amount;
+						list.add(EnumChatFormatting.RED + I18n.getStringParams("attribute.modifier.take." + operation, ItemStack.field_111284_a.format(amount), I18n.getString("attribute.name." + key)));
+					}
+				}
 			}
 		}
 	}
