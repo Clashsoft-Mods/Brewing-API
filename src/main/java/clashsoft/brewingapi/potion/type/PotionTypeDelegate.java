@@ -46,7 +46,9 @@ public class PotionTypeDelegate extends AbstractPotionType
 	@Override
 	public IPotionType copy()
 	{
-		return new PotionTypeDelegate(this.effect, this.thePotionType);
+		PotionTypeDelegate delegate = new PotionTypeDelegate(this.effect, this.thePotionType);
+		delegate.attributes = this.attributes;
+		return delegate;
 	}
 	
 	@Override
