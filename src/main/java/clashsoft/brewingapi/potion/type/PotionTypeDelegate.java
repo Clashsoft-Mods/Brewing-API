@@ -182,6 +182,7 @@ public class PotionTypeDelegate extends AbstractPotionType
 			{
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setString("Name", attribute.getName());
+				attribute.writeToNBT(nbt);
 			}
 		}
 	}
@@ -211,7 +212,18 @@ public class PotionTypeDelegate extends AbstractPotionType
 				NBTTagCompound compound = attributes.getCompoundTagAt(i);
 				String name = compound.getString("Name");
 				IPotionAttribute attribute = IPotionAttribute.attributes.get(name);
-				this.addAttribute(attribute);
+				IPotionAttribute attribute2 = attribute.copy();
+				
+				if (attribute != attribute2)
+				{
+					// the attribute is not a singleton
+					attribute2.readFromNBT(nbt);
+					this.addAttribute(attribute2);
+				}
+				else
+				{
+					this.addAttribute(attribute);
+				}
 			}
 		}
 	}
