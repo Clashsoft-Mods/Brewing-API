@@ -174,7 +174,16 @@ public class PotionTypeDelegate extends AbstractPotionType
 	@Override
 	public void addAttribute(IPotionAttribute attribute)
 	{
-		this.attributes.add(attribute);
+		IPotionAttribute attribute2 = attribute.copy();
+		
+		if (attribute != attribute2)
+		{
+			this.attributes.add(attribute2);
+		}
+		else
+		{
+			this.attributes.add(attribute);
+		}
 	}
 	
 	@Override
@@ -233,11 +242,11 @@ public class PotionTypeDelegate extends AbstractPotionType
 				{
 					// the attribute is not a singleton
 					attribute2.readFromNBT(nbt);
-					this.addAttribute(attribute2);
+					this.attributes.add(attribute2);
 				}
 				else
 				{
-					this.addAttribute(attribute);
+					this.attributes.add(attribute);
 				}
 			}
 		}
