@@ -6,6 +6,13 @@ import clashsoft.brewingapi.potion.type.IPotionType;
 
 public abstract class AbstractPotionAttribute implements IPotionAttribute
 {
+	protected String name;
+	
+	public AbstractPotionAttribute(String name)
+	{
+		this.name = name;
+	}
+	
 	@Override
 	public IPotionAttribute register()
 	{
