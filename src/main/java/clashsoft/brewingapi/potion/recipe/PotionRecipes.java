@@ -141,7 +141,7 @@ public class PotionRecipes
 	{
 		if (ingredient != null)
 		{
-			new PotionRecipe(ingredient, base, potionType).register();
+			recipes.add(new PotionRecipe(ingredient, base, potionType));
 		}
 	}
 	
@@ -178,7 +178,7 @@ public class PotionRecipes
 	{
 		if (ingredient != null)
 		{
-			new PotionRecipe(ingredient, base, PotionType.getFromEffect(effect)).register();
+			recipes.add(new PotionRecipe(ingredient, base, PotionType.getFromEffect(effect)));
 		}
 	}
 }
