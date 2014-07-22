@@ -32,13 +32,18 @@ public class PotionBase extends AbstractPotionType implements IPotionBase
 	{
 		this(name);
 		
-		PotionRecipes.addRecipe(ingredient, null, this);
+		PotionRecipes.addRecipe(ingredient, water, this);
 	}
 	
 	@Override
 	public String getUUID()
 	{
 		return this.name;
+	}
+	
+	public static PotionBase getFromName(String name)
+	{
+		return (PotionBase) baseMap.get(name);
 	}
 	
 	public static PotionBase getFromIngredient(ItemStack ingredient)
@@ -73,6 +78,7 @@ public class PotionBase extends AbstractPotionType implements IPotionBase
 	public PotionBase register()
 	{
 		potionTypeList.add(this);
+		potionBases.add(this);
 		baseMap.put(this.name, this);
 		
 		return this;
@@ -87,10 +93,10 @@ public class PotionBase extends AbstractPotionType implements IPotionBase
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
-		PotionBase base = baseMap.get(nbt.getString("BaseName"));
+		IPotionBase base = baseMap.get(nbt.getString("BaseName"));
 		if (base != null)
 		{
-			this.name = base.name;
+			this.name = base.getName();
 		}
 	}
 	

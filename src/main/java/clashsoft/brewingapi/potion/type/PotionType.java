@@ -440,6 +440,10 @@ public class PotionType extends AbstractPotionType
 					{
 						NBTTagCompound nbt1 = list.getCompoundTagAt(i);
 						IPotionType potionType = getFromNBT(nbt1);
+						if (potionType == null)
+						{
+							continue;
+						}
 						types.add(potionType);
 					}
 					return types;
@@ -525,7 +529,7 @@ public class PotionType extends AbstractPotionType
 		{
 			if (nbt.hasKey("BaseName"))
 			{
-				return PotionBase.baseMap.get(nbt.getString("BaseName"));
+				return PotionBase.getFromName(nbt.getString("BaseName"));
 			}
 			IPotionType result = new PotionTypeDelegate();
 			result.readFromNBT(nbt);

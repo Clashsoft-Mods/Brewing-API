@@ -20,7 +20,7 @@ public class PotionRecipeSplash extends AbstractPotionRecipe
 	@Override
 	public boolean canApply(ItemStack potion)
 	{
-		return ((ItemPotion2) potion.getItem()).isSplash(potion);
+		return !((ItemPotion2) potion.getItem()).isSplash(potion);
 	}
 	
 	@Override

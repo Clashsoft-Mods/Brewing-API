@@ -145,7 +145,7 @@ public class PotionRecipes
 	 */
 	public static void addRecipe(ItemStack ingredient, IPotionBase base, IPotionType potionType)
 	{
-		if (ingredient != null)
+		if (ingredient != null && base != null)
 		{
 			recipes.add(new PotionRecipe(ingredient, base, potionType));
 		}
@@ -182,7 +182,7 @@ public class PotionRecipes
 	 */
 	public static void addRecipe(ItemStack ingredient, IPotionBase base, PotionEffect effect)
 	{
-		if (ingredient != null)
+		if (ingredient != null && base != null)
 		{
 			recipes.add(new PotionRecipe(ingredient, base, PotionType.getFromEffect(effect)));
 		}

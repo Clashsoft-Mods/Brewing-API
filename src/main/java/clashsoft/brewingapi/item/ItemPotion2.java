@@ -88,7 +88,12 @@ public class ItemPotion2 extends ItemPotion
 		List<IPotionType> types = new ArrayList();
 		for (PotionEffect effect : effects)
 		{
-			types.add(PotionType.getFromEffect(effect));
+			IPotionType potionType = PotionType.getFromEffect(effect);
+			if (potionType == null)
+			{
+				continue;
+			}
+			types.add(potionType);
 		}
 		return types;
 	}
@@ -106,16 +111,8 @@ public class ItemPotion2 extends ItemPotion
 		NBTTagCompound compound = stack.getTagCompound();
 		if (compound != null)
 		{
-			if (this.effectCache.containsKey(compound))
-			{
-				return this.effectCache.get(compound);
-			}
-			else
-			{
-				List<IPotionType> result = PotionType.getPotionTypes_(stack);
-				this.effectCache.put(compound, result);
-				return result;
-			}
+			List<IPotionType> result = PotionType.getPotionTypes_(stack);
+			return result;
 		}
 		else
 		{
@@ -177,7 +174,9 @@ public class ItemPotion2 extends ItemPotion
 	public int setSplash(ItemStack stack, boolean splash)
 	{
 		int metadata = stack.getItemDamage();
-		return splash ? metadata | 2 : metadata & ~2;
+		metadata = splash ? metadata | 2 : metadata & ~2;
+		stack.setItemDamage(metadata);
+		return metadata;
 	}
 	
 	public boolean isWater(ItemStack stack)
@@ -193,20 +192,38 @@ public class ItemPotion2 extends ItemPotion
 		}
 		
 		List<IPotionType> effects = this.getPotionTypes(stack);
+		int size = effects.size();
 		
-		if (effects.isEmpty())
+		if (size == 0)
 		{
 			return 0x0C0CFF;
 		}
-		
-		int[] colors = new int[effects.size()];
-		
-		for (int j = 0; j < effects.size(); j++)
+		else if (size == 1)
 		{
-			IPotionType b = effects.get(j);
-			colors[j] = b.getLiquidColor();
+			return effects.get(0).getLiquidColor();
 		}
-		return PotionUtils.combineColors(colors);
+		
+		size = 0;
+		int r = 0;
+		int g = 0;
+		int b = 0;
+		
+		for (IPotionType potionType : effects)
+		{
+			if (!potionType.isBase())
+			{
+				int c = potionType.getLiquidColor();
+				r += (c >> 16) & 255;
+				g += (c >> 8) & 255;
+				b += (c >> 0) & 255;
+				size++;
+			}
+		}
+		r /= size;
+		g /= size;
+		b /= size;
+		
+		return (r << 16) | (g << 8) | (b << 0);
 	}
 	
 	/**
@@ -652,10 +669,20 @@ public class ItemPotion2 extends ItemPotion
 	@SideOnly(Side.CLIENT)
 	public boolean hasEffect(ItemStack stack, int pass)
 	{
-		if (pass == 0 && stack.getItemDamage() > 0)
+		if (pass == 0 && !this.isWater(stack))
 		{
 			List<IPotionType> list = this.getPotionTypes(stack);
-			return list != null && !list.isEmpty() && list.get(0).getEffect() != null;
+			if (list == null || list.isEmpty())
+			{
+				return false;
+			}
+			for (IPotionType type : list)
+			{
+				if (type.hasEffect())
+				{
+					return true;
+				}
+			}
 		}
 		return false;
 	}
@@ -674,7 +701,7 @@ public class ItemPotion2 extends ItemPotion
 		{
 			list.add(new ItemStack(this, 1, 0));
 			
-			for (PotionBase pt : PotionBase.baseMap.values())
+			for (PotionBase pt : PotionBase.potionBases)
 			{
 				list.add(pt.apply(new ItemStack(this, 1, 1)));
 				list.add(pt.apply(new ItemStack(this, 1, 2)));

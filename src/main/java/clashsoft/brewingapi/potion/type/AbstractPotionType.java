@@ -275,6 +275,12 @@ public abstract class AbstractPotionType implements IPotionType
 			NBTTagCompound nbt1 = new NBTTagCompound();
 			this.writeToNBT(nbt1);
 			list.appendTag(nbt1);
+			
+			IPotionBase base = this.getBase();
+			if (base instanceof PotionBase)
+			{
+				((PotionBase) base).remove(stack);
+			}
 		}
 		return stack;
 	}
