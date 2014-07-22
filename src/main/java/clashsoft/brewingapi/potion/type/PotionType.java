@@ -501,24 +501,27 @@ public class PotionType extends AbstractPotionType
 	 * 
 	 * @param ingredient
 	 *            Ingredient
-	 * @param potionStack
+	 * @param potion
 	 *            the potion ItemStack
 	 * @return the potion with applied ingredients
 	 */
-	public static ItemStack applyIngredient(ItemStack ingredient, ItemStack potionStack)
+	public static ItemStack applyIngredient(ItemStack ingredient, ItemStack potion)
 	{
 		IIngredientHandler handler = getIngredientHandler(ingredient);
 		if (handler != null)
 		{
-			return handler.applyIngredient(ingredient, potionStack);
+			return handler.applyIngredient(ingredient, potion);
 		}
 		
-		IPotionRecipe recipe = PotionRecipes.get(ingredient);
-		if (recipe != null)
+		List<IPotionRecipe> recipes = PotionRecipes.getAll(ingredient);
+		for (IPotionRecipe recipe : recipes)
 		{
-			return recipe.apply(potionStack);
+			if (recipe.canApply(potion))
+			{
+				return recipe.apply(potion);
+			}
 		}
-		return potionStack;
+		return potion;
 	}
 	
 	public static boolean canApplyIngredient(ItemStack ingredient, ItemStack potion)
@@ -529,10 +532,13 @@ public class PotionType extends AbstractPotionType
 			return handler.canApplyIngredient(ingredient, potion);
 		}
 		
-		IPotionRecipe recipe = PotionRecipes.get(ingredient);
-		if (recipe != null)
+		List<IPotionRecipe> recipes = PotionRecipes.getAll(ingredient);
+		for (IPotionRecipe recipe : recipes)
 		{
-			return recipe.canApply(potion);
+			if (recipe.canApply(potion))
+			{
+				return true;
+			}
 		}
 		return false;
 	}

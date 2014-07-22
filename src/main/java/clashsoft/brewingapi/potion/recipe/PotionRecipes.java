@@ -2,21 +2,20 @@ package clashsoft.brewingapi.potion.recipe;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import clashsoft.brewingapi.potion.PotionList;
 import clashsoft.brewingapi.potion.base.IPotionBase;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionBase;
 import clashsoft.brewingapi.potion.type.PotionType;
-import clashsoft.cslib.minecraft.stack.ItemStackHashMap;
+import clashsoft.cslib.minecraft.stack.CSStacks;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 
 public class PotionRecipes
 {
-	public static final Map<ItemStack, IPotionRecipe>	potionRecipes	= new ItemStackHashMap();
+	public static final List<IPotionRecipe>	potionRecipes	= new ArrayList();
 	
 	/**
 	 * Gets a {@link PotionRecipe} from the given {@link ItemStack}
@@ -28,7 +27,35 @@ public class PotionRecipes
 	 */
 	public static IPotionRecipe get(ItemStack input)
 	{
-		return potionRecipes.get(input);
+		for (IPotionRecipe recipe : potionRecipes)
+		{
+			if (CSStacks.equals(input, recipe.getInput()))
+			{
+				return recipe;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Gets all {@link PotionRecipe PotionRecipes} from the given
+	 * {@link ItemStack} {@code input}.
+	 * 
+	 * @param input
+	 *            the input stack
+	 * @return the potion recipes
+	 */
+	public static List<IPotionRecipe> getAll(ItemStack input)
+	{
+		List<IPotionRecipe> list = new ArrayList();
+		for (IPotionRecipe recipe : potionRecipes)
+		{
+			if (CSStacks.equals(input, recipe.getInput()))
+			{
+				list.add(recipe);
+			}
+		}
+		return list;
 	}
 	
 	/**
@@ -41,12 +68,16 @@ public class PotionRecipes
 	 */
 	public static PotionRecipe get(IPotionType potionType)
 	{
-		for (Map.Entry entry : potionRecipes.entrySet())
+		for (IPotionRecipe recipe : potionRecipes)
 		{
-			PotionRecipe recipe = (PotionRecipe) entry.getValue();
-			if (potionType.equals(recipe.getOutput()))
+			if (recipe instanceof PotionRecipe)
 			{
-				return recipe;
+				PotionRecipe recipe2 = (PotionRecipe) recipe;
+				IPotionType output = recipe2.getOutput();
+				if (potionType.equals(output))
+				{
+					return recipe2;
+				}
 			}
 		}
 		return null;
@@ -58,18 +89,22 @@ public class PotionRecipes
 	 * 
 	 * @param potionType
 	 *            the potion type
-	 * @return the ingredient
+	 * @return the ingredients
 	 */
 	public static List<PotionRecipe> getAll(IPotionType potionType)
 	{
-		List list = new ArrayList();
+		List<PotionRecipe> list = new ArrayList();
 		
-		for (Map.Entry entry : potionRecipes.entrySet())
+		for (IPotionRecipe recipe : potionRecipes)
 		{
-			PotionRecipe recipe = (PotionRecipe) entry.getValue();
-			if (potionType.equals(recipe.getOutput()))
+			if (recipe instanceof PotionRecipe)
 			{
-				list.add(recipe);
+				PotionRecipe recipe2 = (PotionRecipe) recipe;
+				IPotionType output = recipe2.getOutput();
+				if (potionType.equals(output))
+				{
+					list.add(recipe2);
+				}
 			}
 		}
 		return list;
@@ -83,7 +118,7 @@ public class PotionRecipes
 	 */
 	public static void registerRecipe(IPotionRecipe recipe)
 	{
-		potionRecipes.put(recipe.getInput(), recipe);
+		potionRecipes.add(recipe);
 	}
 	
 	/**
