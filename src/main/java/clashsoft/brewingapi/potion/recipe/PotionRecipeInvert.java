@@ -9,12 +9,11 @@ import clashsoft.cslib.minecraft.stack.StackFactory;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-public class PotionRecipeInvert implements IPotionRecipe
+public class PotionRecipeInvert extends AbstractPotionRecipe
 {
-	@Override
-	public ItemStack getInput()
+	public PotionRecipeInvert()
 	{
-		return StackFactory.create(Items.fermented_spider_eye);
+		super(StackFactory.create(Items.fermented_spider_eye));
 	}
 	
 	@Override

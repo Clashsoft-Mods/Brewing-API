@@ -4,6 +4,8 @@ import net.minecraft.item.ItemStack;
 
 public interface IPotionRecipe
 {
+	public IPotionRecipe register();
+	
 	/**
 	 * Gets the input stack of this {@link IPotionRecipe}.
 	 * 

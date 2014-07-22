@@ -8,9 +8,8 @@ import clashsoft.brewingapi.potion.type.PotionType;
 
 import net.minecraft.item.ItemStack;
 
-public class PotionRecipeAttribute implements IPotionRecipe
+public class PotionRecipeAttribute extends AbstractPotionRecipe
 {
-	private ItemStack			input;
 	private IPotionAttribute	attribute;
 	
 	/**
@@ -25,14 +24,8 @@ public class PotionRecipeAttribute implements IPotionRecipe
 	 */
 	public PotionRecipeAttribute(ItemStack input, IPotionAttribute attribute)
 	{
-		this.input = input;
+		super(input);
 		this.attribute = attribute;
-	}
-	
-	@Override
-	public ItemStack getInput()
-	{
-		return this.input;
 	}
 	
 	@Override

@@ -10,12 +10,11 @@ import clashsoft.cslib.minecraft.stack.StackFactory;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-public class PotionRecipeSplash implements IPotionRecipe
+public class PotionRecipeSplash extends AbstractPotionRecipe
 {
-	@Override
-	public ItemStack getInput()
+	public PotionRecipeSplash()
 	{
-		return StackFactory.create(Items.gunpowder);
+		super(StackFactory.create(Items.gunpowder));
 	}
 	
 	@Override

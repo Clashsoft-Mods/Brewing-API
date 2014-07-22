@@ -9,12 +9,11 @@ import clashsoft.cslib.minecraft.stack.StackFactory;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-public class PotionRecipeExtend implements IPotionRecipe
+public class PotionRecipeExtend extends AbstractPotionRecipe
 {
-	@Override
-	public ItemStack getInput()
+	public PotionRecipeExtend()
 	{
-		return StackFactory.create(Items.redstone);
+		super(StackFactory.create(Items.redstone));
 	}
 	
 	@Override

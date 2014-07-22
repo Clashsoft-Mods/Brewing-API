@@ -7,11 +7,10 @@ import clashsoft.brewingapi.potion.type.PotionBase;
 
 import net.minecraft.item.ItemStack;
 
-public class PotionRecipe implements IPotionRecipe
+public class PotionRecipe extends AbstractPotionRecipe
 {
 	private IPotionType	output;
 	private IPotionBase	base;
-	private ItemStack	input;
 	
 	/**
 	 * Constructs a new {@link PotionRecipe} from the given {@link ItemStack}
@@ -40,15 +39,9 @@ public class PotionRecipe implements IPotionRecipe
 	 */
 	public PotionRecipe(ItemStack input, IPotionBase base, IPotionType output)
 	{
-		this.input = input;
+		super(input);
 		this.base = base;
 		this.output = output;
-	}
-	
-	@Override
-	public ItemStack getInput()
-	{
-		return this.input;
 	}
 	
 	/**

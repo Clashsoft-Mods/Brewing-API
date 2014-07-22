@@ -9,12 +9,11 @@ import clashsoft.cslib.minecraft.stack.StackFactory;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-public class PotionRecipeDilute implements IPotionRecipe
+public class PotionRecipeDilute extends AbstractPotionRecipe
 {
-	@Override
-	public ItemStack getInput()
+	public PotionRecipeDilute()
 	{
-		return StackFactory.create(Items.water_bucket);
+		super(StackFactory.create(Items.water_bucket));
 	}
 	
 	@Override

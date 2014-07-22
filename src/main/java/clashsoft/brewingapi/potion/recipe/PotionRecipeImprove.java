@@ -9,12 +9,11 @@ import clashsoft.cslib.minecraft.stack.StackFactory;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-public class PotionRecipeImprove implements IPotionRecipe
+public class PotionRecipeImprove extends AbstractPotionRecipe
 {
-	@Override
-	public ItemStack getInput()
+	public PotionRecipeImprove()
 	{
-		return StackFactory.create(Items.glowstone_dust);
+		super(StackFactory.create(Items.glowstone_dust));
 	}
 	
 	@Override

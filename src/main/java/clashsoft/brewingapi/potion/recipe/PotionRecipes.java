@@ -15,7 +15,7 @@ import net.minecraft.potion.PotionEffect;
 
 public class PotionRecipes
 {
-	public static final List<IPotionRecipe>	potionRecipes	= new ArrayList();
+	public static final List<IPotionRecipe>	recipes	= new ArrayList();
 	
 	/**
 	 * Gets a {@link PotionRecipe} from the given {@link ItemStack}
@@ -27,7 +27,7 @@ public class PotionRecipes
 	 */
 	public static IPotionRecipe get(ItemStack input)
 	{
-		for (IPotionRecipe recipe : potionRecipes)
+		for (IPotionRecipe recipe : recipes)
 		{
 			if (CSStacks.equals(input, recipe.getInput()))
 			{
@@ -48,7 +48,7 @@ public class PotionRecipes
 	public static List<IPotionRecipe> getAll(ItemStack input)
 	{
 		List<IPotionRecipe> list = new ArrayList();
-		for (IPotionRecipe recipe : potionRecipes)
+		for (IPotionRecipe recipe : recipes)
 		{
 			if (CSStacks.equals(input, recipe.getInput()))
 			{
@@ -68,7 +68,7 @@ public class PotionRecipes
 	 */
 	public static PotionRecipe get(IPotionType potionType)
 	{
-		for (IPotionRecipe recipe : potionRecipes)
+		for (IPotionRecipe recipe : recipes)
 		{
 			if (recipe instanceof PotionRecipe)
 			{
@@ -95,7 +95,7 @@ public class PotionRecipes
 	{
 		List<PotionRecipe> list = new ArrayList();
 		
-		for (IPotionRecipe recipe : potionRecipes)
+		for (IPotionRecipe recipe : recipes)
 		{
 			if (recipe instanceof PotionRecipe)
 			{
@@ -108,17 +108,6 @@ public class PotionRecipes
 			}
 		}
 		return list;
-	}
-	
-	/**
-	 * Registers a new {@link PotionRecipe}.
-	 * 
-	 * @param recipe
-	 *            the recipe
-	 */
-	public static void registerRecipe(IPotionRecipe recipe)
-	{
-		potionRecipes.add(recipe);
 	}
 	
 	/**
@@ -152,7 +141,7 @@ public class PotionRecipes
 	{
 		if (ingredient != null)
 		{
-			registerRecipe(new PotionRecipe(ingredient, base, potionType));
+			new PotionRecipe(ingredient, base, potionType).register();
 		}
 	}
 	
@@ -189,7 +178,7 @@ public class PotionRecipes
 	{
 		if (ingredient != null)
 		{
-			registerRecipe(new PotionRecipe(ingredient, base, PotionType.getFromEffect(effect)));
+			new PotionRecipe(ingredient, base, PotionType.getFromEffect(effect)).register();
 		}
 	}
 }
