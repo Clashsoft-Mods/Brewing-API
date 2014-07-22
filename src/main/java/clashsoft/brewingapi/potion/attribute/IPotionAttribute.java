@@ -10,9 +10,9 @@ import net.minecraft.potion.PotionEffect;
 
 public interface IPotionAttribute
 {
-	public static Map<String, IPotionAttribute> attributes = new HashMap();
+	public static Map<String, IPotionAttribute>	attributes	= new HashMap();
 	
-	public void register();
+	public IPotionAttribute register();
 	
 	public IPotionAttribute copy();
 	

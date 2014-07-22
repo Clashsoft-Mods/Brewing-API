@@ -7,9 +7,10 @@ import clashsoft.brewingapi.potion.type.IPotionType;
 public abstract class AbstractPotionAttribute implements IPotionAttribute
 {
 	@Override
-	public void register()
+	public IPotionAttribute register()
 	{
 		attributes.put(this.getName(), this);
+		return this;
 	}
 	
 	@Override
