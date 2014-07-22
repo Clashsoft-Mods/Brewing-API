@@ -1,16 +1,10 @@
 package clashsoft.brewingapi.tileentity;
 
-import java.util.List;
-
 import clashsoft.brewingapi.item.ItemPotion2;
-import clashsoft.brewingapi.potion.recipe.IPotionRecipe;
-import clashsoft.brewingapi.potion.recipe.PotionRecipes;
-import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionType;
 
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -79,60 +73,20 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 		ItemStack ingredient = this.brewingItemStacks[3];
 		if (ingredient != null && ingredient.stackSize > 0)
 		{
-			Item item = ingredient.getItem();
-			
+			int count = 0;
 			for (int i = 0; i < 3; i++)
 			{
-				ItemStack potionStack = this.brewingItemStacks[i];
-				if (potionStack != null)
+				ItemStack potion = this.brewingItemStacks[i];
+				if (potion != null)
 				{
-					ItemPotion2 potion = (ItemPotion2) potionStack.getItem();
-					boolean water = potion.isWater(potionStack);
-					List<IPotionType> types = potion.getPotionTypes(potionStack);
-					
-					if (item == Items.glowstone_dust && !water)
+					if (!PotionType.canApplyIngredient(ingredient, potion))
 					{
-						for (IPotionType type : types)
-						{
-							if (type.isImprovable())
-							{
-								return true;
-							}
-						}
+						return false;
 					}
-					else if (item == Items.redstone && !water)
-					{
-						for (IPotionType type : types)
-						{
-							if (type.isExtendable())
-							{
-								return true;
-							}
-						}
-					}
-					else if (item == Items.fermented_spider_eye && !water)
-					{
-						for (IPotionType type : types)
-						{
-							if (type.isInversible())
-							{
-								return true;
-							}
-						}
-					}
-					else if (item == Items.gunpowder)
-					{
-						if (!potion.isSplash(potionStack))
-						{
-							return true;
-						}
-					}
-					else
-					{
-						return PotionType.canApplyIngredient(ingredient, potionStack);
-					}
+					count++;
 				}
 			}
+			return count > 0;
 		}
 		return false;
 	}
@@ -142,13 +96,12 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 		ItemStack ingredient = this.brewingItemStacks[3];
 		Item item = ingredient.getItem();
 		
-		for (int i = 0; i < 3; ++i)
+		for (int i = 0; i < 3; i++)
 		{
 			ItemStack potion = this.brewingItemStacks[i];
 			if (potion != null)
 			{
-				IPotionRecipe recipe = PotionRecipes.get(ingredient);
-				this.brewingItemStacks[i] = recipe.apply(potion);
+				this.brewingItemStacks[i] = PotionType.applyIngredient(ingredient, potion);
 			}
 		}
 		
