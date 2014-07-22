@@ -204,7 +204,7 @@ public class PotionType extends AbstractPotionType
 	}
 	
 	@Override
-	public IPotionType onImproved()
+	public IPotionType onAmplified()
 	{
 		PotionEffect effect = this.getEffect();
 		if (effect != null)

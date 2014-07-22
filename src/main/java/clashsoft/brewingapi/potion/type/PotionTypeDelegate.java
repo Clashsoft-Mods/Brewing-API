@@ -104,7 +104,7 @@ public class PotionTypeDelegate extends AbstractPotionType
 	}
 	
 	@Override
-	public IPotionType onImproved()
+	public IPotionType onAmplified()
 	{
 		if (this.effect != null)
 		{

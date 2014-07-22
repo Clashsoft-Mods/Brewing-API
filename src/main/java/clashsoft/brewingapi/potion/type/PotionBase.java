@@ -221,7 +221,7 @@ public class PotionBase extends AbstractPotionType implements IPotionBase
 	}
 	
 	@Override
-	public IPotionType onImproved()
+	public IPotionType onAmplified()
 	{
 		return this;
 	}

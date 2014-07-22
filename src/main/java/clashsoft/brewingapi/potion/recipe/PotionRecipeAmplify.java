@@ -9,9 +9,9 @@ import clashsoft.cslib.minecraft.stack.StackFactory;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-public class PotionRecipeImprove extends AbstractPotionRecipe
+public class PotionRecipeAmplify extends AbstractPotionRecipe
 {
-	public PotionRecipeImprove()
+	public PotionRecipeAmplify()
 	{
 		super(StackFactory.create(Items.glowstone_dust));
 	}
@@ -22,7 +22,7 @@ public class PotionRecipeImprove extends AbstractPotionRecipe
 		List<IPotionType> types = PotionType.getPotionTypes(potion);
 		for (IPotionType type : types)
 		{
-			if (type.isImprovable())
+			if (type.isAmplifiable())
 			{
 				return true;
 			}
@@ -37,7 +37,7 @@ public class PotionRecipeImprove extends AbstractPotionRecipe
 		for (int i = 0; i < types.size(); i++)
 		{
 			IPotionType type = types.get(i);
-			type = type.onImproved();
+			type = type.onAmplified();
 			types.set(i, type);
 		}
 		return potion;

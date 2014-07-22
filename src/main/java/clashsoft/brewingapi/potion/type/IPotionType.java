@@ -208,11 +208,11 @@ public interface IPotionType extends Comparable<IPotionType>
 	public ItemStack getIngredient();
 	
 	/**
-	 * Returns true if this potion type is improvable with Glowstone.
+	 * Returns true if this potion type is amplifiable with Glowstone.
 	 * 
-	 * @return true, if this potion type is improvable
+	 * @return true, if this potion type is amplifiable
 	 */
-	public boolean isImprovable();
+	public boolean isAmplifiable();
 	
 	/**
 	 * Returns true if this potion type is extendable with Redstone.
@@ -237,11 +237,11 @@ public interface IPotionType extends Comparable<IPotionType>
 	public boolean isInversible();
 	
 	/**
-	 * Returns the Glowstone-improved version of this potion type.
+	 * Returns the Glowstone-amplified version of this potion type.
 	 * 
-	 * @return the improved version
+	 * @return the amplified version
 	 */
-	public IPotionType onImproved();
+	public IPotionType onAmplified();
 	
 	/**
 	 * Returns the Redstone-extended version of this potion type.

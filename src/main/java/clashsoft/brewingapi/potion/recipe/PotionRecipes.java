@@ -17,7 +17,7 @@ public class PotionRecipes
 {
 	public static final List<IPotionRecipe>	recipes	= new ArrayList();
 	
-	public static IPotionRecipe improve = new PotionRecipeImprove().register();
+	public static IPotionRecipe amplify = new PotionRecipeAmplify().register();
 	public static IPotionRecipe extend = new PotionRecipeExtend().register();
 	public static IPotionRecipe dilute = new PotionRecipeDilute().register();
 	public static IPotionRecipe splash = new PotionRecipeSplash().register();

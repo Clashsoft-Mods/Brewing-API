@@ -154,7 +154,7 @@ public abstract class AbstractPotionType implements IPotionType
 	}
 	
 	@Override
-	public boolean isImprovable()
+	public boolean isAmplifiable()
 	{
 		PotionEffect effect = this.getEffect();
 		return effect != null && effect.getAmplifier() < this.getMaxAmplifier();
@@ -238,9 +238,9 @@ public abstract class AbstractPotionType implements IPotionType
 	{
 		List<IPotionType> list = new ArrayList();
 		list.add(this);
-		if (this.isImprovable())
+		if (this.isAmplifiable())
 		{
-			list.add(this.onImproved());
+			list.add(this.onAmplified());
 		}
 		if (this.isExtendable())
 		{
