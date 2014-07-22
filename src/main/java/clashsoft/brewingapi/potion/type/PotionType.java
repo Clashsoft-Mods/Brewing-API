@@ -2,9 +2,7 @@ package clashsoft.brewingapi.potion.type;
 
 import java.util.*;
 
-import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.item.ItemPotion2;
-import clashsoft.brewingapi.potion.IIngredientHandler;
 import clashsoft.brewingapi.potion.base.IPotionBase;
 import clashsoft.brewingapi.potion.recipe.IPotionRecipe;
 import clashsoft.brewingapi.potion.recipe.PotionRecipe;
@@ -460,39 +458,7 @@ public class PotionType extends AbstractPotionType
 	 */
 	public static boolean isPotionIngredient(ItemStack stack)
 	{
-		return getFromIngredient(stack) != null || hasIngredientHandler(stack);
-	}
-	
-	/**
-	 * Finds the first registered {@link IIngredientHandler} that can handle the
-	 * ingredient
-	 * 
-	 * @param ingredient
-	 *            the ingredient
-	 * @return the corresponding {@link IIngredientHandler}
-	 */
-	public static IIngredientHandler getIngredientHandler(ItemStack ingredient)
-	{
-		for (IIngredientHandler handler : BrewingAPI.ingredientHandlers)
-		{
-			if (handler.canHandleIngredient(ingredient))
-			{
-				return handler;
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * Checks if the ingredient needs an IngredientHandler to be applied to a
-	 * potion
-	 * 
-	 * @param ingredient
-	 * @return
-	 */
-	public static boolean hasIngredientHandler(ItemStack ingredient)
-	{
-		return getIngredientHandler(ingredient) != null;
+		return getFromIngredient(stack) != null;
 	}
 	
 	/**
@@ -507,12 +473,6 @@ public class PotionType extends AbstractPotionType
 	 */
 	public static ItemStack applyIngredient(ItemStack ingredient, ItemStack potion)
 	{
-		IIngredientHandler handler = getIngredientHandler(ingredient);
-		if (handler != null)
-		{
-			return handler.applyIngredient(ingredient, potion);
-		}
-		
 		List<IPotionRecipe> recipes = PotionRecipes.getAll(ingredient);
 		for (IPotionRecipe recipe : recipes)
 		{
@@ -526,12 +486,6 @@ public class PotionType extends AbstractPotionType
 	
 	public static boolean canApplyIngredient(ItemStack ingredient, ItemStack potion)
 	{
-		IIngredientHandler handler = getIngredientHandler(ingredient);
-		if (handler != null)
-		{
-			return handler.canApplyIngredient(ingredient, potion);
-		}
-		
 		List<IPotionRecipe> recipes = PotionRecipes.getAll(ingredient);
 		for (IPotionRecipe recipe : recipes)
 		{

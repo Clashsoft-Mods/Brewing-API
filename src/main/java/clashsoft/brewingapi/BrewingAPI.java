@@ -13,7 +13,6 @@ import clashsoft.brewingapi.item.ItemGlassBottle2;
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.lib.PotionDispenser;
 import clashsoft.brewingapi.network.BAPINetHandler;
-import clashsoft.brewingapi.potion.IIngredientHandler;
 import clashsoft.brewingapi.potion.IPotionEffectHandler;
 import clashsoft.brewingapi.potion.IPotionList;
 import clashsoft.brewingapi.potion.PotionList;
@@ -191,7 +190,6 @@ public class BrewingAPI extends ClashsoftMod
 	public static boolean						hasLoaded			= false;
 	
 	public static List<IPotionEffectHandler>	effectHandlers		= new LinkedList<IPotionEffectHandler>();
-	public static List<IIngredientHandler>		ingredientHandlers	= new LinkedList<IIngredientHandler>();
 	
 	public static IPotionType addPotionType(IPotionType potionType)
 	{
@@ -201,15 +199,6 @@ public class BrewingAPI extends ClashsoftMod
 	public static void setPotionList(IPotionList potionList)
 	{
 		PotionList.instance = potionList;
-	}
-	
-	public static void registerIngredientHandler(IIngredientHandler handler)
-	{
-		if (ingredientHandlers.contains(handler))
-		{
-			CSLog.info("Ingredient handler \"" + handler + "\" registered");
-			ingredientHandlers.add(handler);
-		}
 	}
 	
 	public static void registerEffectHandler(IPotionEffectHandler handler)
