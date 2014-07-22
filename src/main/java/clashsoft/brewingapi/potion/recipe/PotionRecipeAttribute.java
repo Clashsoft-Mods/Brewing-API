@@ -36,6 +36,12 @@ public class PotionRecipeAttribute implements IPotionRecipe
 	}
 	
 	@Override
+	public boolean canApply(ItemStack potion)
+	{
+		return true;
+	}
+	
+	@Override
 	public ItemStack apply(ItemStack potion)
 	{
 		List<IPotionType> potionTypes = PotionType.getPotionTypes(potion);
