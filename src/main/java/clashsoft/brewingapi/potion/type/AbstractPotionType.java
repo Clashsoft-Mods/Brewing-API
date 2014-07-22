@@ -234,6 +234,12 @@ public abstract class AbstractPotionType implements IPotionType
 	}
 	
 	@Override
+	public boolean hasAttribute(IPotionAttribute attribute)
+	{
+		return false;
+	}
+	
+	@Override
 	public List<IPotionType> getSubTypes()
 	{
 		List<IPotionType> list = new ArrayList();

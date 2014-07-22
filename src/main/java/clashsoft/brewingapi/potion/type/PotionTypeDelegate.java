@@ -15,7 +15,7 @@ public class PotionTypeDelegate extends AbstractPotionType
 {
 	private PotionEffect			effect;
 	private IPotionType				thePotionType;
-	private List<IPotionAttribute>	attributes	= new ArrayList();
+	private List<IPotionAttribute>	attributes;
 	
 	public PotionTypeDelegate()
 	{
@@ -175,6 +175,11 @@ public class PotionTypeDelegate extends AbstractPotionType
 	@Override
 	public void addAttribute(IPotionAttribute attribute)
 	{
+		if (this.attributes == null)
+		{
+			this.attributes = new ArrayList();
+		}
+		
 		IPotionAttribute attribute2 = attribute.copy();
 		
 		if (attribute != attribute2)
@@ -185,6 +190,12 @@ public class PotionTypeDelegate extends AbstractPotionType
 		{
 			this.attributes.add(attribute);
 		}
+	}
+	
+	@Override
+	public boolean hasAttribute(IPotionAttribute attribute)
+	{
+		return this.attributes.contains(attribute);
 	}
 	
 	@Override

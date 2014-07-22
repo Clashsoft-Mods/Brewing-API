@@ -296,12 +296,22 @@ public interface IPotionType extends Comparable<IPotionType>
 	public boolean hasAttributes();
 	
 	/**
-	 * A the given {@link IPotionAttribute} {@code attribute} to this potion
+	 * Adds the given {@link IPotionAttribute} {@code attribute} to this potion
 	 * type's attributes
 	 * 
 	 * @param attribute
 	 */
 	public void addAttribute(IPotionAttribute attribute);
+	
+	/**
+	 * Returns true if this potion type has the given {@link IPotionAttribute}
+	 * {@code attribute}.
+	 * 
+	 * @param attribute
+	 *            the attribute
+	 * @return true, if this potion type has the attribute
+	 */
+	public boolean hasAttribute(IPotionAttribute attribute);
 	
 	/**
 	 * Returns a list of sub-types of this potion type.
