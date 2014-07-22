@@ -56,7 +56,7 @@ public class PotionTypeDelegate extends AbstractPotionType
 	@Override
 	public PotionEffect getEffect()
 	{
-		PotionEffect effect = this.getEffect();
+		PotionEffect effect = this.effect;
 		for (IPotionAttribute attribute : this.getAttributes())
 		{
 			effect = attribute.getModdedEffect(this, effect);
