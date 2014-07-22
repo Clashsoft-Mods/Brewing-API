@@ -1,6 +1,7 @@
 package clashsoft.brewingapi.potion.type;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import clashsoft.brewingapi.potion.attribute.IPotionAttribute;
@@ -55,16 +56,12 @@ public class PotionTypeDelegate extends AbstractPotionType
 	@Override
 	public PotionEffect getEffect()
 	{
-		if (this.hasAttributes())
+		PotionEffect effect = this.getEffect();
+		for (IPotionAttribute attribute : this.getAttributes())
 		{
-			PotionEffect effect = this.getEffect();
-			for (IPotionAttribute attribute : this.getAttributes())
-			{
-				effect = attribute.getModdedEffect(this, effect);
-			}
-			return effect;
+			effect = attribute.getModdedEffect(this, effect);
 		}
-		return this.effect;
+		return effect;
 	}
 	
 	@Override
@@ -163,7 +160,7 @@ public class PotionTypeDelegate extends AbstractPotionType
 	@Override
 	public List<IPotionAttribute> getAttributes()
 	{
-		return this.attributes;
+		return this.attributes == null ? Collections.EMPTY_LIST : this.attributes;
 	}
 	
 	@Override
@@ -243,22 +240,28 @@ public class PotionTypeDelegate extends AbstractPotionType
 		if (nbt.hasKey("Attributes"))
 		{
 			NBTTagList attributes = (NBTTagList) nbt.getTag("Attributes");
-			for (int i = 0; i < attributes.tagCount(); i++)
+			int count = attributes.tagCount();
+			if (count > 0)
 			{
-				NBTTagCompound compound = attributes.getCompoundTagAt(i);
-				String name = compound.getString("Name");
-				IPotionAttribute attribute = IPotionAttribute.attributes.get(name);
-				IPotionAttribute attribute2 = attribute.copy();
+				this.attributes = new ArrayList(count);
 				
-				if (attribute != attribute2)
+				for (int i = 0; i < attributes.tagCount(); i++)
 				{
-					// the attribute is not a singleton
-					attribute2.readFromNBT(nbt);
-					this.attributes.add(attribute2);
-				}
-				else
-				{
-					this.attributes.add(attribute);
+					NBTTagCompound compound = attributes.getCompoundTagAt(i);
+					String name = compound.getString("Name");
+					IPotionAttribute attribute = IPotionAttribute.attributes.get(name);
+					IPotionAttribute attribute2 = attribute.copy();
+					
+					if (attribute != attribute2)
+					{
+						// the attribute is not a singleton
+						attribute2.readFromNBT(nbt);
+						this.attributes.add(attribute2);
+					}
+					else
+					{
+						this.attributes.add(attribute);
+					}
 				}
 			}
 		}
