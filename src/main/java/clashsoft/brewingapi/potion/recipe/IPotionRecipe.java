@@ -11,6 +11,8 @@ public interface IPotionRecipe
 	 */
 	public ItemStack getInput();
 	
+	public boolean canApply(ItemStack potion);
+	
 	/**
 	 * Applies this {@link IPotionRecipe} to the given {@link ItemStack}
 	 * {@code potion}.

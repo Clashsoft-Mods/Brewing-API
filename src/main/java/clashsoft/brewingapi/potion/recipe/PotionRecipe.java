@@ -73,6 +73,12 @@ public class PotionRecipe implements IPotionRecipe
 		return this.output;
 	}
 	
+	@Override
+	public boolean canApply(ItemStack potion)
+	{
+		return false;
+	}
+	
 	/**
 	 * Applies this {@link PotionRecipe} to the given {@link ItemStack}
 	 * {@code potion}.
@@ -92,34 +98,6 @@ public class PotionRecipe implements IPotionRecipe
 	@Override
 	public ItemStack apply(ItemStack potion)
 	{
-		PotionBase requiredBase = this.base;
-		boolean flag = false;
-		
-		List<IPotionType> potionTypes = PotionType.getPotionTypes(potion);
-		
-		if (requiredBase == null)
-		{
-			flag = potionTypes.isEmpty();
-		}
-		else
-		{
-			for (IPotionType pt : potionTypes)
-			{
-				if (pt instanceof PotionBase)
-				{
-					if (requiredBase.equals(pt))
-					{
-						flag = true;
-						pt.remove(potion);
-					}
-				}
-			}
-		}
-		
-		if (flag)
-		{
-			return this.output.apply(potion);
-		}
-		return potion;
+		return this.output.apply(potion);
 	}
 }

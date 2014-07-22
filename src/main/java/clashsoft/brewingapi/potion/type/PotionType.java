@@ -507,7 +507,7 @@ public class PotionType extends AbstractPotionType
 	public static ItemStack applyIngredient(ItemStack ingredient, ItemStack potionStack)
 	{
 		IIngredientHandler handler = getIngredientHandler(ingredient);
-		if (handler != null && handler.canApplyIngredient(ingredient, potionStack))
+		if (handler != null)
 		{
 			return handler.applyIngredient(ingredient, potionStack);
 		}
@@ -523,39 +523,15 @@ public class PotionType extends AbstractPotionType
 	public static boolean canApplyIngredient(ItemStack ingredient, ItemStack potion)
 	{
 		IIngredientHandler handler = getIngredientHandler(ingredient);
-		
 		if (handler != null)
 		{
 			return handler.canApplyIngredient(ingredient, potion);
 		}
-		else
+		
+		IPotionRecipe recipe = PotionRecipes.get(ingredient);
+		if (recipe != null)
 		{
-			IPotionType type = getFromIngredient(ingredient);
-			if (type != null)
-			{
-				List<IPotionType> potionTypes = ((ItemPotion2) potion.getItem()).getPotionTypes(potion);
-				return hasBase(type, potionTypes);
-			}
-		}
-		return false;
-	}
-	
-	public static boolean hasBase(IPotionType type, List<IPotionType> types)
-	{
-		PotionBase requiredBase = type.getBase();
-		if (requiredBase == null)
-		{
-			return true;
-		}
-		else
-		{
-			for (IPotionType pt : types)
-			{
-				if (requiredBase.equals(pt))
-				{
-					return true;
-				}
-			}
+			return recipe.canApply(potion);
 		}
 		return false;
 	}

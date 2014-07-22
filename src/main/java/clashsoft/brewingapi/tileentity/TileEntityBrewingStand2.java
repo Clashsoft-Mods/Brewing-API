@@ -1,10 +1,10 @@
 package clashsoft.brewingapi.tileentity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import clashsoft.brewingapi.item.ItemPotion2;
-import clashsoft.brewingapi.potion.IIngredientHandler;
+import clashsoft.brewingapi.potion.recipe.IPotionRecipe;
+import clashsoft.brewingapi.potion.recipe.PotionRecipes;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionType;
 
@@ -144,73 +144,11 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 		
 		for (int i = 0; i < 3; ++i)
 		{
-			ItemStack stack = this.brewingItemStacks[i];
-			if (stack != null)
+			ItemStack potion = this.brewingItemStacks[i];
+			if (potion != null)
 			{
-				ItemPotion2 potionItem = (ItemPotion2) stack.getItem();
-				int damage = stack.getItemDamage();
-				boolean water = potionItem.isWater(stack);
-				List<IPotionType> types = potionItem.getPotionTypes(stack);
-				List<IPotionType> newTypes = new ArrayList(types.size());
-				
-				if (item == Items.gunpowder)
-				{
-					damage = potionItem.setSplash(stack, true);
-				}
-				
-				if (item == Items.glowstone_dust && !water)
-				{
-					for (IPotionType type : types)
-					{
-						newTypes.add(type.onImproved());
-					}
-				}
-				else if (item == Items.redstone && !water)
-				{
-					for (IPotionType type : types)
-					{
-						newTypes.add(type.onExtended());
-					}
-				}
-				else if (item == Items.fermented_spider_eye && !water)
-				{
-					for (IPotionType type : types)
-					{
-						newTypes.add(type.onInverted());
-					}
-				}
-				else if (item == Items.gunpowder && !water)
-				{
-					for (IPotionType type : types)
-					{
-						newTypes.add(type.onGunpowderUsed());
-					}
-				}
-				else
-				{
-					IIngredientHandler handler = PotionType.getIngredientHandler(ingredient);
-					if (handler != null && handler.canApplyIngredient(ingredient, stack))
-					{
-						this.brewingItemStacks[i] = handler.applyIngredient(ingredient, stack);
-						continue;
-					}
-					
-					IPotionType potionType = PotionType.getFromIngredient(ingredient);
-					if (potionType != null && PotionType.hasBase(potionType, types))
-					{
-						newTypes.add(potionType);
-					}
-				}
-				
-				stack.setItemDamage(damage | 1);
-				stack.stackTagCompound = new NBTTagCompound();
-				
-				for (IPotionType potionType : newTypes)
-				{
-					potionType.apply(stack);
-				}
-				
-				this.brewingItemStacks[i] = stack;
+				IPotionRecipe recipe = PotionRecipes.get(ingredient);
+				this.brewingItemStacks[i] = recipe.apply(potion);
 			}
 		}
 		
