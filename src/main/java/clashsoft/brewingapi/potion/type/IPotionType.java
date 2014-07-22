@@ -8,6 +8,7 @@ import java.util.List;
 
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.potion.attribute.IPotionAttribute;
+import clashsoft.brewingapi.potion.base.IPotionBase;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -189,7 +190,7 @@ public interface IPotionType extends Comparable<IPotionType>
 	 * 
 	 * @return the base potion type
 	 */
-	public PotionBase getBase();
+	public IPotionBase getBase();
 	
 	/**
 	 * Returns the inverted effect potion type. This is used when a fermented

@@ -1,11 +1,9 @@
 package clashsoft.brewingapi.potion.type;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import clashsoft.brewingapi.BrewingAPI;
+import clashsoft.brewingapi.potion.base.IPotionBase;
 import clashsoft.brewingapi.potion.recipe.PotionRecipes;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -16,12 +14,9 @@ import net.minecraft.potion.PotionEffect;
 /**
  * @author Clashsoft
  */
-public class PotionBase extends AbstractPotionType
+public class PotionBase extends AbstractPotionType implements IPotionBase
 {
-	public static final List<PotionBase>		baseList	= new ArrayList();
-	public static final Map<String, PotionBase>	baseMap		= new HashMap();
-	
-	private String								name;
+	private String	name;
 	
 	public PotionBase()
 	{
@@ -62,6 +57,7 @@ public class PotionBase extends AbstractPotionType
 		return 0x0C0CFF;
 	}
 	
+	@Override
 	public String getName()
 	{
 		return this.name;
@@ -77,11 +73,7 @@ public class PotionBase extends AbstractPotionType
 	public PotionBase register()
 	{
 		potionTypeList.add(this);
-		baseList.add(this);
-		if (this.name != null)
-		{
-			baseMap.put(this.name, this);
-		}
+		baseMap.put(this.name, this);
 		
 		return this;
 	}
@@ -145,10 +137,10 @@ public class PotionBase extends AbstractPotionType
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		return this.matches((PotionBase) obj);
+		return this.equals((PotionBase) obj);
 	}
 	
-	public final boolean matches(PotionBase other)
+	public boolean equals(PotionBase other)
 	{
 		if (this.name == null)
 		{
@@ -158,6 +150,20 @@ public class PotionBase extends AbstractPotionType
 		else if (!this.name.equals(other.name) || (BrewingAPI.defaultAwkwardBrewing && "awkward".equals(other.name)))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public boolean matches(ItemStack potion)
+	{
+		List<IPotionType> types = PotionType.getPotionTypes(potion);
+		for (IPotionType type : types)
+		{
+			if (type == this)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	@Override

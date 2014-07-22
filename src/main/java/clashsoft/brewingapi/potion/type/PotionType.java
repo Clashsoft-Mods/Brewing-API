@@ -5,6 +5,7 @@ import java.util.*;
 import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.potion.IIngredientHandler;
+import clashsoft.brewingapi.potion.base.IPotionBase;
 import clashsoft.brewingapi.potion.recipe.IPotionRecipe;
 import clashsoft.brewingapi.potion.recipe.PotionRecipe;
 import clashsoft.brewingapi.potion.recipe.PotionRecipes;
@@ -100,7 +101,7 @@ public class PotionType extends AbstractPotionType
 	 * @param ingredient
 	 *            the ingredient
 	 */
-	public PotionType(PotionEffect effect, int maxAmplifier, int maxDuration, IPotionType inverted, ItemStack ingredient, PotionBase base)
+	public PotionType(PotionEffect effect, int maxAmplifier, int maxDuration, IPotionType inverted, ItemStack ingredient, IPotionBase base)
 	{
 		this.effect = effect;
 		this.maxAmplifier = maxAmplifier;

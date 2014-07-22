@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import clashsoft.brewingapi.potion.PotionList;
+import clashsoft.brewingapi.potion.base.IPotionBase;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionBase;
 import clashsoft.brewingapi.potion.type.PotionType;
@@ -112,7 +113,7 @@ public class PotionRecipes
 	 * @param potionType
 	 *            the output potion type
 	 */
-	public static void addRecipe(ItemStack ingredient, PotionBase base, IPotionType potionType)
+	public static void addRecipe(ItemStack ingredient, IPotionBase base, IPotionType potionType)
 	{
 		if (ingredient != null)
 		{
@@ -149,7 +150,7 @@ public class PotionRecipes
 	 * @param effect
 	 *            the output effect
 	 */
-	public static void addRecipe(ItemStack ingredient, PotionBase base, PotionEffect effect)
+	public static void addRecipe(ItemStack ingredient, IPotionBase base, PotionEffect effect)
 	{
 		if (ingredient != null)
 		{

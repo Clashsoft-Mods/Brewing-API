@@ -1,24 +1,22 @@
 package clashsoft.brewingapi.potion.recipe;
 
-import java.util.List;
-
 import clashsoft.brewingapi.potion.PotionList;
+import clashsoft.brewingapi.potion.base.IPotionBase;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionBase;
-import clashsoft.brewingapi.potion.type.PotionType;
 
 import net.minecraft.item.ItemStack;
 
 public class PotionRecipe implements IPotionRecipe
 {
 	private IPotionType	output;
-	private PotionBase	base;
+	private IPotionBase	base;
 	private ItemStack	input;
 	
 	/**
 	 * Constructs a new {@link PotionRecipe} from the given {@link ItemStack}
-	 * {@code input} and the given {@link IPotionType} {@code output}. The required
-	 * base potion is set to awkward.
+	 * {@code input} and the given {@link IPotionType} {@code output}. The
+	 * required base potion is set to awkward.
 	 * 
 	 * @param input
 	 *            the input stack
@@ -40,7 +38,7 @@ public class PotionRecipe implements IPotionRecipe
 	 * @param output
 	 *            the output potion type
 	 */
-	public PotionRecipe(ItemStack input, PotionBase base, IPotionType output)
+	public PotionRecipe(ItemStack input, IPotionBase base, IPotionType output)
 	{
 		this.input = input;
 		this.base = base;
@@ -58,7 +56,7 @@ public class PotionRecipe implements IPotionRecipe
 	 * 
 	 * @return the base potion
 	 */
-	public PotionBase getBase()
+	public IPotionBase getBase()
 	{
 		return this.base;
 	}
@@ -76,25 +74,14 @@ public class PotionRecipe implements IPotionRecipe
 	@Override
 	public boolean canApply(ItemStack potion)
 	{
-		return false;
+		IPotionBase base = this.getBase();
+		if (base == null)
+		{
+			return true;
+		}
+		return this.getBase().matches(potion);
 	}
 	
-	/**
-	 * Applies this {@link PotionRecipe} to the given {@link ItemStack}
-	 * {@code potion}.
-	 * <p>
-	 * If the output potion type of this has a required {@link PotionBase}, it
-	 * searches the existent {@link IPotionType PotionTypes} of the potion stack
-	 * for that base. If it fails to find the required base, the output potion
-	 * type is not applied to the potion stack, returning the unmodified potion
-	 * stack.<br>
-	 * If it doesn't have a required base, the output potion type gets applied
-	 * if the potion stack has no other potion types applied to it.
-	 * 
-	 * @param potion
-	 *            the potion stack
-	 * @return the potion stack
-	 */
 	@Override
 	public ItemStack apply(ItemStack potion)
 	{

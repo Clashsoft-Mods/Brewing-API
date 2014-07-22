@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import clashsoft.brewingapi.potion.attribute.IPotionAttribute;
+import clashsoft.brewingapi.potion.base.IPotionBase;
 import clashsoft.brewingapi.potion.recipe.PotionRecipe;
 import clashsoft.brewingapi.potion.recipe.PotionRecipes;
 import clashsoft.cslib.logging.CSLog;
@@ -146,7 +147,7 @@ public abstract class AbstractPotionType implements IPotionType
 	}
 	
 	@Override
-	public PotionBase getBase()
+	public IPotionBase getBase()
 	{
 		PotionRecipe recipe = PotionRecipes.get(this);
 		return recipe == null ? null : recipe.getBase();

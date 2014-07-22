@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import clashsoft.brewingapi.potion.attribute.IPotionAttribute;
+import clashsoft.brewingapi.potion.base.IPotionBase;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -91,7 +92,7 @@ public class PotionTypeDelegate extends AbstractPotionType
 	}
 	
 	@Override
-	public PotionBase getBase()
+	public IPotionBase getBase()
 	{
 		return this.thePotionType.getBase();
 	}

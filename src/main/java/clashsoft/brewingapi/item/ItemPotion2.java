@@ -674,7 +674,7 @@ public class ItemPotion2 extends ItemPotion
 		{
 			list.add(new ItemStack(this, 1, 0));
 			
-			for (PotionBase pt : PotionBase.baseList)
+			for (PotionBase pt : PotionBase.baseMap.values())
 			{
 				list.add(pt.apply(new ItemStack(this, 1, 1)));
 				list.add(pt.apply(new ItemStack(this, 1, 2)));
