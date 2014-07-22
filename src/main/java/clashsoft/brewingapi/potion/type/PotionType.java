@@ -521,17 +521,13 @@ public class PotionType extends AbstractPotionType
 	
 	public static IPotionType getFromNBT(NBTTagCompound nbt)
 	{
-		if (nbt != null && !nbt.hasNoTags())
+		if (nbt != null)
 		{
-			IPotionType result;
 			if (nbt.hasKey("BaseName"))
 			{
-				result = new PotionBase();
+				return PotionBase.baseMap.get(nbt.getString("BaseName"));
 			}
-			else
-			{
-				result = new PotionTypeDelegate();
-			}
+			IPotionType result = new PotionTypeDelegate();
 			result.readFromNBT(nbt);
 			return result;
 		}

@@ -67,7 +67,7 @@ public class ItemPotion2 extends ItemPotion
 			return Collections.EMPTY_LIST;
 		}
 		
-		List<PotionEffect> effects = new LinkedList();
+		List<PotionEffect> effects = new ArrayList();
 		List<IPotionType> types = this.getPotionTypes(stack);
 		
 		for (IPotionType type : types)
@@ -85,7 +85,7 @@ public class ItemPotion2 extends ItemPotion
 	public List<IPotionType> getLegacyEffects(ItemStack stack)
 	{
 		List<PotionEffect> effects = super.getEffects(stack);
-		List<IPotionType> types = new LinkedList();
+		List<IPotionType> types = new ArrayList();
 		for (PotionEffect effect : effects)
 		{
 			types.add(PotionType.getFromEffect(effect));
