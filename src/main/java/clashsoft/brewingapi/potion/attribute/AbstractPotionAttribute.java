@@ -21,6 +21,12 @@ public abstract class AbstractPotionAttribute implements IPotionAttribute
 	}
 	
 	@Override
+	public String getName()
+	{
+		return this.name;
+	}
+	
+	@Override
 	public String getDisplayName(IPotionType type)
 	{
 		return StatCollector.translateToLocal("potion.attribute." + this.getName() + ".name");
