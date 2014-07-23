@@ -14,11 +14,26 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.PotionEffect;
 
+/**
+ * A {@link ArrayList} of {@link IPotionType} that automatically syncs changes
+ * made to it with the corresponding {@link NBTTagList} containing the potion
+ * types of an {@link ItemStack} stack compound.
+ * 
+ * @author Clashsoft
+ */
 public class PotionTypeList extends ArrayList<IPotionType>
 {
 	protected ItemStack		stack;
 	protected NBTTagList	tagList;
 	
+	/**
+	 * Creates a new {@link PotionTypeList} that is synced with the given
+	 * {@link ItemStack} {@code stack}.
+	 * 
+	 * @param stack
+	 *            the stack
+	 * @return a PotionTypeList instance
+	 */
 	public static PotionTypeList create(ItemStack stack)
 	{
 		boolean flag = false;

@@ -6,7 +6,6 @@ import java.util.List;
 import clashsoft.brewingapi.potion.PotionList;
 import clashsoft.brewingapi.potion.base.IPotionBase;
 import clashsoft.brewingapi.potion.type.IPotionType;
-import clashsoft.brewingapi.potion.type.PotionBase;
 import clashsoft.brewingapi.potion.type.PotionType;
 import clashsoft.cslib.minecraft.stack.CSStacks;
 
@@ -17,11 +16,11 @@ public class PotionRecipes
 {
 	public static final List<IPotionRecipe>	recipes	= new ArrayList();
 	
-	public static IPotionRecipe amplify = new PotionRecipeAmplify().register();
-	public static IPotionRecipe extend = new PotionRecipeExtend().register();
-	public static IPotionRecipe dilute = new PotionRecipeDilute().register();
-	public static IPotionRecipe splash = new PotionRecipeSplash().register();
-	public static IPotionRecipe invert = new PotionRecipeInvert().register();
+	public static IPotionRecipe				amplify	= new PotionRecipeAmplify().register();
+	public static IPotionRecipe				extend	= new PotionRecipeExtend().register();
+	public static IPotionRecipe				dilute	= new PotionRecipeDilute().register();
+	public static IPotionRecipe				splash	= new PotionRecipeSplash().register();
+	public static IPotionRecipe				invert	= new PotionRecipeInvert().register();
 	
 	/**
 	 * Gets a {@link PotionRecipe} from the given {@link ItemStack}
@@ -133,7 +132,7 @@ public class PotionRecipes
 	
 	/**
 	 * Creates and registers a new {@link PotionRecipe} from the given
-	 * {@link ItemStack} {@code input}, the given {@link PotionBase}
+	 * {@link ItemStack} {@code input}, the given {@link IPotionBase}
 	 * {@code base} and the given {@link IPotionType} {@code potionType}.
 	 * 
 	 * @param input
@@ -169,7 +168,7 @@ public class PotionRecipes
 	
 	/**
 	 * Creates and registers a new {@link PotionRecipe} from the given
-	 * {@link ItemStack} {@code input}, the given {@link PotionBase}
+	 * {@link ItemStack} {@code input}, the given {@link IPotionBase}
 	 * {@code base} and the given {@link PotionEffect} {@code effect}. This
 	 * automatically finds a {@link PotionType} for the effect.
 	 * 

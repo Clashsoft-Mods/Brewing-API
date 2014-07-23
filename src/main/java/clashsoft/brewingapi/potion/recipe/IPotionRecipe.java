@@ -4,6 +4,14 @@ import net.minecraft.item.ItemStack;
 
 public interface IPotionRecipe
 {
+	/**
+	 * Registers this {@link IPotionRecipe}. It is recommended to register it by
+	 * adding it to {@link PotionRecipes#recipes}. See
+	 * {@link AbstractPotionRecipe#register()} for a template.
+	 * 
+	 * @see AbstractPotionRecipe#register()
+	 * @return this potion recipe
+	 */
 	public IPotionRecipe register();
 	
 	/**
@@ -13,6 +21,14 @@ public interface IPotionRecipe
 	 */
 	public ItemStack getInput();
 	
+	/**
+	 * Returns true if this {@link IPotionRecipe} is appliable to the given
+	 * {@link ItemStack} {@code potion}.
+	 * 
+	 * @param potion
+	 *            the potion stack
+	 * @return true, if this potion recipe is appliable
+	 */
 	public boolean canApply(ItemStack potion);
 	
 	/**

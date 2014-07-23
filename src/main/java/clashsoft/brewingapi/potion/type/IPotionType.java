@@ -327,7 +327,7 @@ public interface IPotionType extends Comparable<IPotionType>
 	
 	/**
 	 * Applies this potion type to the {@link ItemStack}. The item of the stack
-	 * should be a {@link ItemPotion2}
+	 * should be an instance of {@link ItemPotion2}.
 	 * 
 	 * @param stack
 	 *            the stack
@@ -337,7 +337,7 @@ public interface IPotionType extends Comparable<IPotionType>
 	
 	/**
 	 * Removes this potion type from the {@link ItemStack}. The item of the
-	 * stack should be a {@link ItemPotion2}
+	 * stack should be an instance of {@link ItemPotion2}.
 	 * 
 	 * @param stack
 	 *            the stack
