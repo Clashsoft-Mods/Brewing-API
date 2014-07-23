@@ -10,6 +10,7 @@ import clashsoft.brewingapi.lib.AttributeModifierComparator;
 import clashsoft.brewingapi.potion.PotionTypeList;
 import clashsoft.brewingapi.potion.PotionUtils;
 import clashsoft.brewingapi.potion.attribute.IPotionAttribute;
+import clashsoft.brewingapi.potion.base.IPotionBase;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionBase;
 import clashsoft.cslib.minecraft.lang.I18n;
@@ -682,10 +683,10 @@ public class ItemPotion2 extends ItemPotion
 		{
 			list.add(new ItemStack(this, 1, 0));
 			
-			for (PotionBase pt : PotionBase.potionBases)
+			for (IPotionBase base : PotionBase.bases.values())
 			{
-				list.add(pt.apply(new ItemStack(this, 1, 1)));
-				list.add(pt.apply(new ItemStack(this, 1, 2)));
+				list.add(base.apply(new ItemStack(this, 1, 1)));
+				list.add(base.apply(new ItemStack(this, 1, 2)));
 			}
 			
 			for (IPotionType type : IPotionType.effectTypes)
