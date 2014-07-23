@@ -4,6 +4,7 @@ import java.util.*;
 
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.potion.base.IPotionBase;
+import clashsoft.brewingapi.potion.base.PotionBase;
 import clashsoft.brewingapi.potion.recipe.IPotionRecipe;
 import clashsoft.brewingapi.potion.recipe.PotionRecipe;
 import clashsoft.brewingapi.potion.recipe.PotionRecipes;

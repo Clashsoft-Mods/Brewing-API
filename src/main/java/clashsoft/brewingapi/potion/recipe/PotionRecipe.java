@@ -2,8 +2,8 @@ package clashsoft.brewingapi.potion.recipe;
 
 import clashsoft.brewingapi.potion.PotionList;
 import clashsoft.brewingapi.potion.base.IPotionBase;
+import clashsoft.brewingapi.potion.base.PotionBase;
 import clashsoft.brewingapi.potion.type.IPotionType;
-import clashsoft.brewingapi.potion.type.PotionBase;
 
 import net.minecraft.item.ItemStack;
 

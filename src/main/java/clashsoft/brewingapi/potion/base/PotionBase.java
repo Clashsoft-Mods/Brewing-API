@@ -1,10 +1,12 @@
-package clashsoft.brewingapi.potion.type;
+package clashsoft.brewingapi.potion.base;
 
 import java.util.List;
 
 import clashsoft.brewingapi.BrewingAPI;
-import clashsoft.brewingapi.potion.base.IPotionBase;
 import clashsoft.brewingapi.potion.recipe.PotionRecipes;
+import clashsoft.brewingapi.potion.type.AbstractPotionType;
+import clashsoft.brewingapi.potion.type.IPotionType;
+import clashsoft.brewingapi.potion.type.PotionType;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
