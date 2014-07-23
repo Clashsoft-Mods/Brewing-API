@@ -67,8 +67,8 @@ public class ItemPotion2 extends ItemPotion
 			return Collections.EMPTY_LIST;
 		}
 		
-		List<PotionEffect> effects = new ArrayList();
 		List<IPotionType> types = this.getPotionTypes(stack);
+		List<PotionEffect> effects = new ArrayList(types.size());
 		
 		for (IPotionType type : types)
 		{
@@ -219,6 +219,12 @@ public class ItemPotion2 extends ItemPotion
 				size++;
 			}
 		}
+		
+		if (size == 0)
+		{
+			return 0x0C0CFF;
+		}
+		
 		r /= size;
 		g /= size;
 		b /= size;
