@@ -304,8 +304,6 @@ public abstract class AbstractPotionType implements IPotionType
 					}
 				}
 			}
-			
-			stack.stackTagCompound.setTag(COMPOUND_NAME, list);
 		}
 		return stack;
 	}

@@ -424,35 +424,6 @@ public class PotionType extends AbstractPotionType
 		return ((ItemPotion2) potion.getItem()).getPotionTypes(potion);
 	}
 	
-	public static List<IPotionType> getPotionTypes_(ItemStack stack)
-	{
-		if (stack != null && stack.hasTagCompound())
-		{
-			NBTTagList list = (NBTTagList) stack.stackTagCompound.getTag(COMPOUND_NAME);
-			
-			if (list != null)
-			{
-				int len = list.tagCount();
-				if (len > 0)
-				{
-					List<IPotionType> types = new ArrayList(len);
-					for (int i = 0; i < len; i++)
-					{
-						NBTTagCompound nbt1 = list.getCompoundTagAt(i);
-						IPotionType potionType = getFromNBT(nbt1);
-						if (potionType == null)
-						{
-							continue;
-						}
-						types.add(potionType);
-					}
-					return types;
-				}
-			}
-		}
-		return Collections.EMPTY_LIST;
-	}
-	
 	/**
 	 * Checks if the stack has any effect on a potion
 	 * 

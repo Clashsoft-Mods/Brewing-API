@@ -7,11 +7,11 @@ import org.lwjgl.input.Keyboard;
 import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.entity.EntityPotion2;
 import clashsoft.brewingapi.lib.AttributeModifierComparator;
+import clashsoft.brewingapi.potion.PotionTypeList;
 import clashsoft.brewingapi.potion.PotionUtils;
 import clashsoft.brewingapi.potion.attribute.IPotionAttribute;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionBase;
-import clashsoft.brewingapi.potion.type.PotionType;
 import clashsoft.cslib.minecraft.lang.I18n;
 import clashsoft.cslib.minecraft.potion.CustomPotion;
 import clashsoft.cslib.util.CSString;
@@ -82,20 +82,9 @@ public class ItemPotion2 extends ItemPotion
 		return effects;
 	}
 	
-	public List<IPotionType> getLegacyEffects(ItemStack stack)
+	public List<PotionEffect> getSuperEffects(ItemStack stack)
 	{
-		List<PotionEffect> effects = super.getEffects(stack);
-		List<IPotionType> types = new ArrayList();
-		for (PotionEffect effect : effects)
-		{
-			IPotionType potionType = PotionType.getFromEffect(effect);
-			if (potionType == null)
-			{
-				continue;
-			}
-			types.add(potionType);
-		}
-		return types;
+		return super.getEffects(stack);
 	}
 	
 	/**
@@ -103,21 +92,7 @@ public class ItemPotion2 extends ItemPotion
 	 */
 	public List<IPotionType> getPotionTypes(ItemStack stack)
 	{
-		if (stack == null || this.isWater(stack))
-		{
-			return Collections.EMPTY_LIST;
-		}
-		
-		NBTTagCompound compound = stack.getTagCompound();
-		if (compound != null)
-		{
-			List<IPotionType> result = PotionType.getPotionTypes_(stack);
-			return result;
-		}
-		else
-		{
-			return this.getLegacyEffects(stack);
-		}
+		return PotionTypeList.create(stack);
 	}
 	
 	public boolean hasEffects(ItemStack stack)
