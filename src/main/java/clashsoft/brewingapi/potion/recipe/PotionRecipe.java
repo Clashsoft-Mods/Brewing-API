@@ -78,6 +78,10 @@ public class PotionRecipe extends AbstractPotionRecipe
 	@Override
 	public ItemStack apply(ItemStack potion)
 	{
+		if (potion.getItemDamage() == 0)
+		{
+			potion.setItemDamage(1);
+		}
 		return this.output.apply(potion);
 	}
 }
