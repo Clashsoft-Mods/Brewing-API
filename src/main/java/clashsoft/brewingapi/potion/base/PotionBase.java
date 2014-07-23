@@ -94,11 +94,6 @@ public class PotionBase extends AbstractPotionType implements IPotionBase
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
-		IPotionBase base = bases.get(nbt.getString("BaseName"));
-		if (base != null)
-		{
-			this.name = base.getName();
-		}
 	}
 	
 	@Override
