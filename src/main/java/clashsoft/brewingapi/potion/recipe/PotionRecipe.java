@@ -67,12 +67,12 @@ public class PotionRecipe extends AbstractPotionRecipe
 	@Override
 	public boolean canApply(ItemStack potion)
 	{
-		IPotionBase base = this.getBase();
+		IPotionBase base = this.base;
 		if (base == null)
 		{
 			return true;
 		}
-		return this.getBase().matches(potion);
+		return base.matches(this.output, potion);
 	}
 	
 	@Override

@@ -2,6 +2,7 @@ package clashsoft.brewingapi.potion.base;
 
 import clashsoft.brewingapi.BrewingAPI;
 import clashsoft.brewingapi.item.ItemPotion2;
+import clashsoft.brewingapi.potion.type.IPotionType;
 
 import net.minecraft.item.ItemStack;
 
@@ -33,7 +34,13 @@ public class PotionBaseWater implements IPotionBase
 	}
 	
 	@Override
-	public boolean matches(ItemStack potion)
+	public boolean accepts(IPotionType potion)
+	{
+		return potion instanceof IPotionBase;
+	}
+	
+	@Override
+	public boolean matches(IPotionType type, ItemStack potion)
 	{
 		return ((ItemPotion2) potion.getItem()).isWater(potion);
 	}

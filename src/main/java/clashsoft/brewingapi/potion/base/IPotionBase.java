@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import clashsoft.brewingapi.item.ItemPotion2;
+import clashsoft.brewingapi.potion.type.IPotionType;
 
 import net.minecraft.item.ItemStack;
 
@@ -45,6 +46,8 @@ public interface IPotionBase
 	 * @return the potion
 	 */
 	public ItemStack apply(ItemStack potion);
+
+	public boolean accepts(IPotionType potion);
 	
 	/**
 	 * Returns true if this potion base matches the given {@link ItemStack}
@@ -55,5 +58,5 @@ public interface IPotionBase
 	 *            the potion stack
 	 * @return true, if this potion base matches the potion.
 	 */
-	public boolean matches(ItemStack potion);
+	public boolean matches(IPotionType type, ItemStack potion);
 }

@@ -155,12 +155,22 @@ public class PotionBase extends AbstractPotionType implements IPotionBase
 	}
 	
 	@Override
-	public boolean matches(ItemStack potion)
+	public boolean accepts(IPotionType potion)
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean matches(IPotionType type, ItemStack potion)
 	{
 		List<IPotionType> types = PotionType.getPotionTypes(potion);
-		for (IPotionType type : types)
+		for (IPotionType type1 : types)
 		{
-			if (type == this)
+			if (type1 == this)
+			{
+				return true;
+			}
+			else if (type1 instanceof IPotionBase && ((IPotionBase) type1).accepts(type))
 			{
 				return true;
 			}
