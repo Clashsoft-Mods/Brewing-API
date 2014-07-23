@@ -46,7 +46,17 @@ public interface IPotionBase
 	 * @return the potion
 	 */
 	public ItemStack apply(ItemStack potion);
-
+	
+	/**
+	 * Returns true if this {@link IPotionBase} accepts the given
+	 * {@link IPotionType} {@code potion}. It is usually possible to apply a
+	 * potion type if the required base was found <i>OR</i> any of the existent
+	 * bases accept the potion type.
+	 * 
+	 * @param potion
+	 *            the potion type
+	 * @return true, if this accepts the potion
+	 */
 	public boolean accepts(IPotionType potion);
 	
 	/**
@@ -54,6 +64,8 @@ public interface IPotionBase
 	 * {@code potion}. The usual implementation returns true if this potion base
 	 * can be found in the potion.
 	 * 
+	 * @param type
+	 *            the potion type that is to be applied
 	 * @param potion
 	 *            the potion stack
 	 * @return true, if this potion base matches the potion.
