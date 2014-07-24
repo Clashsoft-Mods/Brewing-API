@@ -92,6 +92,17 @@ public interface IPotionType extends Comparable<IPotionType>
 	 */
 	public String getEffectName();
 	
+	/**
+	 * Returns the display name of this {@link IPotionType}'s effect. The
+	 * display name usually contains the effect name, the amplifier and the
+	 * duration. The default implementation returns
+	 * <p>
+	 * <code>
+	 * EffectName [RomanAmplifier] ([Minutes]:[Seconds])
+	 * </code>
+	 * 
+	 * @return the display name
+	 */
 	public StringBuilder getDisplayName();
 	
 	/**
