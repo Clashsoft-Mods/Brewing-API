@@ -44,48 +44,14 @@ public class PotionTypeList extends ArrayList<IPotionType>
 	 */
 	public static PotionTypeList create(ItemStack stack, boolean oldEffects)
 	{
-		boolean flag1 = false;
-		if (stack.stackTagCompound == null)
-		{
-			flag1 = true;
-			stack.stackTagCompound = new NBTTagCompound();
-		}
-		
-		NBTTagList tagList = (NBTTagList) stack.stackTagCompound.getTag(IPotionType.COMPOUND_NAME);
-		if (tagList == null)
-		{
-			tagList = new NBTTagList();
-			stack.stackTagCompound.setTag(IPotionType.COMPOUND_NAME, tagList);
-		}
-		
-		PotionTypeList list = new PotionTypeList(stack, tagList);
-		
-		if (flag1 && oldEffects)
-		{
-			List<PotionEffect> effects = ((ItemPotion2) stack.getItem()).getSuperEffects(stack);
-			
-			if (effects != null && !effects.isEmpty())
-			{
-				for (PotionEffect effect : effects)
-				{
-					IPotionType potionType = PotionType.getFromEffect(effect);
-					if (potionType != null)
-					{
-						list.add(potionType);
-					}
-				}
-			}
-		}
-		
+		PotionTypeList list = new PotionTypeList();
+		list.load(stack, oldEffects);
 		return list;
 	}
 	
-	private PotionTypeList(ItemStack stack, NBTTagList tagList)
+	private PotionTypeList()
 	{
-		super(tagList.tagCount());
-		this.addAll(tagList);
-		this.tagList = tagList;
-		this.stack = stack;
+		super();
 	}
 	
 	public ItemStack getPotion()
@@ -106,6 +72,53 @@ public class PotionTypeList extends ArrayList<IPotionType>
 	public void setSplash(boolean flag)
 	{
 		((ItemPotion2) this.stack.getItem()).setSplash(this.stack, flag);
+	}
+	
+	/**
+	 * Loads this {@link PotionTypeList} from the given {@link ItemStack}
+	 * {@code stack} the syncs the list with it. If {@code oldEffects} is true
+	 * and the stack NBT was {@code null}, this method searches for effects that
+	 * were stored in the stack's damage value.
+	 * 
+	 * @param stack
+	 *            the stack
+	 * @param oldEffects
+	 */
+	public void load(ItemStack stack, boolean oldEffects)
+	{
+		boolean flag1 = false;
+		if (stack.stackTagCompound == null)
+		{
+			flag1 = true;
+			stack.stackTagCompound = new NBTTagCompound();
+		}
+		
+		NBTTagList tagList = (NBTTagList) stack.stackTagCompound.getTag(IPotionType.COMPOUND_NAME);
+		if (tagList == null)
+		{
+			tagList = new NBTTagList();
+			stack.stackTagCompound.setTag(IPotionType.COMPOUND_NAME, tagList);
+		}
+		
+		this.stack = stack;
+		this.tagList = tagList;
+		
+		if (flag1 && oldEffects)
+		{
+			List<PotionEffect> effects = ((ItemPotion2) stack.getItem()).getSuperEffects(stack);
+			
+			if (effects != null && !effects.isEmpty())
+			{
+				for (PotionEffect effect : effects)
+				{
+					IPotionType potionType = PotionType.getFromEffect(effect);
+					if (potionType != null)
+					{
+						this.add(potionType);
+					}
+				}
+			}
+		}
 	}
 	
 	public void addAll(NBTTagList tagList)
