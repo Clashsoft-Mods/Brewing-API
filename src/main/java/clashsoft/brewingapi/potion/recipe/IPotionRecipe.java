@@ -1,5 +1,7 @@
 package clashsoft.brewingapi.potion.recipe;
 
+import clashsoft.brewingapi.potion.PotionTypeList;
+
 import net.minecraft.item.ItemStack;
 
 public interface IPotionRecipe
@@ -29,7 +31,7 @@ public interface IPotionRecipe
 	 *            the potion stack
 	 * @return true, if this potion recipe is appliable
 	 */
-	public boolean canApply(ItemStack potion);
+	public boolean canApply(PotionTypeList potionTypes);
 	
 	/**
 	 * Applies this {@link IPotionRecipe} to the given {@link ItemStack}
@@ -37,7 +39,6 @@ public interface IPotionRecipe
 	 * 
 	 * @param potion
 	 *            the potion stack
-	 * @return the potion stack
 	 */
-	public ItemStack apply(ItemStack potion);
+	public void apply(PotionTypeList potionTypes);
 }

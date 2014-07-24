@@ -3,6 +3,7 @@ package clashsoft.brewingapi.potion.type;
 import java.util.*;
 
 import clashsoft.brewingapi.item.ItemPotion2;
+import clashsoft.brewingapi.potion.PotionTypeList;
 import clashsoft.brewingapi.potion.base.IPotionBase;
 import clashsoft.brewingapi.potion.base.PotionBase;
 import clashsoft.brewingapi.potion.recipe.IPotionRecipe;
@@ -449,23 +450,25 @@ public class PotionType extends AbstractPotionType
 	 */
 	public static ItemStack applyIngredient(ItemStack ingredient, ItemStack potion)
 	{
+		PotionTypeList potionTypes = PotionTypeList.create(potion);
 		List<IPotionRecipe> recipes = PotionRecipes.getAll(ingredient);
 		for (IPotionRecipe recipe : recipes)
 		{
-			if (recipe.canApply(potion))
+			if (recipe.canApply(potionTypes))
 			{
-				potion = recipe.apply(potion);
+				recipe.apply(potionTypes);
 			}
 		}
-		return potion;
+		return potionTypes.getPotion();
 	}
 	
 	public static boolean canApplyIngredient(ItemStack ingredient, ItemStack potion)
 	{
+		PotionTypeList potionTypes = PotionTypeList.create(potion);
 		List<IPotionRecipe> recipes = PotionRecipes.getAll(ingredient);
 		for (IPotionRecipe recipe : recipes)
 		{
-			if (recipe.canApply(potion))
+			if (recipe.canApply(potionTypes))
 			{
 				return true;
 			}

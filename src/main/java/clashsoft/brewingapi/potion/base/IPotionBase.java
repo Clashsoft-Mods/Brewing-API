@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import clashsoft.brewingapi.item.ItemPotion2;
+import clashsoft.brewingapi.potion.PotionTypeList;
 import clashsoft.brewingapi.potion.type.IPotionType;
 
 import net.minecraft.item.ItemStack;
@@ -37,15 +38,16 @@ public interface IPotionBase
 	 */
 	public int getLiquidColor();
 	
+	public ItemStack apply(ItemStack potion);
+	
 	/**
 	 * Applies this potion base to the {@link ItemStack}. The item of the stack
 	 * should be an instance of {@link ItemPotion2}.
 	 * 
-	 * @param potion
+	 * @param potionTypes
 	 *            the potion stack
-	 * @return the potion
 	 */
-	public ItemStack apply(ItemStack potion);
+	public ItemStack apply(PotionTypeList potionTypes);
 	
 	/**
 	 * Returns true if this {@link IPotionBase} accepts the given
@@ -70,7 +72,7 @@ public interface IPotionBase
 	 *            the potion stack
 	 * @return true, if this potion base matches the potion.
 	 */
-	public boolean matches(IPotionType type, ItemStack potion);
+	public boolean matches(IPotionType type, PotionTypeList potionTypes);
 	
-	public void onApplied(IPotionType type, ItemStack potion);
+	public void onApplied(IPotionType type, PotionTypeList potionTypes);
 }

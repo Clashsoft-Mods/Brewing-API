@@ -88,6 +88,26 @@ public class PotionTypeList extends ArrayList<IPotionType>
 		this.stack = stack;
 	}
 	
+	public ItemStack getPotion()
+	{
+		return this.stack;
+	}
+	
+	public boolean isWater()
+	{
+		return ((ItemPotion2) this.stack.getItem()).isWater(this.stack);
+	}
+	
+	public boolean isSplash()
+	{
+		return ((ItemPotion2) this.stack.getItem()).isSplash(this.stack);
+	}
+	
+	public void setSplash(boolean flag)
+	{
+		((ItemPotion2) this.stack.getItem()).setSplash(this.stack, flag);
+	}
+	
 	public void addAll(NBTTagList tagList)
 	{
 		for (int i = 0; i < tagList.tagCount(); i++)

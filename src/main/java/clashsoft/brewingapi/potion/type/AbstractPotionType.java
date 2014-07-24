@@ -281,53 +281,85 @@ public abstract class AbstractPotionType implements IPotionType
 	}
 	
 	@Override
-	public ItemStack apply(ItemStack stack)
+	public ItemStack apply(ItemStack potion)
 	{
-		if (stack != null)
+		if (potion.stackTagCompound == null)
 		{
-			PotionTypeList types = PotionTypeList.create(stack, false);
-			types.add(this);
-			
-			Iterator<IPotionType> iterator = types.iterator();
-			IPotionBase base = this.getBase();
-			while (iterator.hasNext())
-			{
-				IPotionType type = iterator.next();
-				if (type == base)
-				{
-					iterator.remove();
-					continue;
-				}
-				else if (type instanceof IPotionBase)
-				{
-					((IPotionBase) type).onApplied(this, stack);
-				}
-			}
+			potion.stackTagCompound = new NBTTagCompound();
 		}
-		return stack;
+		
+		NBTTagList list = (NBTTagList) potion.stackTagCompound.getTag(COMPOUND_NAME);
+		if (list == null)
+		{
+			list = new NBTTagList();
+			potion.stackTagCompound.setTag(COMPOUND_NAME, list);
+		}
+		
+		NBTTagCompound nbt1 = new NBTTagCompound();
+		this.writeToNBT(nbt1);
+		list.appendTag(nbt1);
+		
+		return potion;
 	}
 	
 	@Override
-	public ItemStack remove(ItemStack stack)
+	public ItemStack apply(PotionTypeList potionTypes)
 	{
-		if (stack != null && stack.hasTagCompound())
+		potionTypes.add(this);
+		
+		Iterator<IPotionType> iterator = potionTypes.iterator();
+		IPotionBase base = this.getBase();
+		while (iterator.hasNext())
 		{
-			NBTTagList list = (NBTTagList) stack.stackTagCompound.getTag(COMPOUND_NAME);
-			
-			if (list != null)
+			IPotionType type = iterator.next();
+			if (type == base)
 			{
-				for (int i = 0; i < list.tagCount(); i++)
-				{
-					NBTTagCompound nbt1 = list.getCompoundTagAt(i);
-					if (this.equals(PotionType.getFromNBT(nbt1)))
-					{
-						list.removeTag(i);
-						break;
-					}
-				}
+				iterator.remove();
+				continue;
+			}
+			else if (type instanceof IPotionBase)
+			{
+				((IPotionBase) type).onApplied(this, potionTypes);
 			}
 		}
-		return stack;
+		
+		return potionTypes.getPotion();
+	}
+	
+	@Override
+	public ItemStack remove(ItemStack potion)
+	{
+		if (potion.stackTagCompound == null)
+		{
+			return potion;
+		}
+		
+		NBTTagList list = (NBTTagList) potion.stackTagCompound.getTag(COMPOUND_NAME);
+		if (list == null)
+		{
+			return potion;
+		}
+		
+		NBTTagCompound nbt = new NBTTagCompound();
+		this.writeToNBT(nbt);
+		for (int i = 0; i < list.tagCount(); i++)
+		{
+			if (nbt.equals(list.getCompoundTagAt(i)))
+			{
+				list.removeTag(i);
+				break;
+			}
+		}
+		
+		return potion;
+	}
+	
+	@Override
+	public ItemStack remove(PotionTypeList potionTypes)
+	{
+		potionTypes.remove(this);
+		
+		return potionTypes.getPotion();
 	}
 	
 	@Override

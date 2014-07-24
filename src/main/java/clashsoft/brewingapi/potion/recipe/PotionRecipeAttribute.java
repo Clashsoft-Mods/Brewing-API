@@ -1,10 +1,8 @@
 package clashsoft.brewingapi.potion.recipe;
 
-import java.util.List;
-
+import clashsoft.brewingapi.potion.PotionTypeList;
 import clashsoft.brewingapi.potion.attribute.IPotionAttribute;
 import clashsoft.brewingapi.potion.type.IPotionType;
-import clashsoft.brewingapi.potion.type.PotionType;
 
 import net.minecraft.item.ItemStack;
 
@@ -29,19 +27,17 @@ public class PotionRecipeAttribute extends AbstractPotionRecipe
 	}
 	
 	@Override
-	public boolean canApply(ItemStack potion)
+	public boolean canApply(PotionTypeList potionTypes)
 	{
 		return true;
 	}
 	
 	@Override
-	public ItemStack apply(ItemStack potion)
+	public void apply(PotionTypeList potionTypes)
 	{
-		List<IPotionType> potionTypes = PotionType.getPotionTypes(potion);
 		for (IPotionType potionType : potionTypes)
 		{
 			potionType.addAttribute(this.attribute);
 		}
-		return potion;
 	}
 }

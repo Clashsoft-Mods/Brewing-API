@@ -1,8 +1,7 @@
 package clashsoft.brewingapi.potion.base;
 
-import java.util.List;
-
 import clashsoft.brewingapi.BrewingAPI;
+import clashsoft.brewingapi.potion.PotionTypeList;
 import clashsoft.brewingapi.potion.recipe.PotionRecipes;
 import clashsoft.brewingapi.potion.type.AbstractPotionType;
 import clashsoft.brewingapi.potion.type.IPotionType;
@@ -161,10 +160,9 @@ public class PotionBase extends AbstractPotionType implements IPotionBase
 	}
 	
 	@Override
-	public boolean matches(IPotionType type, ItemStack potion)
+	public boolean matches(IPotionType type, PotionTypeList potionTypes)
 	{
-		List<IPotionType> types = PotionType.getPotionTypes(potion);
-		for (IPotionType type1 : types)
+		for (IPotionType type1 : potionTypes)
 		{
 			if (type1 == this)
 			{
@@ -179,7 +177,7 @@ public class PotionBase extends AbstractPotionType implements IPotionBase
 	}
 	
 	@Override
-	public void onApplied(IPotionType type, ItemStack potion)
+	public void onApplied(IPotionType type, PotionTypeList potionTypes)
 	{
 	}
 	

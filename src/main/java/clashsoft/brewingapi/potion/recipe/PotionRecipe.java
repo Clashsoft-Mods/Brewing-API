@@ -1,6 +1,7 @@
 package clashsoft.brewingapi.potion.recipe;
 
 import clashsoft.brewingapi.potion.PotionList;
+import clashsoft.brewingapi.potion.PotionTypeList;
 import clashsoft.brewingapi.potion.base.IPotionBase;
 import clashsoft.brewingapi.potion.base.PotionBase;
 import clashsoft.brewingapi.potion.type.IPotionType;
@@ -65,23 +66,24 @@ public class PotionRecipe extends AbstractPotionRecipe
 	}
 	
 	@Override
-	public boolean canApply(ItemStack potion)
+	public boolean canApply(PotionTypeList potionTypes)
 	{
 		IPotionBase base = this.base;
 		if (base == null)
 		{
 			return true;
 		}
-		return base.matches(this.output, potion);
+		return base.matches(this.output, potionTypes);
 	}
 	
 	@Override
-	public ItemStack apply(ItemStack potion)
+	public void apply(PotionTypeList potionTypes)
 	{
+		ItemStack potion = potionTypes.getPotion();
 		if (potion.getItemDamage() == 0)
 		{
 			potion.setItemDamage(1);
 		}
-		return this.output.apply(potion);
+		this.output.apply(potionTypes);
 	}
 }

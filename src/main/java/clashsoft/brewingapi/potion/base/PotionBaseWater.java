@@ -1,7 +1,6 @@
 package clashsoft.brewingapi.potion.base;
 
-import clashsoft.brewingapi.BrewingAPI;
-import clashsoft.brewingapi.item.ItemPotion2;
+import clashsoft.brewingapi.potion.PotionTypeList;
 import clashsoft.brewingapi.potion.type.IPotionType;
 
 import net.minecraft.item.ItemStack;
@@ -30,7 +29,13 @@ public class PotionBaseWater implements IPotionBase
 	@Override
 	public ItemStack apply(ItemStack potion)
 	{
-		return new ItemStack(BrewingAPI.potion2);
+		return potion;
+	}
+	
+	@Override
+	public ItemStack apply(PotionTypeList potionTypes)
+	{
+		return potionTypes.getPotion();
 	}
 	
 	@Override
@@ -40,13 +45,13 @@ public class PotionBaseWater implements IPotionBase
 	}
 	
 	@Override
-	public boolean matches(IPotionType type, ItemStack potion)
+	public boolean matches(IPotionType type, PotionTypeList potionTypes)
 	{
-		return ((ItemPotion2) potion.getItem()).isWater(potion);
+		return potionTypes.isWater();
 	}
 	
 	@Override
-	public void onApplied(IPotionType type, ItemStack potion)
+	public void onApplied(IPotionType type, PotionTypeList potionTypes)
 	{
 	}
 }

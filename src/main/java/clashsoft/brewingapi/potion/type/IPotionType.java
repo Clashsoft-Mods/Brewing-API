@@ -6,7 +6,7 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import java.util.ArrayList;
 import java.util.List;
 
-import clashsoft.brewingapi.item.ItemPotion2;
+import clashsoft.brewingapi.potion.PotionTypeList;
 import clashsoft.brewingapi.potion.attribute.IPotionAttribute;
 import clashsoft.brewingapi.potion.base.IPotionBase;
 
@@ -343,25 +343,25 @@ public interface IPotionType extends Comparable<IPotionType>
 	 */
 	public List<IPotionType> getSubTypes();
 	
-	/**
-	 * Applies this {@link IPotionType} to the {@link ItemStack}. The item of
-	 * the stack should be an instance of {@link ItemPotion2}.
-	 * 
-	 * @param potion
-	 *            the potion stack
-	 * @return the stack
-	 */
 	public ItemStack apply(ItemStack potion);
 	
 	/**
-	 * Removes this {@link IPotionType} from the {@link ItemStack}. The item of
-	 * the stack should be an instance of {@link ItemPotion2}.
+	 * Adds this {@link IPotionType} to the given {@link PotionTypesList} {@code potionTypes}.
 	 * 
-	 * @param potion
-	 *            the potion stack
-	 * @return the stack
+	 * @param potionTypes
+	 *            the cached list of potion types
 	 */
+	public ItemStack apply(PotionTypeList potionTypes);
+	
 	public ItemStack remove(ItemStack potion);
+	
+	/**
+	 * Removes this {@link IPotionType} from the given {@link PotionTypesList} {@code potionTypes}.
+	 * 
+	 * @param potionTypes
+	 *            the cached list of potion types
+	 */
+	public ItemStack remove(PotionTypeList potionTypes);
 	
 	/**
 	 * Applies this {@link IPotionType}'s effect to the living entity or player.
