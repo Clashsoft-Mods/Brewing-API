@@ -179,6 +179,11 @@ public class PotionBase extends AbstractPotionType implements IPotionBase
 	}
 	
 	@Override
+	public void onApplied(IPotionType type, ItemStack potion)
+	{
+	}
+	
+	@Override
 	public IPotionType copy()
 	{
 		return this;

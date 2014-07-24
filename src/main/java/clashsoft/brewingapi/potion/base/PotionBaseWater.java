@@ -44,4 +44,9 @@ public class PotionBaseWater implements IPotionBase
 	{
 		return ((ItemPotion2) potion.getItem()).isWater(potion);
 	}
+	
+	@Override
+	public void onApplied(IPotionType type, ItemStack potion)
+	{
+	}
 }

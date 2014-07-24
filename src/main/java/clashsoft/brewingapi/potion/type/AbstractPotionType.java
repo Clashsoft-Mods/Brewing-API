@@ -2,11 +2,12 @@ package clashsoft.brewingapi.potion.type;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
+import clashsoft.brewingapi.potion.PotionTypeList;
 import clashsoft.brewingapi.potion.attribute.IPotionAttribute;
 import clashsoft.brewingapi.potion.base.IPotionBase;
-import clashsoft.brewingapi.potion.base.PotionBase;
 import clashsoft.brewingapi.potion.recipe.PotionRecipe;
 import clashsoft.brewingapi.potion.recipe.PotionRecipes;
 import clashsoft.cslib.logging.CSLog;
@@ -284,26 +285,23 @@ public abstract class AbstractPotionType implements IPotionType
 	{
 		if (stack != null)
 		{
-			if (stack.stackTagCompound == null)
-			{
-				stack.stackTagCompound = new NBTTagCompound();
-			}
+			PotionTypeList types = PotionTypeList.create(stack, false);
+			types.add(this);
 			
-			NBTTagList list = (NBTTagList) stack.stackTagCompound.getTag(COMPOUND_NAME);
-			if (list == null)
-			{
-				list = new NBTTagList();
-				stack.stackTagCompound.setTag(COMPOUND_NAME, list);
-			}
-			
-			NBTTagCompound nbt1 = new NBTTagCompound();
-			this.writeToNBT(nbt1);
-			list.appendTag(nbt1);
-			
+			Iterator<IPotionType> iterator = types.iterator();
 			IPotionBase base = this.getBase();
-			if (base instanceof PotionBase)
+			while (iterator.hasNext())
 			{
-				((PotionBase) base).remove(stack);
+				IPotionType type = iterator.next();
+				if (type == base)
+				{
+					iterator.remove();
+					continue;
+				}
+				else if (type instanceof IPotionBase)
+				{
+					((IPotionBase) type).onApplied(this, stack);
+				}
 			}
 		}
 		return stack;

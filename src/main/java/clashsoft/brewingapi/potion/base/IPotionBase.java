@@ -71,4 +71,6 @@ public interface IPotionBase
 	 * @return true, if this potion base matches the potion.
 	 */
 	public boolean matches(IPotionType type, ItemStack potion);
+	
+	public void onApplied(IPotionType type, ItemStack potion);
 }
