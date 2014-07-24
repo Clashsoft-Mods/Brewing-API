@@ -25,7 +25,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.BaseAttribute;
 import net.minecraft.entity.player.EntityPlayer;
@@ -689,7 +688,7 @@ public class ItemPotion2 extends ItemPotion
 				}
 			}
 			
-			if (BrewingAPI.isMorePotionsModInstalled() && BrewingAPI.multiPotions && tab == BrewingAPI.potions)
+			if (BrewingAPI.multiPotions && tab == BrewingAPI.potions)
 			{
 				this.addMultiPotions(list);
 			}
@@ -750,28 +749,5 @@ public class ItemPotion2 extends ItemPotion
 				}
 			}
 		}
-	}
-	
-	@Override
-	public Entity createEntity(World world, Entity entity, ItemStack stack)
-	{
-		if (entity instanceof EntityPlayer && this.isSplash(stack))
-		{
-			if (!((EntityPlayer) entity).capabilities.isCreativeMode)
-			{
-				--stack.stackSize;
-			}
-			
-			world.playSoundAtEntity(entity, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-			Entity e = new EntityPotion2(world, (EntityPlayer) entity, stack);
-			
-			if (!world.isRemote)
-			{
-				world.spawnEntityInWorld(e);
-			}
-			
-			return e;
-		}
-		return null;
 	}
 }

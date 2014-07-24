@@ -2,7 +2,6 @@ package clashsoft.brewingapi;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 import clashsoft.brewingapi.block.BlockBrewingStand2;
@@ -30,7 +29,6 @@ import clashsoft.cslib.minecraft.item.CSItems;
 import clashsoft.cslib.minecraft.stack.CSStacks;
 import clashsoft.cslib.minecraft.stack.StackFactory;
 import clashsoft.cslib.minecraft.update.CSUpdate;
-import clashsoft.cslib.util.CSUtil;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -67,9 +65,7 @@ public class BrewingAPI extends ClashsoftMod
 	
 	public static BAPIProxy			proxy					= createProxy("clashsoft.brewingapi.client.BAPIClientProxy", "clashsoft.brewingapi.common.BAPIProxy");
 	
-	// API Stuff
-	
-	private static Boolean			mpmInstalled			= null;
+	// API
 	
 	public static String			goodEffectColor1		= EnumChatFormatting.GRAY.toString();
 	public static String			goodEffectColor2		= EnumChatFormatting.WHITE.toString();
@@ -82,7 +78,6 @@ public class BrewingAPI extends ClashsoftMod
 	public static int				potionStackSize			= 1;
 	
 	public static int				brewingStand2ID			= 11;
-	public static int				splashPotion2ID			= EntityRegistry.findGlobalUniqueEntityId();
 	
 	public static CreativeTabs		potions;
 	
@@ -182,22 +177,11 @@ public class BrewingAPI extends ClashsoftMod
 		super.postInit(event);
 	}
 	
-	public static boolean isMorePotionsModInstalled()
-	{
-		if (mpmInstalled == null)
-		{
-			boolean b = CSUtil.checkClass("clashsoft.mods.morepotions.MorePotionsMod");
-			mpmInstalled = Boolean.valueOf(b);
-			return b;
-		}
-		return mpmInstalled.booleanValue();
-	}
-	
 	// API
 	
-	public static boolean						hasLoaded			= false;
+	public static boolean						hasLoaded		= false;
 	
-	public static List<IPotionEffectHandler>	effectHandlers		= new LinkedList<IPotionEffectHandler>();
+	public static List<IPotionEffectHandler>	effectHandlers	= new ArrayList<IPotionEffectHandler>();
 	
 	public static IPotionType addPotionType(IPotionType potionType)
 	{
