@@ -491,13 +491,13 @@ public class ItemPotion2 extends ItemPotion
 			}
 			else if (potionType.isBadEffect())
 			{
-				colorLight = EnumChatFormatting.RED.toString();
-				colorDark = EnumChatFormatting.DARK_RED.toString();
+				colorDark = BrewingAPI.badEffectColor1;
+				colorLight = BrewingAPI.badEffectColor2;
 			}
 			else
 			{
-				colorLight = EnumChatFormatting.GREEN.toString();
-				colorDark = EnumChatFormatting.DARK_GREEN.toString();
+				colorDark = BrewingAPI.goodEffectColor1;
+				colorLight = BrewingAPI.goodEffectColor2;
 			}
 			
 			builder.insert(0, colorDark);
@@ -525,9 +525,9 @@ public class ItemPotion2 extends ItemPotion
 			}
 		}
 		
-		if (BrewingAPI.advancedPotionInfo && Keyboard.isKeyDown(Keyboard.KEY_CAPITAL))
+		if (BrewingAPI.advancedPotionInfo && size > 0 && Keyboard.isKeyDown(Keyboard.KEY_CAPITAL))
 		{
-			if (potionTypes.size() == 1 && BrewingAPI.isMorePotionsModInstalled())
+			if (size == 1)
 			{
 				for (IPotionType pt : potionTypes)
 				{
@@ -540,17 +540,17 @@ public class ItemPotion2 extends ItemPotion
 							localizedDescription = CSString.cutString(localizedDescription, stack.getDisplayName().length());
 							for (String line : CSString.lineArray(localizedDescription))
 							{
-								list.add(EnumChatFormatting.BLUE.toString() + EnumChatFormatting.ITALIC.toString() + line);
+								list.add("\u00a79\u00a7k" + line);
 							}
 						}
 						else
 						{
-							list.add(EnumChatFormatting.RED.toString() + EnumChatFormatting.ITALIC.toString() + I18n.getString("potion.description.missing"));
+							list.add("\u00a7c\u00a7k" + I18n.getString("potion.description.missing"));
 						}
 					}
 				}
 			}
-			if (size > 1)
+			else
 			{
 				int goodEffects = PotionUtils.getGoodEffects(potionTypes);
 				float goodEffectsPercentage = (float) goodEffects / (float) potionTypes.size() * 100;
@@ -564,12 +564,12 @@ public class ItemPotion2 extends ItemPotion
 				StringBuilder builder = new StringBuilder(20);
 				builder.append(EnumChatFormatting.GRAY).append(EnumChatFormatting.ITALIC);
 				
-				builder.append(I18n.getString("potion.goodeffects")).append(": ").append(EnumChatFormatting.GREEN).append(goodEffects);
+				builder.append(I18n.getString("potion.goodeffects")).append(": \u00a79").append(goodEffects);
 				builder.append(" (").append(String.format("%.2f", goodEffectsPercentage)).append("%)");
 				list.add(builder.toString());
 				
 				builder.delete(4, builder.length());
-				builder.append(I18n.getString("potion.badeffects")).append(": ").append(EnumChatFormatting.RED).append(badEffects);
+				builder.append(I18n.getString("potion.badeffects")).append(": \u00a7a").append(badEffects);
 				builder.append(" (").append(String.format("%.2f", badEffectsPercentage)).append("%)");
 				list.add(builder.toString());
 				
@@ -593,11 +593,9 @@ public class ItemPotion2 extends ItemPotion
 			float f = PotionUtils.getValue(stack);
 			if (f > 1F)
 			{
-				StringBuilder value = new StringBuilder(20);
-				value.append(EnumChatFormatting.GRAY).append(EnumChatFormatting.ITALIC);
+				StringBuilder value = new StringBuilder("\u00a77\u00a7k");
 				value.append(I18n.getString("potion.value"));
-				value.append(": ");
-				value.append(EnumChatFormatting.YELLOW).append(EnumChatFormatting.ITALIC);
+				value.append(": \u00a7e\u00a7k");
 				value.append(ItemStack.field_111284_a.format(f));
 				
 				list.add(value.toString());

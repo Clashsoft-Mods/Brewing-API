@@ -38,7 +38,6 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 import net.minecraft.block.Block;
@@ -51,6 +50,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemReed;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
 @Mod(modid = BrewingAPI.MODID, name = BrewingAPI.NAME, version = BrewingAPI.VERSION, dependencies = BrewingAPI.DEPENDENCIES)
@@ -71,6 +71,10 @@ public class BrewingAPI extends ClashsoftMod
 	
 	private static Boolean			mpmInstalled			= null;
 	
+	public static String			goodEffectColor1		= EnumChatFormatting.GRAY.toString();
+	public static String			goodEffectColor2		= EnumChatFormatting.WHITE.toString();
+	public static String			badEffectColor1			= EnumChatFormatting.RED.toString();
+	public static String			badEffectColor2			= EnumChatFormatting.GOLD.toString();
 	public static boolean			multiPotions			= false;
 	public static boolean			advancedPotionInfo		= false;
 	public static boolean			showAllBaseTypes		= false;
@@ -102,6 +106,10 @@ public class BrewingAPI extends ClashsoftMod
 	{
 		brewingStand2ID = CSConfig.getTileEntity("Brewing Stand", 11);
 		
+		goodEffectColor1 = CSConfig.getString("colors", "Good Effect Color", goodEffectColor1);
+		goodEffectColor2 = CSConfig.getString("colors", "Good Effect Glow Color", goodEffectColor2);
+		badEffectColor1 = CSConfig.getString("colors", "Bad Effect Color", goodEffectColor1);
+		badEffectColor2 = CSConfig.getString("colors", "Bad Effect Glow Color", goodEffectColor2);
 		multiPotions = CSConfig.getBool("potions", "MultiPotions", multiPotions);
 		advancedPotionInfo = CSConfig.getBool("potions", "Advanced Potion Info", advancedPotionInfo);
 		showAllBaseTypes = CSConfig.getBool("potions", "Show All Base Potion Types", showAllBaseTypes);
