@@ -26,20 +26,28 @@ public class PotionTypeList extends ArrayList<IPotionType>
 	protected ItemStack		stack;
 	protected NBTTagList	tagList;
 	
+	public static PotionTypeList create(ItemStack stack)
+	{
+		return create(stack, true);
+	}
+	
 	/**
 	 * Creates a new {@link PotionTypeList} that is synced with the given
-	 * {@link ItemStack} {@code stack}.
+	 * {@link ItemStack} {@code stack}. If {@code oldEffects} is true and the
+	 * stack NBT was {@code null}, this method searches for effects that were
+	 * stored in the stack's damage value.
 	 * 
 	 * @param stack
 	 *            the stack
+	 * @param oldEffects
 	 * @return a PotionTypeList instance
 	 */
-	public static PotionTypeList create(ItemStack stack)
+	public static PotionTypeList create(ItemStack stack, boolean oldEffects)
 	{
-		boolean flag = false;
+		boolean flag1 = false;
 		if (stack.stackTagCompound == null)
 		{
-			flag = true;
+			flag1 = true;
 			stack.stackTagCompound = new NBTTagCompound();
 		}
 		
@@ -52,7 +60,7 @@ public class PotionTypeList extends ArrayList<IPotionType>
 		
 		PotionTypeList list = new PotionTypeList(stack, tagList);
 		
-		if (flag)
+		if (flag1 && oldEffects)
 		{
 			List<PotionEffect> effects = ((ItemPotion2) stack.getItem()).getSuperEffects(stack);
 			
