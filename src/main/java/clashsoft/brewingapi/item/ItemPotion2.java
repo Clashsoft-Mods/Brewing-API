@@ -1,6 +1,9 @@
 package clashsoft.brewingapi.item;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import org.lwjgl.input.Keyboard;
 
@@ -33,7 +36,6 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumChatFormatting;
@@ -47,8 +49,6 @@ import net.minecraft.world.World;
  */
 public class ItemPotion2 extends ItemPotion
 {
-	public Map<NBTTagCompound, List<IPotionType>>	effectCache	= new HashMap();
-	
 	public IIcon									bottle;
 	public IIcon									splashbottle;
 	public IIcon									liquid;
