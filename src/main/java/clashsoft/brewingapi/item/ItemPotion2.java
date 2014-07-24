@@ -431,13 +431,12 @@ public class ItemPotion2 extends ItemPotion
 		}
 		
 		List<IPotionType> potionTypes = this.getPotionTypes(stack);
-		Multimap<String, AttributeModifier> hashmultimap = TreeMultimap.create(String.CASE_INSENSITIVE_ORDER, AttributeModifierComparator.instance);
 		int size = potionTypes.size();
+		Multimap<String, AttributeModifier> attributeMap = TreeMultimap.create(String.CASE_INSENSITIVE_ORDER, AttributeModifierComparator.instance);
 		
 		if (size == 0)
 		{
-			String empty = I18n.getString("potion.empty").trim();
-			list.add("\u00a77" + empty);
+			list.add(EnumChatFormatting.GRAY + I18n.getString("potion.empty"));
 			return;
 		}
 		
@@ -465,8 +464,6 @@ public class ItemPotion2 extends ItemPotion
 				continue;
 			}
 			
-			StringBuilder builder = new StringBuilder(I18n.getString(potionType.getEffectName()));
-			
 			Map map = potion.func_111186_k();
 			if (map != null && map.size() > 0)
 			{
@@ -476,20 +473,12 @@ public class ItemPotion2 extends ItemPotion
 					if (attributemodifier != null)
 					{
 						AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.func_111183_a(potionType.getEffect().getAmplifier(), attributemodifier), attributemodifier.getOperation());
-						hashmultimap.put(((BaseAttribute) object).getAttributeUnlocalizedName(), attributemodifier1);
+						attributeMap.put(((BaseAttribute) object).getAttributeUnlocalizedName(), attributemodifier1);
 					}
 				}
 			}
 			
-			if (potionType.getAmplifier() > 0)
-			{
-				builder.append(" ").append(CSString.convertToRoman(potionType.getAmplifier() + 1));
-			}
-			if (potionType.getDuration() > 20)
-			{
-				builder.append(" (").append(potionType.getDuration() >= 1000000 ? I18n.getString("potion.infinite") : Potion.getDurationString(potionType.getEffect())).append(")");
-			}
-			
+			StringBuilder builder = potionType.getDisplayName();
 			int glowPosInt = glowPos / 2;
 			String colorLight = "";
 			String colorDark = "";
@@ -516,7 +505,6 @@ public class ItemPotion2 extends ItemPotion
 			if (glowPos >= 0)
 			{
 				glowPosInt += colorDark.length();
-				
 				if (glowPosInt < builder.length())
 				{
 					builder.insert(glowPosInt, colorLight);
@@ -562,7 +550,7 @@ public class ItemPotion2 extends ItemPotion
 					}
 				}
 			}
-			if (potionTypes.size() > 1)
+			if (size > 1)
 			{
 				int goodEffects = PotionUtils.getGoodEffects(potionTypes);
 				float goodEffectsPercentage = (float) goodEffects / (float) potionTypes.size() * 100;
@@ -616,14 +604,14 @@ public class ItemPotion2 extends ItemPotion
 			}
 		}
 		
-		if (!hashmultimap.isEmpty())
+		if (!attributeMap.isEmpty())
 		{
 			list.add("");
 			list.add(EnumChatFormatting.DARK_PURPLE + I18n.getString("potion.effects.whenDrank"));
 			
-			for (String key : hashmultimap.keys())
+			for (String key : attributeMap.keys())
 			{
-				for (AttributeModifier modifier : hashmultimap.get(key))
+				for (AttributeModifier modifier : attributeMap.get(key))
 				{
 					int operation = modifier.getOperation();
 					double amount = modifier.getAmount();

@@ -10,6 +10,8 @@ import clashsoft.brewingapi.potion.base.PotionBase;
 import clashsoft.brewingapi.potion.recipe.PotionRecipe;
 import clashsoft.brewingapi.potion.recipe.PotionRecipes;
 import clashsoft.cslib.logging.CSLog;
+import clashsoft.cslib.minecraft.lang.I18n;
+import clashsoft.cslib.util.CSString;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -17,6 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.StringUtils;
 
 /**
  * @author Clashsoft
@@ -138,6 +141,26 @@ public abstract class AbstractPotionType implements IPotionType
 	{
 		PotionEffect effect = this.getEffect();
 		return effect == null ? "" : effect.getEffectName();
+	}
+	
+	@Override
+	public StringBuilder getDisplayName()
+	{
+		String name = this.getEffectName();
+		StringBuilder builder = new StringBuilder(I18n.getString(name));
+		int amplifier = this.getAmplifier();
+		int duration = this.getDuration();
+		
+		if (amplifier > 0)
+		{
+			builder.append(" ").append(CSString.convertToRoman(amplifier + 1));
+		}
+		if (duration > 20)
+		{
+			builder.append(" (").append(duration >= 1000000 ? I18n.getString("potion.infinite") : StringUtils.ticksToElapsedTime(duration)).append(")");
+		}
+		
+		return builder;
 	}
 	
 	@Override

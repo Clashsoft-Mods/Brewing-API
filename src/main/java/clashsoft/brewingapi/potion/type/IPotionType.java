@@ -92,6 +92,8 @@ public interface IPotionType extends Comparable<IPotionType>
 	 */
 	public String getEffectName();
 	
+	public StringBuilder getDisplayName();
+	
 	/**
 	 * Returns the liquid color of this {@link IPotionType}'s effect. If the
 	 * effect is {@code null}, 0x0C0CFF is returned, which is the color of a
