@@ -98,16 +98,16 @@ public class ContainerBrewingStand2 extends Container
 			
 			if (slotID > 3)
 			{
-				if (!this.theSlot.getHasStack() && this.theSlot.isItemValid(itemstack1))
+				if (SlotPotion.canHoldPotion(itemstack))
 				{
-					if (!this.mergeItemStack(itemstack1, 3, 4, false))
+					if (!this.mergeItemStack(itemstack1, 0, 3, false))
 					{
 						return null;
 					}
 				}
-				else if (SlotPotion.canHoldPotion(itemstack))
+				else if (!this.theSlot.getHasStack() && this.theSlot.isItemValid(itemstack1))
 				{
-					if (!this.mergeItemStack(itemstack1, 0, 3, false))
+					if (!this.mergeItemStack(itemstack1, 3, 4, false))
 					{
 						return null;
 					}

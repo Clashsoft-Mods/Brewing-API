@@ -138,7 +138,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements I
 	{
 		if (this.thePlayer != null && this.thePlayer.capabilities.isCreativeMode)
 		{
-			return 60;
+			return 80;
 		}
 		return 400;
 	}
