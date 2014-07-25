@@ -29,6 +29,8 @@ import clashsoft.cslib.minecraft.item.CSItems;
 import clashsoft.cslib.minecraft.stack.CSStacks;
 import clashsoft.cslib.minecraft.stack.StackFactory;
 import clashsoft.cslib.minecraft.update.CSUpdate;
+import clashsoft.cslib.minecraft.update.reader.SimpleUpdateReader;
+import clashsoft.cslib.minecraft.update.updater.ModUpdater;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -110,6 +112,13 @@ public class BrewingAPI extends ClashsoftMod
 		showAllBaseTypes = CSConfig.getBool("potions", "Show All Base Potion Types", showAllBaseTypes);
 		defaultAwkwardBrewing = CSConfig.getBool("potions", "Default Awkward Brewing", defaultAwkwardBrewing);
 		potionStackSize = CSConfig.getInt("potions", "PotionStackSize", potionStackSize);
+	}
+	
+	@Override
+	public void updateCheck()
+	{
+		final String url = "https://github.com/Clashsoft/Brewing-API/master/version.txt";
+		CSUpdate.updateCheck(new ModUpdater(NAME, ACRONYM, VERSION, url, SimpleUpdateReader.instance));
 	}
 	
 	@Override

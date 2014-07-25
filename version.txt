@@ -1,0 +1,4 @@
+version=1.7.2-2.0.1
+url=https://github.com/Clashsoft/Brewing-API/releases/download/1.7.2-2.0.1/Brewing.API.1.7.2-2.0.1.jar
+
+! Update to Clashsoft Lib 1.7.2-2.2.0
