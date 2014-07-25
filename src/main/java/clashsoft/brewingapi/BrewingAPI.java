@@ -105,8 +105,8 @@ public class BrewingAPI extends ClashsoftMod
 		
 		goodEffectColor1 = CSConfig.getString("colors", "Good Effect Color", goodEffectColor1);
 		goodEffectColor2 = CSConfig.getString("colors", "Good Effect Glow Color", goodEffectColor2);
-		badEffectColor1 = CSConfig.getString("colors", "Bad Effect Color", goodEffectColor1);
-		badEffectColor2 = CSConfig.getString("colors", "Bad Effect Glow Color", goodEffectColor2);
+		badEffectColor1 = CSConfig.getString("colors", "Bad Effect Color", badEffectColor1);
+		badEffectColor2 = CSConfig.getString("colors", "Bad Effect Glow Color", badEffectColor2);
 		multiPotions = CSConfig.getBool("potions", "MultiPotions", multiPotions);
 		advancedPotionInfo = CSConfig.getBool("potions", "Advanced Potion Info", advancedPotionInfo);
 		showAllBaseTypes = CSConfig.getBool("potions", "Show All Base Potion Types", showAllBaseTypes);
