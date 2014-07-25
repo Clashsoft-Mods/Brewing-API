@@ -117,7 +117,7 @@ public class BrewingAPI extends ClashsoftMod
 	@Override
 	public void updateCheck()
 	{
-		final String url = "https://github.com/Clashsoft/Brewing-API/master/version.txt";
+		final String url = "https://raw.githubusercontent.com/Clashsoft/Brewing-API/master/version.txt";
 		CSUpdate.updateCheck(new ModUpdater(NAME, ACRONYM, VERSION, url, SimpleUpdateReader.instance));
 	}
 	
