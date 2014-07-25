@@ -92,7 +92,7 @@ public class ItemPotion2 extends ItemPotion
 	 */
 	public List<IPotionType> getPotionTypes(ItemStack stack)
 	{
-		return PotionTypeList.create(stack);
+		return new PotionTypeList(stack);
 	}
 	
 	public boolean hasEffects(ItemStack stack)

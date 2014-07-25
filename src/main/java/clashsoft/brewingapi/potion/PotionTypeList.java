@@ -1,7 +1,6 @@
 package clashsoft.brewingapi.potion;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import clashsoft.brewingapi.item.ItemPotion2;
@@ -23,35 +22,23 @@ import net.minecraft.potion.PotionEffect;
  */
 public class PotionTypeList extends ArrayList<IPotionType>
 {
-	protected ItemStack		stack;
-	protected NBTTagList	tagList;
+	protected ItemStack	stack;
 	
-	public static PotionTypeList create(ItemStack stack)
-	{
-		return create(stack, true);
-	}
-	
-	/**
-	 * Creates a new {@link PotionTypeList} that is synced with the given
-	 * {@link ItemStack} {@code stack}. If {@code oldEffects} is true and the
-	 * stack NBT was {@code null}, this method searches for effects that were
-	 * stored in the stack's damage value.
-	 * 
-	 * @param stack
-	 *            the stack
-	 * @param oldEffects
-	 * @return a PotionTypeList instance
-	 */
-	public static PotionTypeList create(ItemStack stack, boolean oldEffects)
-	{
-		PotionTypeList list = new PotionTypeList();
-		list.load(stack, oldEffects);
-		return list;
-	}
-	
-	private PotionTypeList()
+	public PotionTypeList()
 	{
 		super();
+	}
+	
+	public PotionTypeList(ItemStack stack)
+	{
+		this(stack, true);
+	}
+	
+	public PotionTypeList(ItemStack stack, boolean oldEffects)
+	{
+		super();
+		this.stack = stack;
+		this.load(stack, oldEffects);
 	}
 	
 	public ItemStack getPotion()
@@ -86,24 +73,29 @@ public class PotionTypeList extends ArrayList<IPotionType>
 	 */
 	public void load(ItemStack stack, boolean oldEffects)
 	{
-		boolean flag1 = false;
-		if (stack.stackTagCompound == null)
-		{
-			flag1 = true;
-			stack.stackTagCompound = new NBTTagCompound();
-		}
-		
-		NBTTagList tagList = (NBTTagList) stack.stackTagCompound.getTag(IPotionType.COMPOUND_NAME);
-		if (tagList == null)
-		{
-			tagList = new NBTTagList();
-			stack.stackTagCompound.setTag(IPotionType.COMPOUND_NAME, tagList);
-		}
-		
 		this.stack = stack;
-		this.tagList = tagList;
 		
-		if (flag1 && oldEffects)
+		boolean flag1 = oldEffects;
+		if (stack.stackTagCompound != null)
+		{
+			flag1 = false;
+			
+			NBTTagList tagList = (NBTTagList) stack.stackTagCompound.getTag(IPotionType.COMPOUND_NAME);
+			if (tagList != null)
+			{
+				for (int i = 0; i < tagList.tagCount(); i++)
+				{
+					NBTTagCompound compound = tagList.getCompoundTagAt(i);
+					IPotionType type = PotionType.getFromNBT(compound);
+					if (type != null)
+					{
+						super.add(type);
+					}
+				}
+			}
+		}
+		
+		if (flag1)
 		{
 			List<PotionEffect> effects = ((ItemPotion2) stack.getItem()).getSuperEffects(stack);
 			
@@ -121,17 +113,21 @@ public class PotionTypeList extends ArrayList<IPotionType>
 		}
 	}
 	
-	public void addAll(NBTTagList tagList)
+	public void save()
 	{
-		for (int i = 0; i < tagList.tagCount(); i++)
+		ItemStack stack = this.stack;
+		NBTTagList tagList = new NBTTagList();
+		for (IPotionType type : this)
 		{
-			NBTTagCompound compound = tagList.getCompoundTagAt(i);
-			IPotionType type = PotionType.getFromNBT(compound);
-			if (type != null)
-			{
-				super.add(type);
-			}
+			NBTBase nbt1 = toNBT(type);
+			tagList.appendTag(nbt1);
 		}
+		
+		if (stack.stackTagCompound == null)
+		{
+			stack.stackTagCompound = new NBTTagCompound();
+		}
+		stack.stackTagCompound.setTag(IPotionType.COMPOUND_NAME, tagList);
 	}
 	
 	private static NBTBase toNBT(IPotionType e)
@@ -139,76 +135,5 @@ public class PotionTypeList extends ArrayList<IPotionType>
 		NBTTagCompound nbt = new NBTTagCompound();
 		e.writeToNBT(nbt);
 		return nbt;
-	}
-	
-	@Override
-	public boolean add(IPotionType e)
-	{
-		if (this.tagList != null)
-		{
-			this.tagList.appendTag(toNBT(e));
-		}
-		return super.add(e);
-	}
-	
-	@Override
-	public IPotionType set(int index, IPotionType e)
-	{
-		if (this.tagList != null)
-		{
-			this.tagList.func_150304_a(index, toNBT(e));
-		}
-		return super.set(index, e);
-	}
-	
-	@Override
-	public void clear()
-	{
-		if (this.tagList != null)
-		{
-			int tagCount = this.tagList.tagCount();
-			while (tagCount > 0)
-			{
-				this.tagList.removeTag(--tagCount);
-			}
-		}
-		super.clear();
-	}
-	
-	@Override
-	public boolean addAll(Collection<? extends IPotionType> c)
-	{
-		if (this.tagList != null)
-		{
-			for (IPotionType e : c)
-			{
-				this.tagList.appendTag(toNBT(e));
-			}
-		}
-		return super.addAll(c);
-	}
-	
-	@Override
-	public IPotionType remove(int index)
-	{
-		if (this.tagList != null)
-		{
-			this.tagList.removeTag(index);
-		}
-		return super.remove(index);
-	}
-	
-	@Override
-	public boolean remove(Object o)
-	{
-		if (o instanceof IPotionType)
-		{
-			int i = this.indexOf((IPotionType) o);
-			if (i != -1)
-			{
-				return this.remove(i) != null;
-			}
-		}
-		return super.remove(o);
 	}
 }
