@@ -48,7 +48,7 @@ task deobfJar(type:Jar, dependsOn:'classes')
 deobfJar
 {
     classifier = 'deobf'
-    archiveName = "${archivesBaseName} ${minecraft.version}-deobf.jar"
+    archiveName = "${archivesBaseName} ${version}-deobf.jar"
     from ('build/classes/main')
     {
         include('clashsoft/brewingapi/**')
@@ -63,7 +63,7 @@ task sourceJar(type:Jar, dependsOn:'classes')
 sourceJar
 {
     classifier = 'sources'
-    archiveName = "${archivesBaseName} ${minecraft.version}-sources.jar"
+    archiveName = "${archivesBaseName} ${version}-sources.jar"
     from ('build/sources/java')
     {
         include('clashsoft/brewingapi/**')
