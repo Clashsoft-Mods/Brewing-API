@@ -10,14 +10,13 @@ import clashsoft.brewingapi.potion.type.PotionType;
 
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntityBrewingStand;
 import net.minecraftforge.common.util.Constants;
 
-public class TileEntityBrewingStand2 extends TileEntityBrewingStand implements ISidedInventory
+public class TileEntityBrewingStand2 extends TileEntityBrewingStand
 {
 	public EntityPlayer			thePlayer			= null;
 	
