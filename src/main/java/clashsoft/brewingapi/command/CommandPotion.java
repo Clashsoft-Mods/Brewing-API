@@ -114,11 +114,11 @@ public class CommandPotion extends CommandBase
 			
 			if (splash)
 			{
-				notifyAdmins(sender, "commands.potion.give.splash.success", potioneffect.getEffectName(), id, duration, amplifier, name);
+				func_152373_a(sender, this, "commands.potion.give.splash.success", potioneffect.getEffectName(), id, duration, amplifier, name);
 			}
 			else
 			{
-				notifyAdmins(sender, "commands.potion.give.success", potioneffect.getEffectName(), id, duration, amplifier, name);
+				func_152373_a(sender, this, "commands.potion.give.success", potioneffect.getEffectName(), id, duration, amplifier, name);
 			}
 		}
 		else if ("add".equals(args[0]))
@@ -126,14 +126,14 @@ public class CommandPotion extends CommandBase
 			ItemStack stack = player.getHeldItem();
 			potionType.apply(stack);
 			
-			notifyAdmins(sender, "command.potion.remove.success", potioneffect.getEffectName(), id, duration, amplifier, name);
+			func_152373_a(sender, this, "command.potion.remove.success", potioneffect.getEffectName(), id, duration, amplifier, name);
 		}
 		else if ("remove".equals(args[0]))
 		{
 			ItemStack stack = player.getHeldItem();
 			potionType.remove(stack);
 			
-			notifyAdmins(sender, "command.potion.remove.success", potioneffect.getEffectName(), id, duration, amplifier, name);
+			func_152373_a(sender, this, "command.potion.remove.success", potioneffect.getEffectName(), id, duration, amplifier, name);
 		}
 	}
 	
