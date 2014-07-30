@@ -23,7 +23,7 @@ buildscript
 apply plugin: 'forge'
 version = "1.7.2-2.0.1"
 group = "clashsoft.brewingapi"
-archivesBaseName = "Brewing API"
+archivesBaseName = "BrewingAPI"
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -34,11 +34,11 @@ minecraft
 
     if(file('../run').exists())
     {
-        assetDir = "../run/assets/"
+        runDir = "../run/"
     }
     else
     {
-        assetDir = "eclipse/assets"
+        runDir = "eclipse/"
     }
 }
 
@@ -48,7 +48,7 @@ task deobfJar(type:Jar, dependsOn:'classes')
 deobfJar
 {
     classifier = 'deobf'
-    archiveName = "${archivesBaseName} ${version}-deobf.jar"
+    archiveName = "${archivesBaseName}-${version}-deobf.jar"
     from ('build/classes/main')
     {
         include('clashsoft/brewingapi/**')
@@ -63,7 +63,7 @@ task sourceJar(type:Jar, dependsOn:'classes')
 sourceJar
 {
     classifier = 'sources'
-    archiveName = "${archivesBaseName} ${version}-sources.jar"
+    archiveName = "${archivesBaseName}-${version}-sources.jar"
     from ('build/sources/java')
     {
         include('clashsoft/brewingapi/**')
