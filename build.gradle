@@ -30,7 +30,7 @@ targetCompatibility = 1.7
 
 minecraft
 {
-    version = "1.7.2-10.12.2.1126"
+    version = "1.7.10-10.13.0.1189"
 
     if(file('../run').exists())
     {
@@ -84,7 +84,6 @@ processResources
     from(sourceSets.main.resources.srcDirs)
     {
         include 'mcmod.info'
-
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
 
