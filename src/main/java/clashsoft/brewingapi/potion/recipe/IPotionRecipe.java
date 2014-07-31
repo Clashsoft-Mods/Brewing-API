@@ -27,6 +27,8 @@ public interface IPotionRecipe
 	 * Returns true if this {@link IPotionRecipe} is appliable to the given
 	 * {@link ItemStack} {@code potion}.
 	 * 
+	 * @param ingredient
+	 *            the ingredient
 	 * @param potion
 	 *            the potion stack
 	 * @return true, if this potion recipe is appliable

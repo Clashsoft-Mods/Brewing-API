@@ -16,11 +16,11 @@ public class PotionRecipes
 {
 	protected static final List<IPotionRecipe>	recipes	= new ArrayList();
 	
-	public static IPotionRecipe				amplify	= new PotionRecipeAmplify().register();
-	public static IPotionRecipe				extend	= new PotionRecipeExtend().register();
-	public static IPotionRecipe				dilute	= new PotionRecipeDilute().register();
-	public static IPotionRecipe				splash	= new PotionRecipeSplash().register();
-	public static IPotionRecipe				invert	= new PotionRecipeInvert().register();
+	public static IPotionRecipe					amplify	= new PotionRecipeAmplify().register();
+	public static IPotionRecipe					extend	= new PotionRecipeExtend().register();
+	public static IPotionRecipe					dilute	= new PotionRecipeDilute().register();
+	public static IPotionRecipe					splash	= new PotionRecipeSplash().register();
+	public static IPotionRecipe					invert	= new PotionRecipeInvert().register();
 	
 	public static List<IPotionRecipe> getRecipes()
 	{
@@ -29,17 +29,17 @@ public class PotionRecipes
 	
 	/**
 	 * Gets a {@link PotionRecipe} from the given {@link ItemStack}
-	 * {@code input}.
+	 * {@code ingredient}.
 	 * 
-	 * @param input
-	 *            the input stack
+	 * @param ingredient
+	 *            the ingredient stack
 	 * @return the potion recipe
 	 */
-	public static IPotionRecipe get(ItemStack input)
+	public static IPotionRecipe get(ItemStack ingredient)
 	{
 		for (IPotionRecipe recipe : recipes)
 		{
-			if (CSStacks.equals(input, recipe.getInput()))
+			if (CSStacks.equals(ingredient, recipe.getInput()))
 			{
 				return recipe;
 			}
@@ -49,18 +49,18 @@ public class PotionRecipes
 	
 	/**
 	 * Gets all {@link PotionRecipe PotionRecipes} from the given
-	 * {@link ItemStack} {@code input}.
+	 * {@link ItemStack} {@code ingredient}.
 	 * 
-	 * @param input
-	 *            the input stack
+	 * @param ingredient
+	 *            the ingredient stack
 	 * @return the potion recipes
 	 */
-	public static List<IPotionRecipe> getAll(ItemStack input)
+	public static List<IPotionRecipe> getAll(ItemStack ingredient)
 	{
 		List<IPotionRecipe> list = new ArrayList();
 		for (IPotionRecipe recipe : recipes)
 		{
-			if (CSStacks.equals(input, recipe.getInput()))
+			if (CSStacks.equals(ingredient, recipe.getInput()))
 			{
 				list.add(recipe);
 			}
@@ -125,7 +125,7 @@ public class PotionRecipes
 	 * {@link ItemStack} {@code input} and the given {@link IPotionType}
 	 * {@code potionType}.
 	 * 
-	 * @param input
+	 * @param ingredient
 	 *            the input stack
 	 * @param potionType
 	 *            the output potion type
@@ -140,7 +140,7 @@ public class PotionRecipes
 	 * {@link ItemStack} {@code input}, the given {@link IPotionBase}
 	 * {@code base} and the given {@link IPotionType} {@code potionType}.
 	 * 
-	 * @param input
+	 * @param ingredient
 	 *            the input stack
 	 * @param base
 	 *            the required potion base
@@ -158,10 +158,10 @@ public class PotionRecipes
 	/**
 	 * Creates and registers a new {@link PotionRecipe} from the given
 	 * {@link ItemStack} {@code input} and the given {@link PotionEffect}
-	 * {@code effect}.This automatically finds a {@link PotionType} for the
+	 * {@code effect}. This automatically finds a {@link PotionType} for the
 	 * effect.
 	 * 
-	 * @param input
+	 * @param ingredient
 	 *            the input stack
 	 * @param effect
 	 *            the output effect
@@ -177,7 +177,7 @@ public class PotionRecipes
 	 * {@code base} and the given {@link PotionEffect} {@code effect}. This
 	 * automatically finds a {@link PotionType} for the effect.
 	 * 
-	 * @param input
+	 * @param ingredient
 	 *            the input stack
 	 * @param base
 	 *            the required potion base

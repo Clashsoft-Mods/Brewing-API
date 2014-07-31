@@ -374,9 +374,16 @@ public class PotionType extends AbstractPotionType
 		return builder.toString();
 	}
 	
-	public static IPotionType getRandom(Random rng)
+	/**
+	 * Returns a random {@link IPotionType}.
+	 * 
+	 * @param random
+	 *            the random number generator
+	 * @return a random potion type
+	 */
+	public static IPotionType getRandom(Random random)
 	{
-		return combinableTypes.get(rng.nextInt(combinableTypes.size()));
+		return combinableTypes.get(random.nextInt(combinableTypes.size()));
 	}
 	
 	public static IPotionType getFromEffect(PotionEffect effect)
@@ -398,19 +405,19 @@ public class PotionType extends AbstractPotionType
 	}
 	
 	/**
-	 * Returns the first PotionType that can be read from the ItemStack NBT
+	 * Returns the first {@link IPotionType} that can be read from the given
+	 * {@link ItemStack} {@code potion}'s NBT
 	 * 
-	 * @deprecated
-	 * @param stack
-	 *            the stack
-	 * @return First PotionType read from ItemStack NBT
+	 * @deprecated because multi-effect potions are common.
+	 * @param potion
+	 *            the potion
+	 * @return the first potion type read from the NBT
 	 */
-	@Deprecated
-	public static IPotionType getFirstPotionType(ItemStack stack)
+	public static IPotionType getFirstPotionType(ItemStack potion)
 	{
-		if (stack != null && stack.hasTagCompound())
+		if (potion != null && potion.hasTagCompound())
 		{
-			NBTTagList list = (NBTTagList) stack.stackTagCompound.getTag(COMPOUND_NAME);
+			NBTTagList list = (NBTTagList) potion.stackTagCompound.getTag(COMPOUND_NAME);
 			if (list.tagCount() > 0)
 			{
 				NBTTagCompound nbt1 = list.getCompoundTagAt(0);
@@ -421,31 +428,46 @@ public class PotionType extends AbstractPotionType
 		return null;
 	}
 	
+	/**
+	 * Returns a list of all {@link IPotionType}s of the given {@link ItemStack}
+	 * {@code potion}. This is a shortcut for
+	 * 
+	 * <PRE>
+	 * ((ItemPotion2) potion.getItem()).getPotionTypes(potion)
+	 * </PRE>
+	 * 
+	 * @param potion
+	 *            the potion
+	 * @return the list of potion types
+	 */
 	public static List<IPotionType> getPotionTypes(ItemStack potion)
 	{
 		return ((ItemPotion2) potion.getItem()).getPotionTypes(potion);
 	}
 	
 	/**
-	 * Checks if the stack has any effect on a potion
+	 * Checks if the given {@link ItemStack} {@code ingredient} is a valid
+	 * potion ingredient.
 	 * 
-	 * @param stack
-	 *            the stack
+	 * @param ingredient
+	 *            the igredient
 	 * @return true, if the stack is a valid potion ingredient
 	 */
-	public static boolean isPotionIngredient(ItemStack stack)
+	public static boolean isPotionIngredient(ItemStack ingredient)
 	{
-		return PotionRecipes.get(stack) != null;
+		return PotionRecipes.get(ingredient) != null;
 	}
 	
 	/**
 	 * Applies the given {@link ItemStack} {@code ingredient} to the given
-	 * {@link ItemStack} {@code potionStack}.
+	 * {@link ItemStack} {@code potion}. It does that by going through the list
+	 * of all {@link PotionRecipe}s and calling their
+	 * {@link IPotionRecipe#apply(PotionTypeList)} method.
 	 * 
 	 * @param ingredient
-	 *            Ingredient
+	 *            the ingredient
 	 * @param potion
-	 *            the potion ItemStack
+	 *            the potion
 	 * @return the potion with applied ingredients
 	 */
 	public static ItemStack applyIngredient(ItemStack ingredient, ItemStack potion)
@@ -463,6 +485,20 @@ public class PotionType extends AbstractPotionType
 		return potionTypes.getPotion();
 	}
 	
+	/**
+	 * Checks if the given {@link ItemStack} {@code ingredient} is applicable to
+	 * the given {@link ItemStack} {@code potion}. It does that by going through
+	 * the list of all {@link PotionRecipe}s and calling their
+	 * {@link IPotionRecipe#canApply(ItemStack, PotionTypeList)}. If one of
+	 * these calls returns {@code true}, the ingredient is applicable and
+	 * {@code true} is returned.
+	 * 
+	 * @param ingredient
+	 *            the ingredient
+	 * @param potion
+	 *            the potion
+	 * @return true, if the ingredient is applicable to the potion.
+	 */
 	public static boolean canApplyIngredient(ItemStack ingredient, ItemStack potion)
 	{
 		PotionTypeList potionTypes = new PotionTypeList(potion);
@@ -482,15 +518,16 @@ public class PotionType extends AbstractPotionType
 	}
 	
 	/**
-	 * Returns a PotionType that is brewed with the itemstack. it doesn't check
-	 * for the amount. Ignores Special Ingredient Handlers.
+	 * Returns a {@link IPotionRecipe} that can be brewed with the given
+	 * {@link ItemStack} {@code ingredient}.
 	 * 
-	 * @param stack
-	 * @return PotionType that is brewed with the ItemStack
+	 * @param ingredient
+	 *            the ingredient
+	 * @return a potion type that is brewed with the ingredient
 	 */
-	public static IPotionType getFromIngredient(ItemStack stack)
+	public static IPotionType getFromIngredient(ItemStack ingredient)
 	{
-		IPotionRecipe recipe = PotionRecipes.get(stack);
+		IPotionRecipe recipe = PotionRecipes.get(ingredient);
 		if (recipe instanceof PotionRecipe)
 		{
 			return ((PotionRecipe) recipe).getOutput();
