@@ -1,7 +1,5 @@
 package clashsoft.brewingapi.tileentity;
 
-import java.util.List;
-
 import clashsoft.brewingapi.item.ItemPotion2;
 import clashsoft.brewingapi.potion.PotionTypeList;
 import clashsoft.brewingapi.potion.recipe.IPotionRecipe;
@@ -23,7 +21,6 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand
 	private ItemStack[]			brewingItemStacks	= new ItemStack[4];
 	private int					brewTime;
 	
-	private List<IPotionRecipe>	recipes;
 	private PotionTypeList[]	potionTypes = new PotionTypeList[3];
 	
 	private int					filledSlots;
@@ -76,20 +73,16 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand
 	
 	private boolean canBrew()
 	{
-		if (this.recipes == null || this.recipes.isEmpty())
-		{
-			return false;
-		}
-		
+		ItemStack ingredient = this.brewingItemStacks[3];
 		int count = 0;
 		label1: for (int i = 0; i < 3; i++)
 		{
 			PotionTypeList potionTypes = this.potionTypes[i];
 			if (potionTypes != null)
 			{
-				for (IPotionRecipe recipe : this.recipes)
+				for (IPotionRecipe recipe : PotionRecipes.getRecipes())
 				{
-					if (recipe.canApply(potionTypes))
+					if (recipe.canApply(ingredient, potionTypes))
 					{
 						count++;
 						continue label1;
@@ -105,19 +98,14 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand
 	{
 		ItemStack ingredient = this.brewingItemStacks[3];
 		
-		if (this.recipes == null || this.recipes.isEmpty())
-		{
-			return;
-		}
-		
 		for (int i = 0; i < 3; i++)
 		{
 			PotionTypeList potionTypes = this.potionTypes[i];
 			if (potionTypes != null)
 			{
-				for (IPotionRecipe recipe : this.recipes)
+				for (IPotionRecipe recipe : PotionRecipes.getRecipes())
 				{
-					if (recipe.canApply(potionTypes))
+					if (recipe.canApply(ingredient, potionTypes))
 					{
 						recipe.apply(potionTypes);
 					}
@@ -284,18 +272,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand
 	{
 		this.brewingItemStacks[slot] = stack;
 		
-		if (slot == 3)
-		{
-			if (stack == null)
-			{
-				this.recipes = null;
-			}
-			else
-			{
-				this.recipes = PotionRecipes.getAll(stack);
-			}
-		}
-		else
+		if (slot < 3)
 		{
 			if (stack == null)
 			{

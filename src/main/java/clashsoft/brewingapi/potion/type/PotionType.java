@@ -451,11 +451,9 @@ public class PotionType extends AbstractPotionType
 	public static ItemStack applyIngredient(ItemStack ingredient, ItemStack potion)
 	{
 		PotionTypeList potionTypes = new PotionTypeList(potion);
-		
-		List<IPotionRecipe> recipes = PotionRecipes.getAll(ingredient);
-		for (IPotionRecipe recipe : recipes)
+		for (IPotionRecipe recipe : PotionRecipes.getRecipes())
 		{
-			if (recipe.canApply(potionTypes))
+			if (recipe.canApply(ingredient, potionTypes))
 			{
 				recipe.apply(potionTypes);
 			}
@@ -468,10 +466,9 @@ public class PotionType extends AbstractPotionType
 	public static boolean canApplyIngredient(ItemStack ingredient, ItemStack potion)
 	{
 		PotionTypeList potionTypes = new PotionTypeList(potion);
-		List<IPotionRecipe> recipes = PotionRecipes.getAll(ingredient);
-		for (IPotionRecipe recipe : recipes)
+		for (IPotionRecipe recipe : PotionRecipes.getRecipes())
 		{
-			if (recipe.canApply(potionTypes))
+			if (recipe.canApply(ingredient, potionTypes))
 			{
 				return true;
 			}

@@ -31,7 +31,7 @@ public interface IPotionRecipe
 	 *            the potion stack
 	 * @return true, if this potion recipe is appliable
 	 */
-	public boolean canApply(PotionTypeList potionTypes);
+	public boolean canApply(ItemStack ingredient, PotionTypeList potionTypes);
 	
 	/**
 	 * Applies this {@link IPotionRecipe} to the given {@link ItemStack}

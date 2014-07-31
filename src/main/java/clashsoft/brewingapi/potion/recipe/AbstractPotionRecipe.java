@@ -1,5 +1,8 @@
 package clashsoft.brewingapi.potion.recipe;
 
+import clashsoft.brewingapi.potion.PotionTypeList;
+import clashsoft.cslib.minecraft.stack.CSStacks;
+
 import net.minecraft.item.ItemStack;
 
 public abstract class AbstractPotionRecipe implements IPotionRecipe
@@ -23,4 +26,12 @@ public abstract class AbstractPotionRecipe implements IPotionRecipe
 	{
 		return this.input;
 	}
+	
+	@Override
+	public boolean canApply(ItemStack ingredient, PotionTypeList potionTypes)
+	{
+		return CSStacks.itemEquals(this.getInput(), ingredient) && this.canApply(potionTypes);
+	}
+	
+	public abstract boolean canApply(PotionTypeList potionTypes);
 }
