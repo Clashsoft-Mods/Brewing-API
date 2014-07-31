@@ -435,7 +435,7 @@ public class PotionType extends AbstractPotionType
 	 */
 	public static boolean isPotionIngredient(ItemStack stack)
 	{
-		return getFromIngredient(stack) != null;
+		return PotionRecipes.get(stack) != null;
 	}
 	
 	/**
