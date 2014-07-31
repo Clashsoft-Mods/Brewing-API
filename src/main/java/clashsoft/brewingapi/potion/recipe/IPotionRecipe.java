@@ -39,8 +39,10 @@ public interface IPotionRecipe
 	 * Applies this {@link IPotionRecipe} to the given {@link ItemStack}
 	 * {@code potion}.
 	 * 
+	 * @param ingredient
+	 *            the ingredient
 	 * @param potion
 	 *            the potion stack
 	 */
-	public void apply(PotionTypeList potionTypes);
+	public void apply(ItemStack ingredient, PotionTypeList potionTypes);
 }

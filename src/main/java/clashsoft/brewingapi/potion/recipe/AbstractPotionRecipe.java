@@ -34,4 +34,12 @@ public abstract class AbstractPotionRecipe implements IPotionRecipe
 	}
 	
 	public abstract boolean canApply(PotionTypeList potionTypes);
+	
+	@Override
+	public void apply(ItemStack ingredient, PotionTypeList potionTypes)
+	{
+		this.apply(potionTypes);
+	}
+	
+	public abstract void apply(PotionTypeList potionTypes);
 }

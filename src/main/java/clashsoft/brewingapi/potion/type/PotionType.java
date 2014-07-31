@@ -477,7 +477,7 @@ public class PotionType extends AbstractPotionType
 		{
 			if (recipe.canApply(ingredient, potionTypes))
 			{
-				recipe.apply(potionTypes);
+				recipe.apply(ingredient, potionTypes);
 			}
 		}
 		potionTypes.save();

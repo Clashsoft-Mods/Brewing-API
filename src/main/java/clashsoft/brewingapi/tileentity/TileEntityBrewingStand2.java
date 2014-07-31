@@ -107,7 +107,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand
 				{
 					if (recipe.canApply(ingredient, potionTypes))
 					{
-						recipe.apply(potionTypes);
+						recipe.apply(ingredient, potionTypes);
 					}
 				}
 				potionTypes.save();
