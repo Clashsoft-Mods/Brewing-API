@@ -17,11 +17,11 @@ public interface IPotionRecipe
 	public IPotionRecipe register();
 	
 	/**
-	 * Gets the input stack of this {@link IPotionRecipe}.
+	 * Gets the ingredient of this {@link IPotionRecipe}.
 	 * 
-	 * @return the input stack
+	 * @return the ingredient
 	 */
-	public ItemStack getInput();
+	public ItemStack getIngredient();
 	
 	/**
 	 * Returns true if this {@link IPotionRecipe} is appliable to the given

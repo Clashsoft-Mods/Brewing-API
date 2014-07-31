@@ -41,7 +41,7 @@ public class PotionRecipes
 	{
 		for (IPotionRecipe recipe : recipes)
 		{
-			if (CSStacks.equals(ingredient, recipe.getInput()))
+			if (CSStacks.equals(ingredient, recipe.getIngredient()))
 			{
 				return recipe;
 			}
@@ -62,7 +62,7 @@ public class PotionRecipes
 		List<IPotionRecipe> list = new ArrayList();
 		for (IPotionRecipe recipe : recipes)
 		{
-			if (CSStacks.equals(ingredient, recipe.getInput()))
+			if (CSStacks.equals(ingredient, recipe.getIngredient()))
 			{
 				list.add(recipe);
 			}

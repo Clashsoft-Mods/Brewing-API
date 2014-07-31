@@ -168,7 +168,7 @@ public abstract class AbstractPotionType implements IPotionType
 	public ItemStack getIngredient()
 	{
 		PotionRecipe recipe = PotionRecipes.get(this);
-		return recipe == null ? null : recipe.getInput();
+		return recipe == null ? null : recipe.getIngredient();
 	}
 	
 	@Override

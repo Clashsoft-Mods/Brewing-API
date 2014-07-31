@@ -7,11 +7,11 @@ import net.minecraft.item.ItemStack;
 
 public abstract class AbstractPotionRecipe implements IPotionRecipe
 {
-	protected ItemStack input;
+	protected ItemStack	ingredient;
 	
 	public AbstractPotionRecipe(ItemStack input)
 	{
-		this.input = input;
+		this.ingredient = input;
 	}
 	
 	@Override
@@ -22,17 +22,25 @@ public abstract class AbstractPotionRecipe implements IPotionRecipe
 	}
 	
 	@Override
-	public ItemStack getInput()
+	public ItemStack getIngredient()
 	{
-		return this.input;
+		return this.ingredient;
 	}
 	
 	@Override
 	public boolean canApply(ItemStack ingredient, PotionTypeList potionTypes)
 	{
-		return CSStacks.itemEquals(this.getInput(), ingredient) && this.canApply(potionTypes);
+		return CSStacks.itemEquals(this.getIngredient(), ingredient) && this.canApply(potionTypes);
 	}
 	
+	/**
+	 * Returns true if this {@link IPotionRecipe} is appliable to the given
+	 * {@link ItemStack} {@code potion}.
+	 * 
+	 * @param potion
+	 *            the potion stack
+	 * @return true, if this potion recipe is appliable
+	 */
 	public abstract boolean canApply(PotionTypeList potionTypes);
 	
 	@Override
@@ -41,5 +49,12 @@ public abstract class AbstractPotionRecipe implements IPotionRecipe
 		this.apply(potionTypes);
 	}
 	
+	/**
+	 * Applies this {@link IPotionRecipe} to the given {@link ItemStack}
+	 * {@code potion}.
+	 * 
+	 * @param potion
+	 *            the potion stack
+	 */
 	public abstract void apply(PotionTypeList potionTypes);
 }
