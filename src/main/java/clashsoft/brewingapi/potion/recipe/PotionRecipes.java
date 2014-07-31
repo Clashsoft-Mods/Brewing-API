@@ -8,7 +8,9 @@ import clashsoft.brewingapi.potion.base.IPotionBase;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionType;
 import clashsoft.cslib.minecraft.stack.CSStacks;
+import clashsoft.cslib.minecraft.stack.StackFactory;
 
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 
@@ -16,11 +18,11 @@ public class PotionRecipes
 {
 	protected static final List<IPotionRecipe>	recipes	= new ArrayList();
 	
-	public static IPotionRecipe					amplify	= new PotionRecipeAmplify().register();
-	public static IPotionRecipe					extend	= new PotionRecipeExtend().register();
-	public static IPotionRecipe					dilute	= new PotionRecipeDilute().register();
-	public static IPotionRecipe					splash	= new PotionRecipeSplash().register();
-	public static IPotionRecipe					invert	= new PotionRecipeInvert().register();
+	public static IPotionRecipe					amplify	= new PotionRecipeAmplify(StackFactory.create(Items.glowstone_dust)).register();
+	public static IPotionRecipe					extend	= new PotionRecipeExtend(StackFactory.create(Items.redstone)).register();
+	public static IPotionRecipe					dilute	= new PotionRecipeDilute(StackFactory.create(Items.water_bucket)).register();
+	public static IPotionRecipe					splash	= new PotionRecipeSplash(StackFactory.create(Items.gunpowder)).register();
+	public static IPotionRecipe					invert	= new PotionRecipeInvert(StackFactory.create(Items.fermented_spider_eye)).register();
 	
 	public static List<IPotionRecipe> getRecipes()
 	{

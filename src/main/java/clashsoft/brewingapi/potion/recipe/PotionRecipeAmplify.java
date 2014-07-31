@@ -2,15 +2,14 @@ package clashsoft.brewingapi.potion.recipe;
 
 import clashsoft.brewingapi.potion.PotionTypeList;
 import clashsoft.brewingapi.potion.type.IPotionType;
-import clashsoft.cslib.minecraft.stack.StackFactory;
 
-import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 
 public class PotionRecipeAmplify extends AbstractPotionRecipe
 {
-	public PotionRecipeAmplify()
+	public PotionRecipeAmplify(ItemStack ingredient)
 	{
-		super(StackFactory.create(Items.glowstone_dust));
+		super(ingredient);
 	}
 	
 	@Override
