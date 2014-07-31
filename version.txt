@@ -1,5 +1,5 @@
 version=1.7.10-2.3.0
-url=https://github.com/Clashsoft/Brewing-API/releases/download/1.7.10-2.3.0/BrewingAPI-1.7.10-2.3.0.jar
+url=https://github.com/Clashsoft/Brewing-API/releases/download/1.7.10-3.0.0/BrewingAPI-1.7.10-3.0.0.jar
 
 ! Update to Minecraft 1.7.10
 ! Update to Clashsoft Lib 1.7.10-2.3.0
