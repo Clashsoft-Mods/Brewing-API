@@ -121,9 +121,9 @@ public class PotionType extends AbstractPotionType
 	@Override
 	public boolean isBadEffect()
 	{
-		if (this.hasEffect())
+		Potion potion = this.getPotion();
+		if (potion != null)
 		{
-			Potion potion = this.getPotion();
 			switch (potion.id)
 			{
 			case 2:
