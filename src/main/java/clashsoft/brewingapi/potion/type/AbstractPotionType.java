@@ -39,11 +39,10 @@ public abstract class AbstractPotionType implements IPotionType
 		int potionID = this.getPotionID();
 		if (potionID != -1)
 		{
-			if (potionTypes.containsKey(potionID))
+			if (potionTypes.put(potionID, this) != null)
 			{
 				CSLog.warning("Registering duplicate potion ID " + potionID);
 			}
-			potionTypes.put(potionID, this);
 		}
 		
 		potionTypeList.add(this);

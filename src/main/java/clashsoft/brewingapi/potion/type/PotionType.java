@@ -396,7 +396,7 @@ public class PotionType extends AbstractPotionType
 		{
 			return new PotionTypeDelegate(effect, potionType);
 		}
-		return new PotionType(effect, effect.getAmplifier(), effect.getDuration());
+		return new DummyPotionType(effect, effect.getAmplifier(), effect.getDuration()).register();
 	}
 	
 	protected static IPotionType getFromEffect_(PotionEffect effect)
