@@ -1,18 +1,5 @@
-version=1.7.10-2.3.0
-url=https://github.com/Clashsoft/Brewing-API/releases/download/1.7.10-3.0.0/BrewingAPI-1.7.10-3.0.0.jar
+version=1.7.10-3.0.1
+url=https://github.com/Clashsoft/Brewing-API/releases/download/1.7.10-3.0.1/BrewingAPI-1.7.10-3.0.1.jar
 
-! Update to Minecraft 1.7.10
-! Update to Clashsoft Lib 1.7.10-2.3.0
-+ Added PotionAttributes
-+ Added DummyPotionTypes
-+ Added PotionTypeLists for easy modification
-+ Added custom Potion Type display names
-+ Tooltip colors are now configurable
-+ Water is now a PotionBase
-+ Standart operations are now PotionRecipes
-* Fixed some crashes
-* Fixed UpdateChecker not working
-* Improved Brewing Stand performance
-* Improved Brewing Stand shift-clicking
-* Changed creative brewing time from 3 to 4 seconds
-* Much Documentation
+> Update to Forge 1.7.10-10.13.0.1207.
+> Update to Clashsoft Lib 1.7.10-2.5.0.

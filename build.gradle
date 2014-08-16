@@ -21,7 +21,7 @@ buildscript
 }
 
 apply plugin: 'forge'
-version = "1.7.10-3.0.0"
+version = "1.7.10-3.0.1"
 group = "clashsoft.brewingapi"
 archivesBaseName = "BrewingAPI"
 

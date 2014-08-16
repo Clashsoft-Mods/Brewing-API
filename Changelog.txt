@@ -1,94 +1,99 @@
+1.7.10-3.0.1
+
+> Update to Forge 1.7.10-10.13.0.1207.
+> Update to Clashsoft Lib 1.7.10-2.5.0.
+
 1.7.10-3.0.0
 
-! Update to Minecraft 1.7.10
-! Update to Clashsoft Lib 1.7.10-2.3.0
-+ Added PotionAttributes
-+ Added DummyPotionTypes
-+ Added PotionTypeLists for easy modification
-+ Added custom Potion Type display names
-+ Tooltip colors are now configurable
-+ Water is now a PotionBase
-+ Standart operations are now PotionRecipes
-* Fixed some crashes
-* Fixed UpdateChecker not working
-* Improved Brewing Stand performance
-* Improved Brewing Stand shift-clicking
-* Changed creative brewing time from 3 to 4 seconds
-* Much Documentation
+> Update to Minecraft 1.7.10.
+> Update to Clashsoft Lib 1.7.10-2.3.0.
++ Added PotionAttributes.
++ Added DummyPotionTypes.
++ Added PotionTypeLists for easy modification.
++ Added custom Potion Type display names.
++ Tooltip colors are now configurable.
++ Water is now a PotionBase.
++ Standart operations are now PotionRecipes.
+* Fixed some crashes.
+* Fixed UpdateChecker not working.
+* Improved Brewing Stand performance.
+* Improved Brewing Stand shift-clicking.
+* Changed creative brewing time from 3 to 4 seconds.
+* Much Documentation.
 
 1.7.2-2.0.1
 
-! Update to Clashsoft Lib 1.7.2-2.2.0
+> Update to Clashsoft Lib 1.7.2-2.2.0.
 
 1.7.2-2.0.0
 
-! Update to latest Clashsoft Lib
-+ Added a new potion recipe system
-+ Added "/potion add" and "/potion give" commands
-* Fixed potions not showing up in the creative search
-* Documentation
-* Bugfixes
+> Update to latest Clashsoft Lib.
++ Added a new potion recipe system.
++ Added "/potion add" and "/potion give" commands.
+* Fixed potions not showing up in the creative search.
+* Documentation.
+* Bugfixes.
 
 1.7.2-1.0.1
 
-* Fixed witch crash
-* Fixed potion not showing up in the creative search
+* Fixed witch crash.
+* Fixed potion not showing up in the creative search.
 
 1.7.2-1.0.0
 
-! Update to 1.7.2
-* Structure changes
-* Performance improvements
-* Rewritten the PotionType class
-* Fixed MANY bugs
-* Renamed /givepotion command to "/potion give"
+> Update to Minecraft 1.7.2.
+* Structure changes.
+* Performance improvements.
+* Rewritten the PotionType class.
+* Fixed MANY bugs.
+* Renamed /givepotion command to "/potion give".
 
 1.6.4-5
 
-* Structure changes
-* Fixed many bugs
-* Improved potion item description
+* Structure changes.
+* Fixed many bugs.
+* Improved potion item description.
 
 1.6.4-4
 
-+ Added /givepotion command
++ Added /givepotion command.
 
 1.6.4-3
 
-+ Added automatic updates
++ Added automatic updates.
 
 1.6.4-2
 
-+ Added update checking
++ Added update checking.
 
 1.6.4-1
 
-! Update to 1.6.4
+> Update to Minecraft 1.6.4.
 
 1.6.2-6
 
-* Fixed some bugs
+* Fixed some bugs.
 
 1.6.2-5
 
-* Fixed brewing crash
+* Fixed brewing crash.
 
 1.6.2-4
 
-* Fixed some bugs
-* Fixed crash
+* Fixed some bugs.
+* Fixed crash.
 
 1.6.2-3
 
-* Fixed some bugs
-- Removed Clashsoft API dependency
+* Fixed some bugs.
+- Removed Clashsoft API dependency.
 
 1.6.2-2
 
-* Fixed crash
+* Fixed crash.
 
 1.6.2-1
 
-+ Added ability to register custom potions
-+ Added hooks for custom potion effects
-+ Added hooks for custom ingredient handlers
++ Added ability to register custom potions.
++ Added hooks for custom potion effects.
++ Added hooks for custom ingredient handlers.
