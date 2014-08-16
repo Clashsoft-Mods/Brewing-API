@@ -30,7 +30,7 @@ targetCompatibility = 1.7
 
 minecraft
 {
-    version = "1.7.10-10.13.0.1189"
+    version = "1.7.10-10.13.0.1207"
 
     if(file('../run').exists())
     {
@@ -42,13 +42,11 @@ minecraft
     }
 }
 
-task update(dependsOn:['eclipse', 'setupDevWorkspace'])
-
-task deobfJar(type:Jar, dependsOn:'classes')
-deobfJar
+task devJar(type:Jar, dependsOn:'classes')
+devJar
 {
-    classifier = 'deobf'
-    archiveName = "${archivesBaseName}-${version}-deobf.jar"
+    classifier = 'dev'
+    archiveName = "${archivesBaseName}-${version}-dev.jar"
     from ('build/classes/main')
     {
         include('clashsoft/brewingapi/**')
@@ -59,11 +57,11 @@ deobfJar
     }
 }
 
-task sourceJar(type:Jar, dependsOn:'classes')
-sourceJar
+task srcJar(type:Jar, dependsOn:'classes')
+srcJar
 {
-    classifier = 'sources'
-    archiveName = "${archivesBaseName}-${version}-sources.jar"
+    classifier = 'src'
+    archiveName = "${archivesBaseName}-${version}-src.jar"
     from ('build/sources/java')
     {
         include('clashsoft/brewingapi/**')
@@ -74,7 +72,7 @@ sourceJar
     }
 }
 
-task buildApi(dependsOn:['build', 'sourceJar', 'deobfJar'])
+task buildApi(dependsOn:['build', 'srcJar', 'devJar'])
 
 processResources
 {

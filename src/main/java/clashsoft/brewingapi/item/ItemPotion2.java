@@ -536,8 +536,7 @@ public class ItemPotion2 extends ItemPotion
 						String localizedDescription = I18n.getString(description);
 						if (localizedDescription != description)
 						{
-							localizedDescription = CSString.cutString(localizedDescription, stack.getDisplayName().length());
-							for (String line : CSString.lineArray(localizedDescription))
+							for (String line : CSString.cutString(localizedDescription, stack.getDisplayName().length()))
 							{
 								list.add("\u00a79\u00a7k" + line);
 							}
