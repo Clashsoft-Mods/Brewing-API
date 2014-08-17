@@ -79,4 +79,10 @@ public class BAPIClientProxy extends BAPIProxy
 			}
 		}
 	}
+	
+	@Override
+	public boolean isClient()
+	{
+		return true;
+	}
 }
