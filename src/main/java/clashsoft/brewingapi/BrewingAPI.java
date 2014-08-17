@@ -96,6 +96,7 @@ public class BrewingAPI extends ClashsoftMod
 		this.netHandlerClass = BAPINetHandler.class;
 		this.eventHandler = this;
 		this.url = "https://github.com/Clashsoft/Brewing-API/wiki/";
+		this.description = "Brewing API allows modders to modify the brewing system, add custom potions and potion recipes.";
 	}
 	
 	@Override
