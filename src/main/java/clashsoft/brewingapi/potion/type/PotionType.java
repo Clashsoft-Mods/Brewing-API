@@ -3,7 +3,6 @@ package clashsoft.brewingapi.potion.type;
 import java.util.*;
 
 import clashsoft.brewingapi.item.ItemPotion2;
-import clashsoft.brewingapi.potion.PotionTypeList;
 import clashsoft.brewingapi.potion.base.IPotionBase;
 import clashsoft.brewingapi.potion.base.PotionBase;
 import clashsoft.brewingapi.potion.recipe.IPotionRecipe;
@@ -389,13 +388,17 @@ public class PotionType extends AbstractPotionType
 	public static IPotionType getFromEffect(PotionEffect effect)
 	{
 		if (effect == null)
+		{
 			return null;
+		}
 		
-		IPotionType potionType = getFromEffect_(effect);
+		IPotionType potionType = getFromID(effect.getPotionID());
 		if (potionType != null)
 		{
+			// Type exists, create a delegate with the custom potion effect.
 			return new PotionTypeDelegate(effect, potionType);
 		}
+		// Type does not exist, create a dummy type and register it.
 		return new DummyPotionType(effect, effect.getAmplifier(), effect.getDuration()).register();
 	}
 	
@@ -446,12 +449,7 @@ public class PotionType extends AbstractPotionType
 	}
 	
 	/**
-	 * Checks if the given {@link ItemStack} {@code ingredient} is a valid
-	 * potion ingredient.
-	 * 
-	 * @param ingredient
-	 *            the igredient
-	 * @return true, if the stack is a valid potion ingredient
+	 * @deprecated Use {@link PotionRecipes#isIngredient(ItemStack)} instead.
 	 */
 	public static boolean isPotionIngredient(ItemStack ingredient)
 	{
@@ -459,57 +457,23 @@ public class PotionType extends AbstractPotionType
 	}
 	
 	/**
-	 * Applies the given {@link ItemStack} {@code ingredient} to the given
-	 * {@link ItemStack} {@code potion}. It does that by going through the list
-	 * of all {@link PotionRecipe}s and calling their
-	 * {@link IPotionRecipe#apply(PotionTypeList)} method.
-	 * 
-	 * @param ingredient
-	 *            the ingredient
-	 * @param potion
-	 *            the potion
-	 * @return the potion with applied ingredients
+	 * @deprecated Use
+	 *             {@link PotionRecipes#applyIngredient(ItemStack, ItemStack)}
+	 *             instead.
 	 */
 	public static ItemStack applyIngredient(ItemStack ingredient, ItemStack potion)
 	{
-		PotionTypeList potionTypes = new PotionTypeList(potion);
-		for (IPotionRecipe recipe : PotionRecipes.getRecipes())
-		{
-			if (recipe.canApply(ingredient, potionTypes))
-			{
-				recipe.apply(ingredient, potionTypes);
-			}
-		}
-		potionTypes.save();
-		
-		return potionTypes.getPotion();
+		return PotionRecipes.applyIngredient(potion, ingredient);
 	}
 	
 	/**
-	 * Checks if the given {@link ItemStack} {@code ingredient} is applicable to
-	 * the given {@link ItemStack} {@code potion}. It does that by going through
-	 * the list of all {@link PotionRecipe}s and calling their
-	 * {@link IPotionRecipe#canApply(ItemStack, PotionTypeList)}. If one of
-	 * these calls returns {@code true}, the ingredient is applicable and
-	 * {@code true} is returned.
-	 * 
-	 * @param ingredient
-	 *            the ingredient
-	 * @param potion
-	 *            the potion
-	 * @return true, if the ingredient is applicable to the potion.
+	 * @deprecated Use
+	 *             {@link PotionRecipes#applyIngredient(ItemStack, ItemStack)}
+	 *             instead.
 	 */
 	public static boolean canApplyIngredient(ItemStack ingredient, ItemStack potion)
 	{
-		PotionTypeList potionTypes = new PotionTypeList(potion);
-		for (IPotionRecipe recipe : PotionRecipes.getRecipes())
-		{
-			if (recipe.canApply(ingredient, potionTypes))
-			{
-				return true;
-			}
-		}
-		return false;
+		return PotionRecipes.canApplyIngredient(potion, ingredient);
 	}
 	
 	public static IPotionType getFromID(int potionID)

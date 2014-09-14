@@ -61,6 +61,11 @@ public class PotionTypeList extends ArrayList<IPotionType>
 		((ItemPotion2) this.stack.getItem()).setSplash(this.stack, flag);
 	}
 	
+	public void setStack(ItemStack stack)
+	{
+		this.load(stack, true);
+	}
+	
 	/**
 	 * Loads this {@link PotionTypeList} from the given {@link ItemStack}
 	 * {@code stack} the syncs the list with it. If {@code oldEffects} is true
@@ -89,7 +94,7 @@ public class PotionTypeList extends ArrayList<IPotionType>
 					IPotionType type = PotionType.getFromNBT(compound);
 					if (type != null)
 					{
-						super.add(type);
+						this.add(type);
 					}
 				}
 			}

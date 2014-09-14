@@ -103,14 +103,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand
 			PotionTypeList potionTypes = this.potionTypes[i];
 			if (potionTypes != null)
 			{
-				for (IPotionRecipe recipe : PotionRecipes.getRecipes())
-				{
-					if (recipe.canApply(ingredient, potionTypes))
-					{
-						recipe.apply(ingredient, potionTypes);
-					}
-				}
-				potionTypes.save();
+				this.brewingItemStacks[i] = PotionRecipes.applyIngredient(potionTypes, ingredient);
 			}
 		}
 		

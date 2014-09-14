@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import clashsoft.brewingapi.potion.PotionList;
+import clashsoft.brewingapi.potion.PotionTypeList;
 import clashsoft.brewingapi.potion.base.IPotionBase;
 import clashsoft.brewingapi.potion.type.IPotionType;
 import clashsoft.brewingapi.potion.type.PotionType;
@@ -27,6 +28,87 @@ public class PotionRecipes
 	public static List<IPotionRecipe> getRecipes()
 	{
 		return recipes;
+	}
+	
+	/**
+	 * Checks if the given {@link ItemStack} {@code ingredient} is a valid
+	 * potion ingredient.
+	 * 
+	 * @param ingredient
+	 *            the igredient
+	 * @return true, if the stack is a valid potion ingredient
+	 */
+	public static boolean isIngredient(ItemStack ingredient)
+	{
+		for (IPotionRecipe recipe : recipes)
+		{
+			if (CSStacks.equals(recipe.getIngredient(), ingredient))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks if the given {@link ItemStack} {@code ingredient} is applicable to
+	 * the given {@link ItemStack} {@code potion}. It does that by going through
+	 * the list of all {@link PotionRecipe}s and calling their
+	 * {@link IPotionRecipe#canApply(ItemStack, PotionTypeList)}. If one of
+	 * these calls returns {@code true}, the ingredient is applicable and
+	 * {@code true} is returned.
+	 * 
+	 * @param ingredient
+	 *            the ingredient
+	 * @param potion
+	 *            the potion
+	 * @return true, if the ingredient is applicable to the potion.
+	 */
+	public static boolean canApplyIngredient(ItemStack input, ItemStack ingredient)
+	{
+		return canApplyIngredient(new PotionTypeList(input), ingredient);
+	}
+	
+	public static boolean canApplyIngredient(PotionTypeList input, ItemStack ingredient)
+	{
+		for (IPotionRecipe recipe : recipes)
+		{
+			if (recipe.canApply(ingredient, input))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Applies the given {@link ItemStack} {@code ingredient} to the given
+	 * {@link ItemStack} {@code potion}. It does that by going through the list
+	 * of all {@link PotionRecipe}s and calling their
+	 * {@link IPotionRecipe#apply(PotionTypeList)} method.
+	 * 
+	 * @param ingredient
+	 *            the ingredient
+	 * @param potion
+	 *            the potion
+	 * @return the potion with applied ingredients
+	 */
+	public static ItemStack applyIngredient(ItemStack input, ItemStack ingredient)
+	{
+		return applyIngredient(new PotionTypeList(input), ingredient);
+	}
+	
+	public static ItemStack applyIngredient(PotionTypeList input, ItemStack ingredient)
+	{
+		for (IPotionRecipe recipe : recipes)
+		{
+			if (recipe.canApply(ingredient, input))
+			{
+				recipe.apply(ingredient, input);
+			}
+		}
+		input.save();
+		return input.getPotion();
 	}
 	
 	/**
