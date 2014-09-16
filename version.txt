@@ -1,5 +1,8 @@
-version=1.7.10-3.0.1
-url=https://github.com/Clashsoft/Brewing-API/releases/download/1.7.10-3.0.1/BrewingAPI-1.7.10-3.0.1.jar
+version=1.7.10-3.0.2
+url=https://github.com/Clashsoft/Brewing-API/releases/download/1.7.10-3.0.2/BrewingAPI-1.7.10-3.0.2.jar
 
-> Update to Forge 1.7.10-10.13.0.1207.
-> Update to Clashsoft Lib 1.7.10-2.5.0.
+> Update to Clashsoft Lib 1.7.10-2.7.0.
++ Added interface for @Agadar's Brewing API.
++ Added CustomPotionRecipe.
++ Added logo.
+* Fixed UpdateChecker not working.
