@@ -63,6 +63,7 @@ public class BrewingRecipes
 	 * 
 	 * @param ingredient
 	 *            the ingredient
+	 * @return true, if the ingredient is a valid potion ingredient.
 	 */
 	public boolean isPotionIngredient(ItemStack ingredient)
 	{
@@ -77,6 +78,7 @@ public class BrewingRecipes
 	 *            the input potion
 	 * @param ingredient
 	 *            the ingredient
+	 * @return the output
 	 */
 	public ItemStack getBrewingResult(ItemStack input, ItemStack ingredient)
 	{
@@ -84,8 +86,29 @@ public class BrewingRecipes
 	}
 	
 	/**
+	 * Adds the given {@link PotionEffect} to an {@link NBTTagList} and adds it
+	 * to the given {@link ItemStack}'s NBT.
+	 * 
+	 * @param stack
+	 *            the potion stack
+	 * @param effect
+	 *            the effect
+	 */
+	public void addEffect(ItemStack stack, PotionEffect effect)
+	{
+		PotionTypeList potionTypes = new PotionTypeList(stack);
+		potionTypes.add(PotionType.getFromEffect(effect));
+		potionTypes.save();
+	}
+	
+	/**
 	 * Translates the given {@link List} of {@link PotionEffect}s to an
 	 * {@link NBTTagList} and adds it to the given {@link ItemStack}'s NBT.
+	 * 
+	 * @param stack
+	 *            the potion stack
+	 * @param effects
+	 *            the list of effects
 	 */
 	public void setEffects(ItemStack stack, List<PotionEffect> effects)
 	{
@@ -101,11 +124,19 @@ public class BrewingRecipes
 	/**
 	 * Calculates the duration modifier for a potion effect according to the
 	 * given parameters.
+	 * 
+	 * @param splash
+	 *            true, if the potion is a splash potion
+	 * @param amplifier
+	 *            the amplifier
+	 * @param extended
+	 *            true, if the potion is extended
+	 * @return the duration multiplier of the potion
 	 */
-	public float getDurationModifier(boolean splash, int amplification, boolean extended)
+	public float getDurationModifier(boolean splash, int amplifier, boolean extended)
 	{
 		float modifier = splash ? 0.75F : 1.0F;
-		modifier /= 2 << amplification;
+		modifier /= 2 << amplifier;
 		return extended ? modifier * 8F / 3F : modifier;
 	}
 }
