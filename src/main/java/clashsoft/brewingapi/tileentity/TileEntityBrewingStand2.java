@@ -122,7 +122,7 @@ public class TileEntityBrewingStand2 extends TileEntityBrewingStand
 			}
 		}
 		
-		this.setInventorySlotContents(3, ingredient);
+		this.brewingItemStacks[3] = ingredient;
 	}
 	
 	public void setBrewTime(int brewTime)

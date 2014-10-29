@@ -162,13 +162,14 @@ public class PotionRecipes
 	 */
 	public static PotionRecipe get(IPotionType potionType)
 	{
+		int id = potionType.getPotionID();
 		for (IPotionRecipe recipe : recipes)
 		{
 			if (recipe instanceof PotionRecipe)
 			{
 				PotionRecipe recipe2 = (PotionRecipe) recipe;
 				IPotionType output = recipe2.getOutput();
-				if (potionType.equals(output))
+				if (id == output.getPotionID())
 				{
 					return recipe2;
 				}
@@ -187,6 +188,7 @@ public class PotionRecipes
 	 */
 	public static List<PotionRecipe> getAll(IPotionType potionType)
 	{
+		int id = potionType.getPotionID();
 		List<PotionRecipe> list = new ArrayList();
 		
 		for (IPotionRecipe recipe : recipes)
@@ -195,7 +197,7 @@ public class PotionRecipes
 			{
 				PotionRecipe recipe2 = (PotionRecipe) recipe;
 				IPotionType output = recipe2.getOutput();
-				if (potionType.equals(output))
+				if (id == output.getPotionID())
 				{
 					list.add(recipe2);
 				}
